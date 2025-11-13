@@ -1,16 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { symptomsByBodyPart } from "../../../data/symptomsData";
 import { searchSymptomsWithAI, searchDiseases } from "../../../utils/api";
 
 const bodyParts = [
-  { key: "머리", label: "머리", tab: "머리/얼굴" },
-  { key: "목", label: "목", tab: "목/어깨" },
+  { key: "머리", label: "머리", tab: "머리" },
+  { key: "얼굴", label: "얼굴", tab: "얼굴" },
+  { key: "목", label: "목", tab: "목" },
+  { key: "어깨", label: "어깨", tab: "어깨" },
   { key: "가슴", label: "가슴", tab: "가슴" },
-  { key: "배", label: "배", tab: "배/골반" },
-  { key: "등", label: "등", tab: "등/엉덩이" },
-  { key: "엉덩이", label: "엉덩이", tab: "등/엉덩이" },
-  { key: "팔", label: "팔", tab: "팔/손" },
-  { key: "다리", label: "다리", tab: "다리/발" },
+  { key: "배", label: "배", tab: "배" },
+  { key: "등", label: "등", tab: "등" },
+  { key: "엉덩이", label: "엉덩이", tab: "엉덩이" },
+  { key: "팔", label: "팔", tab: "팔" },
+  { key: "다리", label: "다리", tab: "다리" },
   { key: "그외", label: "그 외", isExpandable: true },
 ];
 
@@ -19,26 +21,49 @@ const otherBodyParts = [
   { key: "귀", label: "귀", tab: "귀" },
   { key: "코", label: "코", tab: "코" },
   { key: "입", label: "입", tab: "입" },
-  { key: "전신", label: "전신", tab: "전신/피부" },
-  { key: "피부", label: "피부", tab: "전신/피부" },
+  { key: "전신", label: "전신", tab: "전신" },
+  { key: "피부", label: "피부", tab: "피부" },
   { key: "유방", label: "유방", tab: "유방" },
   { key: "생식기", label: "생식기", tab: "생식기" },
-  { key: "골반", label: "골반", tab: "배/골반" },
-  { key: "손", label: "손", tab: "팔/손" },
-  { key: "발", label: "발", tab: "다리/발" },
+  { key: "골반", label: "골반", tab: "골반" },
+  { key: "손", label: "손", tab: "손" },
+  { key: "발", label: "발", tab: "발" },
   { key: "기타", label: "기타", tab: "기타" },
 ];
 
 function SymptomSearchNew() {
-  const [selectedBodyPart, setSelectedBodyPart] = useState("머리/얼굴");
+  const [selectedBodyPart, setSelectedBodyPart] = useState("머리");
   const [selectedSymptoms, setSelectedSymptoms] = useState([]);
   const [aiInput, setAiInput] = useState("");
   const [isAiLoading, setIsAiLoading] = useState(false);
   const [showOtherParts, setShowOtherParts] = useState(false);
+  const popoverRef = useRef(null);
+  const triggerButtonRef = useRef(null);
 
   const handleInputChange = (e) => {
     setAiInput(e.target.value);
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        popoverRef.current &&
+        !popoverRef.current.contains(event.target) &&
+        triggerButtonRef.current &&
+        !triggerButtonRef.current.contains(event.target)
+      ) {
+        setShowOtherParts(false);
+      }
+    };
+
+    if (showOtherParts) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showOtherParts]);
 
   const handleBodyPartClick = (partKey, isExpandable, event) => {
     if (isExpandable) {
@@ -111,7 +136,7 @@ function SymptomSearchNew() {
 
   const handleReset = () => {
     setSelectedSymptoms([]);
-    setSelectedBodyPart("머리/얼굴");
+    setSelectedBodyPart("머리");
     setAiInput("");
   };
 
@@ -170,6 +195,7 @@ function SymptomSearchNew() {
               {bodyParts.map((part) => (
                 <button
                   key={part.key}
+                  ref={part.isExpandable ? triggerButtonRef : null}
                   className={`tab-btn ${!part.isExpandable && selectedBodyPart === part.tab ? "active" : ""} ${part.isExpandable && showOtherParts ? "active" : ""}`}
                   onClick={(e) => handleBodyPartClick(part.tab, part.isExpandable, e)}
                 >
@@ -217,6 +243,7 @@ function SymptomSearchNew() {
       {/* 팝오버: 그 외 부위 선택 */}
       {showOtherParts && (
         <div
+          ref={popoverRef}
           className="body-parts-popover"
           style={{
             top: `${popoverPosition.top}px`,
