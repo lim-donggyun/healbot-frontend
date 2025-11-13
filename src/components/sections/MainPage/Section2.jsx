@@ -1,19 +1,21 @@
 import React, { useState } from "react";
-import "./SymptomSearchNew.css";
 import { symptomsByBodyPart } from "../../data/symptomsData";
 import { searchSymptomsWithAI, searchDiseases } from "../../utils/api";
 
 const bodyParts = [
-  { key: "머리", label: "머리", icon: "🧠" },
-  { key: "눈/귀/코", label: "눈/귀/코", icon: "👁️" },
-  { key: "목/입", label: "목/입", icon: "👄" },
+  { key: "머리/얼굴", label: "머리/얼굴", icon: "🧠" },
+  { key: "목/어깨", label: "목/어깨", icon: "💪" },
   { key: "가슴", label: "가슴", icon: "❤️" },
-  { key: "배", label: "배", icon: "🔵" },
-  { key: "팔/다리", label: "팔/다리", icon: "💪" },
+  { key: "배/골반", label: "배/골반", icon: "🔵" },
+  { key: "등/엉덩이", label: "등/엉덩이", icon: "🦴" },
+  { key: "팔/손", label: "팔/손", icon: "✋" },
+  { key: "다리/발", label: "다리/발", icon: "🦵" },
+  { key: "전신/피부", label: "전신/피부", icon: "🌡️" },
+  { key: "기타", label: "기타 부위", icon: "❓" },
 ];
 
 function SymptomSearchNew() {
-  const [selectedBodyPart, setSelectedBodyPart] = useState("머리");
+  const [selectedBodyPart, setSelectedBodyPart] = useState("머리/얼굴");
   const [selectedSymptoms, setSelectedSymptoms] = useState([]);
   const [aiInput, setAiInput] = useState("");
   const [isAiLoading, setIsAiLoading] = useState(false);
@@ -81,7 +83,7 @@ function SymptomSearchNew() {
   // 초기화
   const handleReset = () => {
     setSelectedSymptoms([]);
-    setSelectedBodyPart("머리");
+    setSelectedBodyPart("머리/얼굴");
     setAiInput("");
   };
 
@@ -95,19 +97,16 @@ function SymptomSearchNew() {
   // 현재 선택된 신체 부위의 증상 목록
   const currentSymptoms = symptomsByBodyPart[selectedBodyPart] || [];
 
-  // 증상 그리드 스크롤 시 페이지 스크롤 방지
-  const handleGridScroll = (e) => {
-    e.stopPropagation();
-  };
-
+  // 증상 그리드 휠 스크롤 시 페이지 스크롤 방지
   const handleGridWheel = (e) => {
     const element = e.currentTarget;
     const { scrollTop, scrollHeight, clientHeight } = element;
     const isAtTop = scrollTop === 0;
-    const isAtBottom = scrollTop + clientHeight >= scrollHeight;
+    const isAtBottom = scrollTop + clientHeight >= scrollHeight - 1;
 
-    // 스크롤이 끝에 도달하지 않았으면 페이지 스크롤 방지
-    if ((!isAtTop && e.deltaY < 0) || (!isAtBottom && e.deltaY > 0)) {
+    // 위로 스크롤 중이고 최상단이 아니거나, 아래로 스크롤 중이고 최하단이 아니면 페이지 스크롤 방지
+    if ((e.deltaY < 0 && !isAtTop) || (e.deltaY > 0 && !isAtBottom)) {
+      e.preventDefault();
       e.stopPropagation();
     }
   };
@@ -188,7 +187,6 @@ function SymptomSearchNew() {
           <div className="symptom-categories">
             <div
               className="category-grid"
-              onScroll={handleGridScroll}
               onWheel={handleGridWheel}
             >
               {currentSymptoms.map((symptom, index) => (
