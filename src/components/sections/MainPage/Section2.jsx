@@ -4,9 +4,7 @@ import { searchSymptomsWithAI, searchDiseases } from "../../../utils/api";
 
 const bodyParts = [
   { key: "머리", label: "머리", tab: "머리" },
-  { key: "얼굴", label: "얼굴", tab: "얼굴" },
   { key: "목", label: "목", tab: "목" },
-  { key: "어깨", label: "어깨", tab: "어깨" },
   { key: "가슴", label: "가슴", tab: "가슴" },
   { key: "배", label: "배", tab: "배" },
   { key: "등", label: "등", tab: "등" },
