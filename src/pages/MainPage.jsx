@@ -3,10 +3,10 @@ import "./MainPage.css";
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
 import ScrollToTop from "../components/common/ScrollToTop";
-import MainSlider from "../components/sections/MainSlider";
-import SymptomSearchNew from "../components/sections/SymptomSearchNew";
-import Departments from "../components/sections/Departments";
-import InfoSection from "../components/sections/InfoSection";
+import Section1 from "../components/sections/MainPage/Section1";
+import Section2 from "../components/sections/MainPage/Section2";
+import Section3 from "../components/sections/MainPage/Section3";
+import Section4 from "../components/sections/MainPage/Section4";
 import { useScrollNavigation } from "../hooks/useScrollNavigation";
 
 function MainPage() {
@@ -16,10 +16,10 @@ function MainPage() {
     <>
       <Header />
       <ScrollToTop />
-      <MainSlider />
-      <SymptomSearchNew />
-      <Departments />
-      <InfoSection />
+      <Section1 />
+      <Section2 />
+      <Section3 />
+      <Section4 />
       <Footer />
     </>
   );

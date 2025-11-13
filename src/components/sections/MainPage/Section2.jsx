@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { symptomsByBodyPart } from "../../data/symptomsData";
-import { searchSymptomsWithAI, searchDiseases } from "../../utils/api";
+import { symptomsByBodyPart } from "../../../data/symptomsData";
+import { searchSymptomsWithAI, searchDiseases } from "../../../utils/api";
 
 const bodyParts = [
   { key: "머리/얼굴", label: "머리/얼굴", icon: "🧠" },
