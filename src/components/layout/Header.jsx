@@ -1,11 +1,32 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { checkSession } from "../../utils/api";
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+
+  // 항상 hover 상태를 유지해야 하는 페이지들
+  const alwaysScrolledPages = ['/login', '/signup', '/find-id', '/find-pass'];
+  const isAlwaysScrolled = alwaysScrolledPages.includes(location.pathname);
+
+  // 세션 확인
+  useEffect(() => {
+    const verifySession = async () => {
+      try {
+        const data = await checkSession();
+        setIsLoggedIn(data.loggedIn);
+      } catch (error) {
+        console.error('세션 확인 실패:', error);
+        setIsLoggedIn(false);
+      }
+    };
+
+    verifySession();
+  }, [location.pathname]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -40,7 +61,28 @@ function Header() {
   };
 
   const handleLoginClick = () => {
-    navigate("/login");
+    if (isLoggedIn) {
+      navigate("/mypage");
+    } else {
+      navigate("/login");
+    }
+  };
+
+  const handleLogoutClick = async () => {
+    try {
+      const response = await fetch('/react/api/member/logout', {
+        method: 'POST',
+      });
+
+      if (response.ok) {
+        setIsLoggedIn(false);
+        alert('로그아웃 되었습니다.');
+        navigate('/');
+      }
+    } catch (error) {
+      console.error('로그아웃 에러:', error);
+      alert('로그아웃 중 오류가 발생했습니다.');
+    }
   };
 
   const handleOutsideClick = (e) => {
@@ -60,7 +102,7 @@ function Header() {
   return (
     <>
       {/* 헤더 */}
-      <header className={isMenuOpen ? "menu-open" : ""}>
+      <header className={`${isMenuOpen ? "menu-open" : ""} ${isAlwaysScrolled || isScrolled ? "scrolled" : ""}`}>
         <div className="header-wrapper">
           <div className="logo" onClick={handleLogoClick} style={{ cursor: "pointer" }}>
             <img
@@ -190,9 +232,23 @@ function Header() {
                 <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" strokeWidth="2">
                   <circle cx="12" cy="8" r="4" />
                   <path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2" />
-
                 </svg>
               </button>
+              {isLoggedIn && (
+                <>
+                  <div className="utility-divider"></div>
+                  <button className="utility-btn logout-icon-btn" onClick={handleLogoutClick}>
+                    <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" strokeWidth="2" className="logout-icon">
+                      {/* 문 프레임 */}
+                      <rect x="7" y="4" width="10" height="16" rx="1" stroke="currentColor" strokeWidth="2" fill="none" className="door-frame" />
+                      {/* 문짝 (왼쪽 경첩 기준으로 회전) */}
+                      <rect x="7" y="4" width="10" height="16" rx="1" fill="currentColor" className="door" style={{ transformOrigin: '7px 12px' }} />
+                      {/* 문 손잡이 */}
+                      <circle cx="15" cy="12" r="0.8" fill="white" className="door-handle" />
+                    </svg>
+                  </button>
+                </>
+              )}
               <div className="utility-divider"></div>
               <button className="utility-btn emergency-btn">
                 <svg viewBox="0 0 24 24" width="18" height="18" style={{ marginRight: 4, verticalAlign: "middle" }}>
