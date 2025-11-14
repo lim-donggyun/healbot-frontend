@@ -177,12 +177,7 @@ function SymptomSearchNew() {
               onKeyDown={handleKeyDown}
               disabled={isAiLoading}
             />
-            <button
-              className="ai-search-btn"
-              onClick={handleAiSearch}
-              disabled={isAiLoading}
-              aria-label="AI 검색"
-            >
+            <button className="ai-search-btn" onClick={handleAiSearch} disabled={isAiLoading} aria-label="AI 검색">
               {isAiLoading ? (
                 <span className="loading-spinner"></span>
               ) : (
@@ -194,8 +189,7 @@ function SymptomSearchNew() {
                   stroke="currentColor"
                   strokeWidth="2.5"
                   strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
+                  strokeLinejoin="round">
                   <circle cx="11" cy="11" r="8" />
                   <path d="m21 21-4.35-4.35" />
                 </svg>
@@ -208,9 +202,7 @@ function SymptomSearchNew() {
         <div className="symptom-selection-container">
           {/* 왼쪽: 인체 이미지 영역 */}
           <div className="body-image-area">
-            <div className="body-placeholder">
-              {/* 여기에 나중에 이미지가 들어갈 자리 */}
-            </div>
+            <div className="body-placeholder">{/* 여기에 나중에 이미지가 들어갈 자리 */}</div>
           </div>
 
           {/* 오른쪽: 탭과 증상 선택 영역 */}
@@ -221,9 +213,7 @@ function SymptomSearchNew() {
                 // "그 외" 버튼의 경우, 선택된 부위가 otherBodyParts에 있으면 해당 이름 표시
                 let displayLabel = part.label;
                 if (part.isExpandable) {
-                  const selectedOtherPart = otherBodyParts.find(
-                    (otherPart) => otherPart.tab === selectedBodyPart
-                  );
+                  const selectedOtherPart = otherBodyParts.find((otherPart) => otherPart.tab === selectedBodyPart);
                   if (selectedOtherPart) {
                     displayLabel = selectedOtherPart.label;
                   }
@@ -233,23 +223,14 @@ function SymptomSearchNew() {
                   <button
                     key={part.key}
                     ref={part.isExpandable ? triggerButtonRef : null}
-                    className={`tab-btn ${
-                      !part.isExpandable && selectedBodyPart === part.tab
-                        ? "active"
-                        : ""
-                    } ${
-                      part.isExpandable &&
-                      (showOtherParts ||
-                        otherBodyParts.some((op) => op.tab === selectedBodyPart))
+                    className={`tab-btn ${!part.isExpandable && selectedBodyPart === part.tab ? "active" : ""} ${
+                      part.isExpandable && (showOtherParts || otherBodyParts.some((op) => op.tab === selectedBodyPart))
                         ? "active"
                         : ""
                     }`}
-                    onClick={(e) => handleBodyPartClick(part.tab, part.isExpandable, e)}
-                  >
+                    onClick={(e) => handleBodyPartClick(part.tab, part.isExpandable, e)}>
                     {displayLabel}
-                    {part.isExpandable && (
-                      <span className="expand-icon">{showOtherParts ? "▲" : "▼"}</span>
-                    )}
+                    {part.isExpandable && <span className="expand-icon">{showOtherParts ? "▲" : "▼"}</span>}
                   </button>
                 );
               })}
@@ -285,8 +266,7 @@ function SymptomSearchNew() {
                     <button
                       className="symptom-remove-btn"
                       onClick={() => handleSymptomClick(symptom)}
-                      aria-label={`${symptom} 제거`}
-                    >
+                      aria-label={`${symptom} 제거`}>
                       ✕
                     </button>
                   </span>
@@ -313,20 +293,18 @@ function SymptomSearchNew() {
           style={{
             top: `${popoverPosition.top}px`,
             right: `${popoverPosition.right}px`,
-          }}
-        >
-            <div className="popover-header">세부 부위 선택</div>
-            <div className="popover-grid">
-              {otherBodyParts.map((part) => (
-                <button
-                  key={part.key}
-                  className={`popover-item ${selectedBodyPart === part.tab ? "active" : ""}`}
-                  onClick={() => handleBodyPartClick(part.tab, false)}
-                >
-                  {part.label}
-                </button>
-              ))}
-            </div>
+          }}>
+          <div className="popover-header">세부 부위 선택</div>
+          <div className="popover-grid">
+            {otherBodyParts.map((part) => (
+              <button
+                key={part.key}
+                className={`popover-item ${selectedBodyPart === part.tab ? "active" : ""}`}
+                onClick={() => handleBodyPartClick(part.tab, false)}>
+                {part.label}
+              </button>
+            ))}
+          </div>
         </div>
       )}
     </section>

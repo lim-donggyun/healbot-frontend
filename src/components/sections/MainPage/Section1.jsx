@@ -39,29 +39,14 @@ function MainSlider() {
           </div>
           <div className={`slide ${currentSlide === 2 ? "active" : ""}`}>
             <h1>24시간 응급의료센터</h1>
-            <p>
-              365일 24시간 응급환자를 위한 신속한 진료 체계를 갖추고 있습니다
-            </p>
+            <p>365일 24시간 응급환자를 위한 신속한 진료 체계를 갖추고 있습니다</p>
             <button className="slide-btn">응급실 안내</button>
           </div>
           <div className="slider-controls">
-            <div
-              className={`slider-dot ${currentSlide === 0 ? "active" : ""}`}
-              onClick={() => changeSlide(0)}
-            ></div>
-            <div
-              className={`slider-dot ${currentSlide === 1 ? "active" : ""}`}
-              onClick={() => changeSlide(1)}
-            ></div>
-            <div
-              className={`slider-dot ${currentSlide === 2 ? "active" : ""}`}
-              onClick={() => changeSlide(2)}
-            ></div>
-            <button
-              className="slider-control-btn"
-              id="playPauseBtn"
-              onClick={toggleAutoSlide}
-            >
+            <div className={`slider-dot ${currentSlide === 0 ? "active" : ""}`} onClick={() => changeSlide(0)}></div>
+            <div className={`slider-dot ${currentSlide === 1 ? "active" : ""}`} onClick={() => changeSlide(1)}></div>
+            <div className={`slider-dot ${currentSlide === 2 ? "active" : ""}`} onClick={() => changeSlide(2)}></div>
+            <button className="slider-control-btn" id="playPauseBtn" onClick={toggleAutoSlide}>
               <span id="playPauseIcon">{isAutoPlay ? "❚❚" : "▶"}</span>
             </button>
           </div>

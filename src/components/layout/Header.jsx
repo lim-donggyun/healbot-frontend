@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 
 function Header() {
-  const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -175,6 +173,13 @@ function Header() {
                 <input type="text" className="header-search-input" placeholder="통합 검색..." />
               </div>
               <div className="utility-divider"></div>
+              <button className="utility-btn user-icon-btn">
+                <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="8" r="4" />
+                  <path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2" />
+                  
+                </svg>
+              </button>
               <div className="utility-divider"></div>
               <button className="utility-btn emergency-btn">
                 <svg viewBox="0 0 24 24" width="18" height="18" style={{ marginRight: 4, verticalAlign: "middle" }}>

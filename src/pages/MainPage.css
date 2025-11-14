@@ -772,6 +772,7 @@ header.scrolled #nav-icon2 span {
   font-size: 56px;
   margin-bottom: 24px;
   font-weight: 700;
+  color: #ffffff;
   font-family: "SeoulHangang", "Malgun Gothic", sans-serif;
   letter-spacing: -1px;
 }
@@ -1200,7 +1201,7 @@ header.scrolled #nav-icon2 span {
 }
 
 .search-submit-btn::after {
-  content: '';
+  content: "";
   position: absolute;
   width: 0;
   height: 2px;
