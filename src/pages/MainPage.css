@@ -1530,6 +1530,7 @@ header.scrolled #nav-icon2 span {
   align-items: center;
   justify-content: space-between;
   gap: 20px;
+  height: 75px; /* 고정 높이 설정 */
 }
 
 .selected-symptoms-text {
@@ -1546,12 +1547,34 @@ header.scrolled #nav-icon2 span {
   white-space: nowrap;
 }
 
+
 .selected-symptoms-display .selected-list {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
   flex: 1;
   min-width: 0;
+  max-height: 80px; /* 최대 높이 지정 */
+  overflow-y: auto; /* 내용이 넘칠 경우 스크롤 */
+  padding-right: 5px; /* 스크롤바 공간 확보 */
+}
+
+.selected-symptoms-display .selected-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.selected-symptoms-display .selected-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.selected-symptoms-display .selected-list::-webkit-scrollbar-thumb {
+  background: #3fc1ec;
+  border-radius: 10px;
+}
+
+.selected-symptoms-display .selected-list::-webkit-scrollbar-thumb:hover {
+  background: #3284b1;
 }
 
 .selected-symptoms-display .no-symptoms {
