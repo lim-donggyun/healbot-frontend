@@ -13,7 +13,7 @@ function MainPage() {
   useScrollNavigation();
 
   return (
-    <>
+    <div className="main-page">
       <Header />
       <ScrollToTop />
       <Section1 />
@@ -21,7 +21,7 @@ function MainPage() {
       <Section3 />
       <Section4 />
       <Footer />
-    </>
+    </div>
   );
 }
 

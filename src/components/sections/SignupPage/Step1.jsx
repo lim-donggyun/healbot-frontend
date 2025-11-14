@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './Step.css';
+import '../../../pages/Signup.css';
 
 const Step1 = ({ formData, updateFormData, nextStep }) => {
   const [allAgree, setAllAgree] = useState(false);

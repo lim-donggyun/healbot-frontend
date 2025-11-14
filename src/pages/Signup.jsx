@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import Header from "../components/layout/Header";
+import Footer from "../components/layout/Footer";
+import ScrollToTop from "../components/common/ScrollToTop";
 import Step1 from "../components/sections/SignupPage/Step1";
 import Step3 from "../components/sections/SignupPage/Step3";
 import Step4 from "../components/sections/SignupPage/Step4";
@@ -18,6 +21,11 @@ const Signup = () => {
       setSocialId(socialIdParam);
     }
   }, [location]);
+
+  useEffect(() => {
+    // 단계가 변경될 때마다 맨 위로 스크롤
+    window.scrollTo(0, 0);
+  }, [currentStep]);
 
   const [formData, setFormData] = useState({
     // Step1 - 약관동의
@@ -71,7 +79,14 @@ const Signup = () => {
     }
   };
 
-  return <div className="register-container">{renderStep()}</div>;
+  return (
+    <div className="signup-page-wrapper">
+      <Header />
+      {renderStep()}
+      <Footer />
+      <ScrollToTop />
+    </div>
+  );
 };
 
 export default Signup;
