@@ -93,6 +93,24 @@ header.menu-open #nav-icon2 span {
   background: #333;
 }
 
+/* 로그아웃 아이콘 - 문 애니메이션 */
+.logout-icon .door {
+  transition: transform 0.3s ease;
+  transform: rotateY(0deg);
+}
+
+.logout-icon-btn:hover .door {
+  transform: rotateY(-120deg);
+}
+
+.logout-icon .door-handle {
+  transition: opacity 0.3s ease;
+}
+
+.logout-icon-btn:hover .door-handle {
+  opacity: 0;
+}
+
 .logo {
   display: flex;
   align-items: center;

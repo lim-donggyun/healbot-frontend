@@ -4,8 +4,8 @@ import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
 import ScrollToTop from "../components/common/ScrollToTop";
 import Step1 from "../components/sections/SignupPage/Step1";
+import Step2 from "../components/sections/SignupPage/Step2";
 import Step3 from "../components/sections/SignupPage/Step3";
-import Step4 from "../components/sections/SignupPage/Step4";
 import "./Signup.css";
 
 const Signup = () => {
@@ -64,7 +64,7 @@ const Signup = () => {
         return <Step1 formData={formData} updateFormData={updateFormData} nextStep={nextStep} />;
       case 2:
         return (
-          <Step3
+          <Step2
             formData={formData}
             updateFormData={updateFormData}
             nextStep={nextStep}
@@ -73,7 +73,7 @@ const Signup = () => {
           />
         );
       case 3:
-        return <Step4 formData={formData} />;
+        return <Step3 formData={formData} />;
       default:
         return <Step1 formData={formData} updateFormData={updateFormData} nextStep={nextStep} />;
     }

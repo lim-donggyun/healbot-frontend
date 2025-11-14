@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import ScrollToTop from '../components/common/ScrollToTop';
+import { socialLogin, normalLogin } from '../utils/api';
 import './MainPage.css';
 import './LoginPage.css';
 
@@ -16,19 +17,35 @@ const Login = () => {
     const [showSignupChoice, setShowSignupChoice] = useState(false);
     const [socialId, setSocialId] = useState('');
     const isProcessingRef = useRef(false);
+    const [memberId, setMemberId] = useState('');
+    const [password, setPassword] = useState('');
 
     const KAKAO_CLIENT_ID = import.meta.env.VITE_KAKAO_CLIENT_ID;
     const NAVER_CLIENT_ID = import.meta.env.VITE_NAVER_CLIENT_ID;
     const REDIRECT_URI = `${import.meta.env.VITE_FRONTEND_URL}${import.meta.env.VITE_OAUTH_REDIRECT_PATH}`;
-    const BACKEND_URL = '/react/api/member/login';
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // 로그인 로직 추가
+
+        try {
+            const data = await normalLogin(memberId, password);
+
+            if (data.success === 1) {
+                // 로그인 성공
+                alert('로그인 성공!');
+                navigate('/');
+            } else {
+                // 로그인 실패
+                alert('아이디 또는 비밀번호가 일치하지 않습니다.');
+            }
+        } catch (error) {
+            console.error('로그인 에러:', error);
+            alert('로그인 처리 중 오류가 발생했습니다.');
+        }
     };
 
     useEffect(() => {
@@ -60,46 +77,37 @@ const Login = () => {
         };
     }, [oauthPopup]);
 
-    const callBackendAPI = (type, code) => {
-        const apiUrl = `${BACKEND_URL}?type=${type}&code=${code}`;
+    const callBackendAPI = async (type, code) => {
+        try {
+            const data = await socialLogin(type, code);
+            console.log('백엔드 응답:', data);
 
-        fetch(apiUrl)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('서버 응답 오류');
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log('백엔드 응답:', data);
+            if (data.success === 1) {
+                // 로그인 성공
+                setModalMessage('로그인 성공!');
 
-                if (data.success === 1) {
-                    // 로그인 성공
-                    setModalMessage('로그인 성공!');
-
-                    // 메인 페이지로 이동
-                    setTimeout(() => {
-                        setShowModal(false);
-                        isProcessingRef.current = false;
-                        navigate('/');
-                    }, 1000);
-                } else {
-                    // 회원가입 필요
-                    setModalMessage('');
-                    setShowSignupChoice(true);
-                    setSocialId(data.socialId);
-                }
-            })
-            .catch(error => {
-                console.error('에러:', error);
-                setModalMessage('로그인 처리 중 오류가 발생했습니다.');
-
-                // 3초 후 모달 닫기
+                // 메인 페이지로 이동
                 setTimeout(() => {
                     setShowModal(false);
                     isProcessingRef.current = false;
-                }, 3000);
-            });
+                    navigate('/');
+                }, 1000);
+            } else {
+                // 회원가입 필요
+                setModalMessage('');
+                setShowSignupChoice(true);
+                setSocialId(data.socialId);
+            }
+        } catch (error) {
+            console.error('에러:', error);
+            setModalMessage('로그인 처리 중 오류가 발생했습니다.');
+
+            // 3초 후 모달 닫기
+            setTimeout(() => {
+                setShowModal(false);
+                isProcessingRef.current = false;
+            }, 3000);
+        }
     };
 
     const loginKakao = () => {
@@ -191,6 +199,8 @@ const Login = () => {
                                 type="text"
                                 className="login-input"
                                 placeholder="아이디를 입력해주세요."
+                                value={memberId}
+                                onChange={(e) => setMemberId(e.target.value)}
                                 required
                             />
 
@@ -199,6 +209,8 @@ const Login = () => {
                                     type={showPassword ? "text" : "password"}
                                     className="login-input"
                                     placeholder="비밀번호를 입력해주세요."
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
                                     required
                                 />
                                 <button
@@ -230,7 +242,7 @@ const Login = () => {
                             <h3 className="help-title">아이디 또는 비밀번호를 잊어버리셨나요?</h3>
                             <div className="help-buttons">
                                 <button className="help-btn" onClick={() => navigate('/find-id')}>아이디 찾기</button>
-                                <button className="help-btn">비밀번호 찾기</button>
+                                <button className="help-btn" onClick={() => navigate('/find-pass')}>비밀번호 찾기</button>
                             </div>
                         </div>
 
