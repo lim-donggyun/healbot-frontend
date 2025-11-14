@@ -54,12 +54,18 @@ function SymptomSearchNew() {
       }
     };
 
+    const handleScroll = () => {
+      setShowOtherParts(false);
+    };
+
     if (showOtherParts) {
       document.addEventListener("mousedown", handleClickOutside);
+      window.addEventListener("scroll", handleScroll);
     }
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, [showOtherParts]);
 
@@ -165,14 +171,35 @@ function SymptomSearchNew() {
             <input
               type="text"
               className="symptom-search-input"
-              placeholder="예: 두통, 발열, 복통 등 증상을 입력하세요"
+              placeholder="AI에게 증상 또는 질환을 자유롭게 설명해보세요                      [예: 오늘따라 머리가 아프고 속이 쓰려] "
               value={aiInput}
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
               disabled={isAiLoading}
             />
-            <button className="ai-search-btn" onClick={handleAiSearch} disabled={isAiLoading}>
-              {isAiLoading ? "검색중..." : "AI 검색"}
+            <button
+              className="ai-search-btn"
+              onClick={handleAiSearch}
+              disabled={isAiLoading}
+              aria-label="AI 검색"
+            >
+              {isAiLoading ? (
+                <span className="loading-spinner"></span>
+              ) : (
+                <svg
+                  viewBox="0 0 24 24"
+                  width="24"
+                  height="24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <circle cx="11" cy="11" r="8" />
+                  <path d="m21 21-4.35-4.35" />
+                </svg>
+              )}
             </button>
           </div>
         </div>
@@ -190,17 +217,42 @@ function SymptomSearchNew() {
           <div className="symptoms-area">
             {/* 신체 부위 탭 */}
             <div className="body-parts-tabs">
-              {bodyParts.map((part) => (
-                <button
-                  key={part.key}
-                  ref={part.isExpandable ? triggerButtonRef : null}
-                  className={`tab-btn ${!part.isExpandable && selectedBodyPart === part.tab ? "active" : ""} ${part.isExpandable && showOtherParts ? "active" : ""}`}
-                  onClick={(e) => handleBodyPartClick(part.tab, part.isExpandable, e)}
-                >
-                  {part.label}
-                  {part.isExpandable && <span className="expand-icon">{showOtherParts ? "▲" : "▼"}</span>}
-                </button>
-              ))}
+              {bodyParts.map((part) => {
+                // "그 외" 버튼의 경우, 선택된 부위가 otherBodyParts에 있으면 해당 이름 표시
+                let displayLabel = part.label;
+                if (part.isExpandable) {
+                  const selectedOtherPart = otherBodyParts.find(
+                    (otherPart) => otherPart.tab === selectedBodyPart
+                  );
+                  if (selectedOtherPart) {
+                    displayLabel = selectedOtherPart.label;
+                  }
+                }
+
+                return (
+                  <button
+                    key={part.key}
+                    ref={part.isExpandable ? triggerButtonRef : null}
+                    className={`tab-btn ${
+                      !part.isExpandable && selectedBodyPart === part.tab
+                        ? "active"
+                        : ""
+                    } ${
+                      part.isExpandable &&
+                      (showOtherParts ||
+                        otherBodyParts.some((op) => op.tab === selectedBodyPart))
+                        ? "active"
+                        : ""
+                    }`}
+                    onClick={(e) => handleBodyPartClick(part.tab, part.isExpandable, e)}
+                  >
+                    {displayLabel}
+                    {part.isExpandable && (
+                      <span className="expand-icon">{showOtherParts ? "▲" : "▼"}</span>
+                    )}
+                  </button>
+                );
+              })}
             </div>
 
             {/* 증상 선택 체크박스 영역 */}
@@ -219,22 +271,37 @@ function SymptomSearchNew() {
           </div>
         </div>
 
-        {/* 선택된 증상 표시 */}
+        {/* 선택된 증상 표시 및 검색 버튼 */}
         <div className="selected-symptoms-display">
-          <span className="selected-label">선택된 증상:</span>
-          <span className="selected-list">
-            {selectedSymptoms.length === 0 ? "선택된 증상이 없습니다" : selectedSymptoms.join(", ")}
-          </span>
-        </div>
-
-        {/* 검색 버튼 */}
-        <div className="search-buttons">
-          <button className="search-submit-btn" onClick={handleSearch}>
-            질병 검색하기
-          </button>
-          <button className="search-reset-btn" onClick={handleReset}>
-            초기화
-          </button>
+          <div className="selected-symptoms-text">
+            <span className="selected-label">선택된 증상:</span>
+            <div className="selected-list">
+              {selectedSymptoms.length === 0 ? (
+                <span className="no-symptoms">선택된 증상이 없습니다</span>
+              ) : (
+                selectedSymptoms.map((symptom, index) => (
+                  <span key={index} className="symptom-tag">
+                    {symptom}
+                    <button
+                      className="symptom-remove-btn"
+                      onClick={() => handleSymptomClick(symptom)}
+                      aria-label={`${symptom} 제거`}
+                    >
+                      ✕
+                    </button>
+                  </span>
+                ))
+              )}
+            </div>
+          </div>
+          <div className="search-buttons">
+            <button className="search-submit-btn" onClick={handleSearch}>
+              질병 검색하기
+            </button>
+            <button className="search-reset-btn" onClick={handleReset}>
+              초기화
+            </button>
+          </div>
         </div>
       </div>
 

@@ -12,8 +12,7 @@ function Header() {
       const searchSection = document.getElementById("search");
 
       if (mainSection && searchSection) {
-        const searchSectionEnd =
-          searchSection.offsetTop + searchSection.offsetHeight;
+        const searchSectionEnd = searchSection.offsetTop + searchSection.offsetHeight;
         setIsScrolled(window.scrollY >= searchSectionEnd - 100);
       }
     };
@@ -26,16 +25,18 @@ function Header() {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
   const handleOutsideClick = (e) => {
     const hamburgerIcon = document.getElementById("nav-icon2");
     const hamburgerMenu = document.getElementById("hamburgerMenu");
 
-    if (
-      hamburgerIcon &&
-      hamburgerMenu &&
-      !hamburgerIcon.contains(e.target) &&
-      !hamburgerMenu.contains(e.target)
-    ) {
+    if (hamburgerIcon && hamburgerMenu && !hamburgerIcon.contains(e.target) && !hamburgerMenu.contains(e.target)) {
       setIsMenuOpen(false);
     }
   };
@@ -50,7 +51,7 @@ function Header() {
       {/* 헤더 */}
       <header className={isMenuOpen ? "menu-open" : ""}>
         <div className="header-wrapper">
-          <div className="logo" onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
+          <div className="logo" onClick={scrollToTop} style={{ cursor: "pointer" }}>
             <img
               src="https://pub-f8fd744877724e40a29110baaa7d9f66.r2.dev/healbot/main/whiteLogo.png"
               alt="HealBot"
@@ -151,9 +152,7 @@ function Header() {
                       <div className="dropdown-column-title">약물 정보</div>
                       <a href="/health-info?cat=medicine">약물 검색</a>
                       <a href="/health-info?cat=side-effect">부작용 정보</a>
-                      <a href="/health-info?cat=interaction">
-                        약물 상호작용
-                      </a>
+                      <a href="/health-info?cat=interaction">약물 상호작용</a>
                     </div>
                     <div className="dropdown-column">
                       <div className="dropdown-column-title">미디어</div>
@@ -173,46 +172,20 @@ function Header() {
             </nav>
             <div className="utility-menu">
               <div className="header-search-container">
-                <input
-                  type="text"
-                  className="header-search-input"
-                  placeholder="통합 검색..."
-                />
+                <input type="text" className="header-search-input" placeholder="통합 검색..." />
               </div>
               <div className="utility-divider"></div>
-              <button className="utility-btn" onClick={() => navigate('/login')}>로그인</button>
-              <div className="utility-divider"></div>
-              <button className="utility-btn">회원가입</button>
               <div className="utility-divider"></div>
               <button className="utility-btn emergency-btn">
-                <svg
-                  viewBox="0 0 24 24"
-                  width="18"
-                  height="18"
-                  style={{ marginRight: 4, verticalAlign: "middle" }}
-                >
+                <svg viewBox="0 0 24 24" width="18" height="18" style={{ marginRight: 4, verticalAlign: "middle" }}>
                   <path d="M12 2L2 7l10 5 10-5-10-5z" fill="currentColor" />
-                  <path
-                    d="M2 17l10 5 10-5"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    fill="none"
-                  />
-                  <path
-                    d="M2 12l10 5 10-5"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    fill="none"
-                  />
+                  <path d="M2 17l10 5 10-5" stroke="currentColor" strokeWidth="2" fill="none" />
+                  <path d="M2 12l10 5 10-5" stroke="currentColor" strokeWidth="2" fill="none" />
                 </svg>
                 응급
               </button>
               <div className="utility-divider"></div>
-              <div
-                id="nav-icon2"
-                className={isMenuOpen ? "open" : ""}
-                onClick={toggleMenu}
-              >
+              <div id="nav-icon2" className={isMenuOpen ? "open" : ""} onClick={toggleMenu}>
                 <span></span>
                 <span></span>
                 <span></span>
@@ -226,10 +199,7 @@ function Header() {
       </header>
 
       {/* 햄버거 드롭다운 메뉴 */}
-      <div
-        className={`hamburger-menu ${isMenuOpen ? "show" : ""}`}
-        id="hamburgerMenu"
-      >
+      <div className={`hamburger-menu ${isMenuOpen ? "show" : ""}`} id="hamburgerMenu">
         <div className="hamburger-menu-content">
           <div className="hamburger-menu-column">
             <div className="hamburger-menu-title">고객지원</div>

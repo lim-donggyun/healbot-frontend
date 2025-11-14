@@ -305,6 +305,19 @@ header.scrolled .nav-link:hover {
   align-items: center;
 }
 
+/* 사용자 아이콘 버튼 */
+.user-icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.user-icon-btn svg {
+  stroke: currentColor;
+  transition: all 0.3s;
+}
+
 .utility-divider {
   width: 1px;
   height: 14px;
@@ -990,48 +1003,81 @@ header.scrolled #nav-icon2 span {
   position: relative;
   margin-bottom: 14px;
   display: flex;
-  gap: 10px;
+  gap: 0px;
+  align-items: center;
 }
 
 .symptom-search-input {
   flex: 1;
-  padding: 14px 18px;
-  border: 2px solid #e0e0e0;
-  border-radius: 10px;
-  font-size: 15px;
+  padding: 12px 8px;
+  border: none;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.8);
+  border-radius: 0;
+  font-size: 18px;
+  background: transparent;
+  color: white;
   transition: all 0.3s;
   letter-spacing: normal;
   word-spacing: normal;
   white-space: normal;
 }
 
+.symptom-search-input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 18px;
+}
+
 .symptom-search-input:focus {
   outline: none;
-  border-color: #3fc1ec;
-  box-shadow: 0 4px 15px rgba(63, 193, 236, 0.2);
+  border-bottom-color: white;
+  border-bottom-width: 3px;
 }
 
 .ai-search-btn {
-  padding: 14px 28px;
-  background: linear-gradient(135deg, #3fc1ec 0%, #3284b1 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  background: transparent;
   color: white;
   border: none;
-  border-radius: 10px;
-  font-size: 16px;
-  font-weight: 600;
   cursor: pointer;
   transition: all 0.3s;
-  white-space: nowrap;
+  min-width: 40px;
+  min-height: 40px;
+}
+
+.ai-search-btn svg {
+  transition: all 0.3s;
 }
 
 .ai-search-btn:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(63, 193, 236, 0.4);
+  transform: scale(1.1);
+}
+
+.ai-search-btn:hover:not(:disabled) svg {
+  stroke: #3fc1ec;
 }
 
 .ai-search-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+/* 로딩 스피너 */
+.loading-spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* 선택된 증상 표시 */
@@ -1135,47 +1181,57 @@ header.scrolled #nav-icon2 span {
 /* 검색하기 & 초기화 버튼 */
 .search-buttons {
   display: flex;
-  gap: 10px;
+  gap: 20px;
+  flex-shrink: 0;
+  align-items: center;
 }
 
 .search-submit-btn {
-  flex: 1;
-  padding: 15px 0;
-  background: #3fc1ec;
-  color: white;
+  padding: 0;
+  background: transparent;
+  color: #3284b1;
   border: none;
-  border-radius: 10px;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.2s;
+  white-space: nowrap;
+  position: relative;
+}
+
+.search-submit-btn::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -2px;
+  left: 0;
+  background-color: #3fc1ec;
+  transition: width 0.3s;
 }
 
 .search-submit-btn:hover {
-  background: #3284b1;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(63, 193, 236, 0.3);
+  color: #3fc1ec;
+}
+
+.search-submit-btn:hover::after {
+  width: 100%;
 }
 
 .search-reset-btn {
-  padding: 15px 32px;
-  background: white;
-  color: #666;
-  border: 2px solid #e0e0e0;
-  border-radius: 10px;
-  font-size: 16px;
-  font-weight: 600;
+  padding: 0;
+  background: transparent;
+  color: #999;
+  border: none;
+  font-size: 15px;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.2s;
   white-space: nowrap;
 }
 
 .search-reset-btn:hover {
-  background: #f8f9fa;
-  border-color: #ff6b6b;
   color: #ff6b6b;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(255, 107, 107, 0.2);
 }
 
 /* 빠른 링크 */
@@ -1469,17 +1525,78 @@ header.scrolled #nav-icon2 span {
   text-align: left;
   font-size: 15px;
   border-top: 2px solid #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.selected-symptoms-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .selected-symptoms-display .selected-label {
   font-weight: 700;
   color: #3284b1;
-  margin-right: 12px;
+  white-space: nowrap;
 }
 
 .selected-symptoms-display .selected-list {
-  color: #333;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.selected-symptoms-display .no-symptoms {
+  color: #999;
+  font-weight: 400;
+  font-size: 14px;
+}
+
+.symptom-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: linear-gradient(135deg, #3fc1ec 0%, #3284b1 100%);
+  color: white;
+  border-radius: 20px;
+  font-size: 14px;
   font-weight: 500;
+  transition: all 0.2s;
+}
+
+.symptom-tag:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(63, 193, 236, 0.3);
+}
+
+.symptom-remove-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.3);
+  border: none;
+  border-radius: 50%;
+  color: white;
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.symptom-remove-btn:hover {
+  background: rgba(255, 255, 255, 0.5);
+  transform: scale(1.1);
 }
 
 /* 섹션 3: 진료과/의료진 & 센터 소개 */
