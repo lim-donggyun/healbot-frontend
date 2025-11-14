@@ -43,6 +43,19 @@ function Header() {
     navigate("/login");
   };
 
+  const handleSymptomSearchClick = () => {
+    if (location.pathname === "/") {
+      // 메인페이지에서는 섹션2로 스크롤
+      const searchSection = document.getElementById("search");
+      if (searchSection) {
+        searchSection.scrollIntoView({ behavior: "smooth" });
+      }
+    } else {
+      // 다른 페이지에서는 메인페이지의 섹션2로 이동
+      navigate("/#search");
+    }
+  };
+
   const handleOutsideClick = (e) => {
     const hamburgerIcon = document.getElementById("nav-icon2");
     const hamburgerMenu = document.getElementById("hamburgerMenu");
@@ -77,30 +90,9 @@ function Header() {
           <div className="header-right">
             <nav>
               <div className="nav-item">
-                <span className="nav-link">증상검색</span>
-                <div className="dropdown-menu">
-                  <div className="dropdown-content">
-                    <div className="dropdown-column">
-                      <div className="dropdown-column-title">증상 입력</div>
-                      <a href="#search">증상 직접 입력</a>
-                      <a href="#search">증상 체크리스트</a>
-                    </div>
-                    <div className="dropdown-column">
-                      <div className="dropdown-column-title">신체 부위별</div>
-                      <a href="#search">머리/얼굴</a>
-                      <a href="#search">목/어깨</a>
-                      <a href="#search">가슴/배</a>
-                      <a href="#search">팔/다리</a>
-                    </div>
-                    <div className="dropdown-column">
-                      <div className="dropdown-column-title">증상 카테고리</div>
-                      <a href="#search">발열/오한</a>
-                      <a href="#search">통증</a>
-                      <a href="#search">소화기 증상</a>
-                      <a href="#search">호흡기 증상</a>
-                    </div>
-                  </div>
-                </div>
+                <span className="nav-link" onClick={handleSymptomSearchClick} style={{ cursor: "pointer" }}>
+                  증상검색
+                </span>
               </div>
 
               <div className="nav-item">
