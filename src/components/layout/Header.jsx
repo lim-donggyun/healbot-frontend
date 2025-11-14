@@ -24,6 +24,13 @@ function Header() {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  };
+
   const handleOutsideClick = (e) => {
     const hamburgerIcon = document.getElementById("nav-icon2");
     const hamburgerMenu = document.getElementById("hamburgerMenu");
@@ -48,7 +55,7 @@ function Header() {
       {/* 헤더 */}
       <header className={isMenuOpen ? "menu-open" : ""}>
         <div className="header-wrapper">
-          <div className="logo">
+          <div className="logo" onClick={scrollToTop} style={{ cursor: 'pointer' }}>
             <img
               src="https://pub-f8fd744877724e40a29110baaa7d9f66.r2.dev/healbot/main/whiteLogo.png"
               alt="HealBot"
@@ -178,9 +185,19 @@ function Header() {
                 />
               </div>
               <div className="utility-divider"></div>
-              <button className="utility-btn">로그인</button>
-              <div className="utility-divider"></div>
-              <button className="utility-btn">회원가입</button>
+              <button className="utility-btn user-icon-btn">
+                <svg
+                  viewBox="0 0 24 24"
+                  width="30"
+                  height="30"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <circle cx="12" cy="8" r="4" />
+                  <path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2" />
+                </svg>
+              </button>
               <div className="utility-divider"></div>
               <button className="utility-btn emergency-btn">
                 <svg
