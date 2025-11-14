@@ -1,5 +1,5 @@
 import React from 'react';
-import './Step.css';
+import '../../../pages/Signup.css';
 
 const Step4 = ({ formData }) => {
   const handleGoHome = () => {

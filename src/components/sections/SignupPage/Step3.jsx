@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./Step.css";
+import "../../../pages/Signup.css";
 
 const Step3 = ({ formData, updateFormData, nextStep, prevStep, socialId }) => {
   const [userId, setUserId] = useState(formData.userId || "");

@@ -13,22 +13,22 @@
 html {
   overflow-y: auto;
   scroll-behavior: smooth;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE and Edge */
-}
-
-html::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera */
 }
 
 body {
   font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
 }
 
-body::-webkit-scrollbar {
-  display: none;
+/* 메인페이지에서만 스크롤바 숨기기 */
+html:has(.main-page),
+body:has(.main-page) {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+html:has(.main-page)::-webkit-scrollbar,
+body:has(.main-page)::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
 }
 
 /* 헤더 */

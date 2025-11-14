@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './Step.css';
+import '../../../pages/Signup.css';
 
 const Step2 = ({ formData, updateFormData, nextStep, prevStep }) => {
   const [name, setName] = useState(formData.name || '');
