@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Header() {
+  const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -48,7 +50,7 @@ function Header() {
       {/* 헤더 */}
       <header className={isMenuOpen ? "menu-open" : ""}>
         <div className="header-wrapper">
-          <div className="logo">
+          <div className="logo" onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
             <img
               src="https://pub-f8fd744877724e40a29110baaa7d9f66.r2.dev/healbot/main/whiteLogo.png"
               alt="HealBot"
@@ -178,7 +180,7 @@ function Header() {
                 />
               </div>
               <div className="utility-divider"></div>
-              <button className="utility-btn">로그인</button>
+              <button className="utility-btn" onClick={() => navigate('/login')}>로그인</button>
               <div className="utility-divider"></div>
               <button className="utility-btn">회원가입</button>
               <div className="utility-divider"></div>

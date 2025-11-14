@@ -70,7 +70,7 @@ function Footer() {
         <div className="footer-top">
           <div className="footer-info">
             <div className="footer-logo">
-              <img src="whiteLogo.png" alt="HealBot" />
+              <img src="https://pub-f8fd744877724e40a29110baaa7d9f66.r2.dev/healbot/main/whiteLogo.png" alt="HealBot" />
             </div>
             <p>AI 기반 증상 분석 및 병원 추천 서비스</p>
             <p>대표전화: 1588-1234</p>
@@ -84,8 +84,7 @@ function Footer() {
                   target="_blank"
                   rel="noreferrer"
                   className="social-icon"
-                  title={social.name}
-                >
+                  title={social.name}>
                   {social.icon}
                 </a>
               ))}
@@ -139,14 +138,11 @@ function Footer() {
               marginTop: "8px",
               fontSize: "12px",
               color: "#999",
-            }}
-          >
-            HealBot은 의료 정보 제공 서비스이며, 의료 행위를 대체할 수 없습니다.
-            정확한 진단과 치료는 전문의와 상담하시기 바랍니다.
+            }}>
+            HealBot은 의료 정보 제공 서비스이며, 의료 행위를 대체할 수 없습니다. 정확한 진단과 치료는 전문의와
+            상담하시기 바랍니다.
           </p>
-          <p style={{ marginTop: "12px" }}>
-            Copyright © 2024 HealBot. All Rights Reserved.
-          </p>
+          <p style={{ marginTop: "12px" }}>Copyright © 2024 HealBot. All Rights Reserved.</p>
         </div>
       </div>
     </footer>
