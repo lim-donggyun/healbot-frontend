@@ -1926,6 +1926,7 @@ header.scrolled #nav-icon2 span {
   padding: 45px;
   border-radius: 12px;
   box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+  border: 1px solid #000;
 }
 
 .info-box h2 {
