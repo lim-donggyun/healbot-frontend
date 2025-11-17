@@ -207,3 +207,22 @@ export const resetPassword = async (memberId, password) => {
     throw error;
   }
 };
+
+// 인기 질환 20개 가져오기
+export const getPopularDiseases = async () => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/diseases/popular`, {
+      method: 'GET',
+    });
+
+    if (!response.ok) {
+      throw new Error('인기 질환 조회 실패');
+    }
+
+    const data = await response.json();
+    return data; // { success: true, data: [...] }
+  } catch (error) {
+    console.error('인기 질환 조회 에러:', error);
+    throw error;
+  }
+};
