@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { checkSession } from "../../utils/api";
+import "../../pages/MainPage.css";
+import "./AdminHeader.css";
 
-function Header() {
+function AdminHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
   // 항상 hover 상태를 유지해야 하는 페이지들
-  const alwaysScrolledPages = ['/login', '/signup', '/find-id', '/find-pass'];
+  const alwaysScrolledPages = ['/login', '/signup', '/find-id', '/find-pass', '/admin-dashboard', '/admin/members'];
   const isAlwaysScrolled = alwaysScrolledPages.includes(location.pathname);
 
   // 세션 확인
@@ -19,6 +22,7 @@ function Header() {
       try {
         const data = await checkSession();
         setIsLoggedIn(data.loggedIn);
+        setIsAdmin(data.admin_YN === 'Y');
 
         // 로그인되어 있고 관리자인 경우, 관리자 페이지가 아니면 admin-dashboard로 이동
         if (data.loggedIn && data.admin_YN === 'Y' && !location.pathname.startsWith('/admin')) {
@@ -27,6 +31,7 @@ function Header() {
       } catch (error) {
         console.error('세션 확인 실패:', error);
         setIsLoggedIn(false);
+        setIsAdmin(false);
       }
     };
 
@@ -81,6 +86,7 @@ function Header() {
 
       if (response.ok) {
         setIsLoggedIn(false);
+        setIsAdmin(false);
         alert('로그아웃 되었습니다.');
         navigate('/');
       }
@@ -120,7 +126,7 @@ function Header() {
   return (
     <>
       {/* 헤더 */}
-      <header className={`${isMenuOpen ? "menu-open" : ""} ${isAlwaysScrolled || isScrolled ? "scrolled" : ""}`}>
+      <header className={`admin-header ${isMenuOpen ? "menu-open" : ""} ${isAlwaysScrolled || isScrolled ? "scrolled" : ""}`}>
         <div className="header-wrapper">
           <div className="logo" onClick={handleLogoClick} style={{ cursor: "pointer" }}>
             <img
@@ -186,7 +192,8 @@ function Header() {
                   <div className="dropdown-content">
                     <div className="dropdown-column">
                       <div className="dropdown-column-title">질병 정보</div>
-                      <a href="/disease-result">질병 백과</a>
+                      <a href="/health-info?cat=disease">질병 백과</a>
+                      <a href="/health-info?cat=symptom">증상별 질병</a>
                       <a href="/health-info?cat=chronic">만성질환</a>
                       <a href="/health-info?cat=infection">감염병</a>
                     </div>
@@ -295,4 +302,4 @@ function Header() {
   );
 }
 
-export default Header;
+export default AdminHeader;
