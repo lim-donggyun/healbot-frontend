@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { checkSession } from "../../utils/api";
+import { checkSession, searchAll } from "../../utils/api";
 import "./Header.css";
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [searchKeyword, setSearchKeyword] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -118,6 +119,35 @@ function Header() {
     return () => document.removeEventListener("click", handleOutsideClick);
   }, []);
 
+  // 통합 검색 처리
+  const handleSearch = async (e) => {
+    if (e.key === "Enter" && searchKeyword.trim() !== "") {
+      try {
+        const result = await searchAll(searchKeyword.trim());
+        console.log("=== 통합 검색 결과 ===");
+        console.log("검색어:", result.keyword);
+        console.log("증상 정보:", result.symptomInfo);
+        console.log("병원 결과:", result.results.hospitals);
+        console.log("질병 결과:", result.results.diseases);
+        console.log("공지사항 결과:", result.results.notices);
+        console.log("커뮤니티 결과:", result.results.communities);
+        console.log("=====================");
+
+        // 통합 검색 결과 페이지로 이동
+        navigate("/search-result", {
+          state: {
+            searchData: result
+          }
+        });
+
+        // 검색어 초기화
+        setSearchKeyword("");
+      } catch (error) {
+        console.error("통합 검색 실패:", error);
+      }
+    }
+  };
+
   return (
     <>
       {/* 헤더 */}
@@ -222,7 +252,14 @@ function Header() {
             </nav>
             <div className="utility-menu">
               <div className="header-search-container">
-                <input type="text" className="header-search-input" placeholder="통합 검색..." />
+                <input
+                  type="text"
+                  className="header-search-input"
+                  placeholder="통합 검색..."
+                  value={searchKeyword}
+                  onChange={(e) => setSearchKeyword(e.target.value)}
+                  onKeyPress={handleSearch}
+                />
               </div>
               <div className="utility-divider"></div>
               <button className="utility-btn user-icon-btn" onClick={handleLoginClick}>
