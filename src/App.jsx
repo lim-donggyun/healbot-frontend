@@ -5,8 +5,7 @@ import MainPage from "./pages/MainPage";
 import LoginPage from "./pages/LoginPage";
 import OAuthCallback from "./pages/OAuthCallback";
 import Signup from "./pages/Signup";
-import FindId from "./pages/FindId";
-import FindPw from "./pages/FindPw";
+import FindAccount from "./pages/FindAccount";
 import AdminPage from "./pages/AdminPage";
 import DiseaseResultPage from "./pages/DiseaseResultPage";
 import MyPage from "./pages/Mypage";
@@ -35,8 +34,9 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/oauth/callback" element={<OAuthCallback />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/find-id" element={<FindId />} />
-        <Route path="/find-pass" element={<FindPw />} />
+        <Route path="/find-account" element={<FindAccount />} />
+        <Route path="/find-id" element={<FindAccount />} />
+        <Route path="/find-pass" element={<FindAccount />} />
         <Route path="/admin-dashboard" element={<AdminPage />} />
         <Route path="/admin/members" element={<AdminPage />} />
         <Route path="/disease-result" element={<DiseaseResultPage />} />

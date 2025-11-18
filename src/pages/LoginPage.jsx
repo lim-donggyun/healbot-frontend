@@ -191,7 +191,7 @@ const Login = () => {
             {/* 로그인 페이지 컨텐츠 */}
             <div className="page">
                 <h1 className="login-title">로그인</h1>
-                <p className="login-subtitle">고려대학교병원(안암병원, 구로병원, 안산병원) 통합 로그인 페이지 입니다.</p>
+                <p className="login-subtitle">HealBot 로그인 페이지 입니다.</p>
 
                 <div className="login-wrapper">
                     {/* 좌측 로그인 폼 */}
@@ -243,8 +243,7 @@ const Login = () => {
                         <div className="help-section">
                             <h3 className="help-title">아이디 또는 비밀번호를 잊어버리셨나요?</h3>
                             <div className="help-buttons">
-                                <button className="help-btn" onClick={() => navigate('/find-id')}>아이디 찾기</button>
-                                <button className="help-btn" onClick={() => navigate('/find-pass')}>비밀번호 찾기</button>
+                                <button className="help-btn" onClick={() => navigate('/find-account')}>계정 찾기</button>
                             </div>
                         </div>
 
