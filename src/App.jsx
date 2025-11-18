@@ -19,6 +19,9 @@ import Event from "./pages/service/Event";
 import FAQ from "./pages/support/FAQ";
 import CustomerService from "./pages/support/CustomerService";
 import Inquiry from "./pages/support/Inquiry";
+import Profile from "./components/sections/MyPage/Profile";
+import MyReview from "./components/sections/MyPage/MyReview";
+import DeleteAccount from "./components/sections/MyPage/DeleteAccount";
 
 // 페이지 전환 시 스크롤을 맨 위로 리셋하는 컴포넌트
 function ScrollToTop() {
@@ -61,6 +64,10 @@ function App() {
         <Route path="/faq" element={<FAQ />} />
         <Route path="/customer-service" element={<CustomerService />} />
         <Route path="/inquiry" element={<Inquiry />} />
+        <Route path="/mypage" element={<MyPage />} />
+        <Route path="/mypage/profile" element={<Profile />} />
+        <Route path="/mypage/reviews" element={<MyReview />} />
+        <Route path="/mypage/delete" element={<DeleteAccount />} />
       </Routes>
     </Router>
   );
