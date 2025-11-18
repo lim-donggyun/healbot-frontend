@@ -3,9 +3,14 @@ import React, { useState } from "react";
 import "./MyPage.css";
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
+import DeleteAccount from "../components/sections/MyPage/DeleteAccount"
+import MyReview from "../components/sections/MyPage/MyReview"
+import { useNavigate } from "react-router-dom";
 
 const MyPage = () => {
 const [isModalOpen, setIsModalOpen] = useState(false);
+const [currentView, setCurrentView] = useState("main");
+const navigate = useNavigate();
 
 const handleProfileClick = (e) => {
     e.preventDefault();
@@ -14,7 +19,8 @@ const handleProfileClick = (e) => {
 
 const handleReviewClick = (e) => {
     e.preventDefault();
-    alert("리뷰 목록 페이지로 이동합니다.");
+    setIsModalOpen(false);
+    setCurrentView("myReview");
 };
 
 const handleDeleteClick = (e) => {
@@ -26,9 +32,10 @@ const closeModal = () => {
     setIsModalOpen(false);
 };
 
+// 회원탈퇴 페이지로 이동
 const confirmDelete = () => {
-    alert("회원 탈퇴가 처리되었습니다.");
     setIsModalOpen(false);
+    setCurrentView("deleteAccount");
 };
 
 // 모달 바깥 클릭 시 닫기
@@ -38,6 +45,33 @@ const handleModalBackgroundClick = (e) => {
     }
 };
 
+if (currentView === "deleteAccount") {
+    return (
+    <>
+        <Header />
+        <main className="mypage-main">
+        <div className="mypage-container">
+            <DeleteAccount />
+        </div>
+        </main>
+        <Footer />
+    </>
+    );
+}
+// 🔹 내가 쓴 리뷰 화면
+if (currentView === "myReview") {
+    return (
+    <>
+        <Header />
+        <main className="mypage-main">
+        <div className="mypage-container">
+            <MyReview />
+        </div>
+        </main>
+        <Footer />
+    </>
+    );
+}
 return (
     <>
     <Header />
