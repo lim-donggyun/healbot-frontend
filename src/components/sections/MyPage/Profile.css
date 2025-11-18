@@ -1,0 +1,122 @@
+/* Profile.css */
+
+.mp-card {
+background: #fff;
+border-radius: 8px;
+padding: 32px 28px;
+box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+border: 1px solid #e5e7eb;
+}
+
+.mp-card-title {
+font-size: 20px;
+font-weight: 700;
+margin-bottom: 12px;
+}
+
+.mp-sub-desc {
+font-size: 14px;
+color: #6b7280;
+margin-bottom: 24px;
+}
+
+.mp-form {
+display: flex;
+flex-wrap: wrap;
+gap: 16px 24px;
+}
+
+.mp-form-group {
+display: flex;
+flex-direction: column;
+gap: 6px;
+}
+
+.mp-form-full {
+width: 100%;
+}
+
+.mp-form-half {
+width: calc(50% - 12px);
+}
+
+.mp-label {
+font-size: 14px;
+font-weight: 600;
+color: #374151;
+}
+
+.mp-label-hint {
+font-size: 12px;
+font-weight: 400;
+color: #9ca3af;
+margin-left: 4px;
+}
+
+.mp-input {
+border: 1px solid #d1d5db;
+border-radius: 6px;
+padding: 10px 12px;
+font-size: 14px;
+outline: none;
+transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.mp-input:focus {
+border-color: #3b82f6;
+box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.2);
+}
+
+.mp-gender-row {
+display: flex;
+gap: 16px;
+margin-top: 4px;
+}
+
+.mp-radio-label {
+display: inline-flex;
+align-items: center;
+gap: 6px;
+font-size: 14px;
+color: #374151;
+}
+
+.mp-btn-row {
+margin-top: 24px;
+display: flex;
+justify-content: flex-end;
+gap: 10px;
+}
+
+.mp-btn {
+border-radius: 6px;
+padding: 10px 18px;
+font-size: 14px;
+font-weight: 600;
+border: none;
+cursor: pointer;
+transition: background-color 0.15s, transform 0.05s;
+}
+
+.mp-btn-primary {
+background: #3b82f6;
+color: #fff;
+}
+
+.mp-btn-primary:hover {
+background: #2563eb;
+}
+
+.mp-btn-primary:disabled {
+background: #93c5fd;
+cursor: default;
+}
+
+.mp-btn-ghost {
+background: #f3f4f6;
+color: #374151;
+}
+
+.mp-btn-ghost:hover {
+background: #e5e7eb;
+}
