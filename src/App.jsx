@@ -8,6 +8,7 @@ import Signup from "./pages/Signup";
 import FindAccount from "./pages/FindAccount";
 import AdminPage from "./pages/AdminPage";
 import DiseaseResultPage from "./pages/DiseaseResultPage";
+import SearchResultPage from "./pages/SearchResultPage";
 import MyPage from "./pages/Mypage";
 import Terms from "./pages/static/Terms";
 import Privacy from "./pages/static/Privacy";
@@ -49,6 +50,7 @@ function App() {
         <Route path="/admin-dashboard" element={<AdminPage />} />
         <Route path="/admin/members" element={<AdminPage />} />
         <Route path="/disease-result" element={<DiseaseResultPage />} />
+        <Route path="/search-result" element={<SearchResultPage />} />
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/terms" element={<Terms />} />
         <Route path="/privacy" element={<Privacy />} />

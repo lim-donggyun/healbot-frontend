@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { symptomsByBodyPart } from "../../../data/symptomsData";
-import { searchSymptomsWithAI, searchDiseases } from "../../../utils/api";
+import { searchSymptomsWithAI, searchDiseases, getSymptomDetails } from "../../../utils/api";
 
 const bodyParts = [
   { key: "머리", label: "머리", tab: "머리" },
@@ -39,6 +39,11 @@ function SymptomSearchNew() {
   const [showOtherParts, setShowOtherParts] = useState(false);
   const popoverRef = useRef(null);
   const triggerButtonRef = useRef(null);
+
+  // 증상 설명 모달 상태
+  const [showSymptomModal, setShowSymptomModal] = useState(false);
+  const [selectedSymptomInfo, setSelectedSymptomInfo] = useState({ name: "", description: "" });
+  const [isLoadingSymptom, setIsLoadingSymptom] = useState(false);
 
   const handleInputChange = (e) => {
     setAiInput(e.target.value);
@@ -169,6 +174,25 @@ function SymptomSearchNew() {
     element.scrollTop += e.deltaY;
   };
 
+  // 증상 설명 조회
+  const handleSymptomInfo = async (symptomName, e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    setIsLoadingSymptom(true);
+    setShowSymptomModal(true);
+    setSelectedSymptomInfo({ name: symptomName, description: "로딩 중..." });
+
+    try {
+      const description = await getSymptomDetails(symptomName);
+      setSelectedSymptomInfo({ name: symptomName, description });
+    } catch (error) {
+      setSelectedSymptomInfo({ name: symptomName, description: "증상 정보를 불러올 수 없습니다." });
+    } finally {
+      setIsLoadingSymptom(false);
+    }
+  };
+
   return (
     <section id="search" className="section section-search">
       <div className="search-wrapper">
@@ -255,6 +279,13 @@ function SymptomSearchNew() {
                     onChange={() => handleSymptomClick(symptom)}
                   />
                   <span className="symptom-label">{symptom}</span>
+                  <button
+                    className="symptom-info-btn"
+                    onClick={(e) => handleSymptomInfo(symptom, e)}
+                    title="증상 설명 보기"
+                  >
+                    ?
+                  </button>
                 </label>
               ))}
             </div>
@@ -313,6 +344,23 @@ function SymptomSearchNew() {
                 {part.label}
               </button>
             ))}
+          </div>
+        </div>
+      )}
+
+      {/* 증상 설명 모달 */}
+      {showSymptomModal && (
+        <div className="symptom-modal-overlay" onClick={() => setShowSymptomModal(false)}>
+          <div className="symptom-modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="symptom-modal-header">
+              <h3>{selectedSymptomInfo.name}</h3>
+              <button className="symptom-modal-close-btn" onClick={() => setShowSymptomModal(false)}>
+                ✕
+              </button>
+            </div>
+            <div className="symptom-modal-body">
+              <p>{selectedSymptomInfo.description}</p>
+            </div>
           </div>
         </div>
       )}

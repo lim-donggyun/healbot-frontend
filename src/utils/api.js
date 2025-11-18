@@ -227,6 +227,21 @@ export const getPopularDiseases = async () => {
   }
 };
 
+// 통합 검색
+export const searchAll = async (keyword) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/result?keyword=${encodeURIComponent(keyword)}`, {
+      method: 'GET',
+    });
+
+    if (!response.ok) {
+      throw new Error('통합 검색 실패');
+    }
+
+    const data = await response.json();
+    return data; // { keyword: "...", symptomMatch: true/false, results: { hospitals: [...], diseases: [...], notices: null, communities: null } }
+  } catch (error) {
+    console.error('통합 검색 에러:', error);
 // 전체 회원 목록 조회
 export const getAllMembers = async () => {
   try {
@@ -250,6 +265,21 @@ export const getAllMembers = async () => {
   }
 };
 
+// 증상 상세 정보 조회
+export const getSymptomDetails = async (symptomName) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/symptom?symptom=${encodeURIComponent(symptomName)}`, {
+      method: 'GET',
+    });
+
+    if (!response.ok) {
+      throw new Error('증상 정보 조회 실패');
+    }
+
+    const data = await response.text();
+    return data; // 증상 설명 텍스트
+  } catch (error) {
+    console.error('증상 정보 조회 에러:', error);
 // 회원 삭제
 export const deleteMember = async (memberId) => {
   try {
