@@ -1,126 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getAllMembers, deleteMember } from '../../../utils/api';
 import '../../../pages/MainPage.css';
 import './MemberManagement.css';
 
-// 더미 회원 데이터 (DB 컬럼 구조에 맞춤)
-const initialMembers = [
-  {
-    MEMBER_ID: "kjh01",
-    LOGIN_TYPE: "normal",
-    USER_NAME: "김지훈",
-    EMAIL: "kjh01@example.com",
-    PHONE: "010-1234-5678",
-    BORN_DATE: "1990-05-15",
-    GENDER: "M",
-    ADDRESS: "서울시 강남구",
-    CREATED_AT: "2023-03-10",
-  },
-  {
-    MEMBER_ID: "jieun",
-    LOGIN_TYPE: "kakao",
-    USER_NAME: "이지은",
-    EMAIL: "jieun@example.com",
-    PHONE: "010-2222-4444",
-    BORN_DATE: "1992-08-20",
-    GENDER: "F",
-    ADDRESS: "서울시 서초구",
-    CREATED_AT: "2022-07-21",
-  },
-  {
-    MEMBER_ID: "admin",
-    LOGIN_TYPE: "normal",
-    USER_NAME: "관리자",
-    EMAIL: "admin@guro-hosp.or.kr",
-    PHONE: "02-0000-0000",
-    BORN_DATE: "1985-01-01",
-    GENDER: "M",
-    ADDRESS: "서울시 구로구",
-    CREATED_AT: "2020-01-02",
-  },
-  {
-    MEMBER_ID: "psj90",
-    LOGIN_TYPE: "naver",
-    USER_NAME: "박수진",
-    EMAIL: "psj90@example.com",
-    PHONE: "010-8888-9999",
-    BORN_DATE: "1990-12-10",
-    GENDER: "F",
-    ADDRESS: "경기도 성남시",
-    CREATED_AT: "2021-12-01",
-  },
-  {
-    MEMBER_ID: "jws",
-    LOGIN_TYPE: "google",
-    USER_NAME: "정우성",
-    EMAIL: "jws@example.com",
-    PHONE: "010-5555-6666",
-    BORN_DATE: "1988-03-25",
-    GENDER: "M",
-    ADDRESS: "서울시 송파구",
-    CREATED_AT: "2024-03-18",
-  },
-  {
-    MEMBER_ID: "hjm",
-    LOGIN_TYPE: "normal",
-    USER_NAME: "한지민",
-    EMAIL: "hjm@example.com",
-    PHONE: "010-1010-0202",
-    BORN_DATE: "1995-11-05",
-    GENDER: "F",
-    ADDRESS: "인천시 남동구",
-    CREATED_AT: "2021-06-15",
-  },
-  {
-    MEMBER_ID: "cms",
-    LOGIN_TYPE: "kakao",
-    USER_NAME: "최민수",
-    EMAIL: "cms@example.com",
-    PHONE: "010-3333-7777",
-    BORN_DATE: "1987-09-09",
-    GENDER: "M",
-    ADDRESS: "부산시 해운대구",
-    CREATED_AT: "2020-09-09",
-  },
-  {
-    MEMBER_ID: "sylee",
-    LOGIN_TYPE: "normal",
-    USER_NAME: "이서연",
-    EMAIL: "sylee@example.com",
-    PHONE: "010-7777-1111",
-    BORN_DATE: "1993-01-15",
-    GENDER: "F",
-    ADDRESS: "서울시 마포구",
-    CREATED_AT: "2024-01-05",
-  },
-  {
-    MEMBER_ID: "minaa",
-    LOGIN_TYPE: "naver",
-    USER_NAME: "김민아",
-    EMAIL: "minaa@example.com",
-    PHONE: "010-9999-2222",
-    BORN_DATE: "1998-05-20",
-    GENDER: "F",
-    ADDRESS: "경기도 수원시",
-    CREATED_AT: "2024-05-19",
-  },
-  {
-    MEMBER_ID: "ohjh",
-    LOGIN_TYPE: "google",
-    USER_NAME: "오준호",
-    EMAIL: "ohjh@example.com",
-    PHONE: "010-4444-3333",
-    BORN_DATE: "1991-10-30",
-    GENDER: "M",
-    ADDRESS: "대전시 유성구",
-    CREATED_AT: "2023-10-01",
-  },
-];
-
 const MemberManagement = () => {
   const navigate = useNavigate();
-  const [members] = useState(initialMembers);
-  const [filteredMembers, setFilteredMembers] = useState(initialMembers);
+  const [members, setMembers] = useState([]);
+  const [filteredMembers, setFilteredMembers] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [keyword, setKeyword] = useState('');
   const [roleFilter, setRoleFilter] = useState('ALL');
@@ -129,6 +17,40 @@ const MemberManagement = () => {
   const [showDetail, setShowDetail] = useState(false);
 
   const rowsPerPage = 6;
+
+  // 컴포넌트 마운트 시 회원 데이터 로드
+  useEffect(() => {
+    const fetchMembers = async () => {
+      try {
+        setLoading(true);
+        const data = await getAllMembers();
+
+        // 백엔드 camelCase를 프론트엔드 대문자 형식으로 변환
+        const convertedData = data.map(member => ({
+          MEMBER_ID: member.memberId,
+          LOGIN_TYPE: member.loginType,
+          USER_NAME: member.userName,
+          EMAIL: member.email,
+          PHONE: member.phone,
+          BORN_DATE: member.bornDate,
+          GENDER: member.gender,
+          ADDRESS: member.address,
+          CREATED_AT: member.createdDate,
+          ADMIN_YN: member.adminYn
+        }));
+
+        setMembers(convertedData);
+        setFilteredMembers(convertedData);
+      } catch (error) {
+        console.error('회원 데이터 로드 실패:', error);
+        alert('회원 데이터를 불러오는데 실패했습니다.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMembers();
+  }, []);
 
   // 유틸 함수
   const formatDate = (dateStr) => {
@@ -226,10 +148,44 @@ const MemberManagement = () => {
   };
 
   // 회원 삭제
-  const handleDeleteClick = (memberId) => {
+  const handleDeleteClick = async (memberId) => {
     const member = members.find(m => m.MEMBER_ID === memberId);
-    if (member) {
-      alert("데모 페이지이므로 실제 삭제는 적용되지 않습니다.\n\n선택된 회원: " + member.USER_NAME);
+    if (!member) return;
+
+    const confirmed = window.confirm(`정말로 '${member.USER_NAME}' 회원을 삭제하시겠습니까?`);
+    if (!confirmed) return;
+
+    try {
+      const result = await deleteMember(memberId);
+      if (result.success) {
+        alert('회원이 삭제되었습니다.');
+        // 삭제 후 목록 새로고침
+        const data = await getAllMembers();
+
+        // 백엔드 camelCase를 프론트엔드 대문자 형식으로 변환
+        const convertedData = data.map(member => ({
+          MEMBER_ID: member.memberId,
+          LOGIN_TYPE: member.loginType,
+          USER_NAME: member.userName,
+          EMAIL: member.email,
+          PHONE: member.phone,
+          BORN_DATE: member.bornDate,
+          GENDER: member.gender,
+          ADDRESS: member.address,
+          CREATED_AT: member.createdDate,
+          ADMIN_YN: member.adminYn
+        }));
+
+        setMembers(convertedData);
+        setFilteredMembers(convertedData);
+        setSelectedMember(null);
+        setShowDetail(false);
+      } else {
+        alert('회원 삭제에 실패했습니다.');
+      }
+    } catch (error) {
+      console.error('회원 삭제 실패:', error);
+      alert('회원 삭제 중 오류가 발생했습니다.');
     }
   };
 
@@ -291,6 +247,24 @@ const MemberManagement = () => {
       </>
     );
   };
+
+  if (loading) {
+    return (
+      <main className="admin-page">
+        <div style={{
+          gridColumn: '1 / -1',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          minHeight: '400px',
+          fontSize: '16px',
+          color: 'var(--muted)'
+        }}>
+          데이터를 불러오는 중...
+        </div>
+      </main>
+    );
+  }
 
   return (
       <main className="admin-page">

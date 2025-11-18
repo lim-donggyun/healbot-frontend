@@ -1,0 +1,204 @@
+/* 이용약관 페이지 전용 스타일 */
+.terms-page-wrapper {
+  min-height: 100vh;
+  background: #f5f5f5;
+}
+
+/* 이용약관 페이지에서 헤더 스타일 오버라이드 */
+.terms-page-wrapper header {
+  background: white !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+/* 로고 색상 변경 */
+.terms-page-wrapper .logo-white {
+  display: none !important;
+}
+
+.terms-page-wrapper .logo-black {
+  display: block !important;
+}
+
+/* 네비게이션 및 버튼 색상 */
+.terms-page-wrapper .nav-link {
+  color: #333 !important;
+}
+
+.terms-page-wrapper .nav-link:hover {
+  color: #3284b1 !important;
+}
+
+.terms-page-wrapper .utility-btn:not(.emergency-btn) {
+  color: #333 !important;
+}
+
+.terms-page-wrapper .utility-btn:not(.emergency-btn):hover {
+  color: #3284b1 !important;
+}
+
+.terms-page-wrapper .utility-divider {
+  background: rgba(0, 0, 0, 0.2) !important;
+}
+
+.terms-page-wrapper .header-search-container:after {
+  background: #333 !important;
+}
+
+.terms-page-wrapper .header-search-input {
+  color: #333 !important;
+  border-color: #333 !important;
+}
+
+.terms-page-wrapper #nav-icon2 span {
+  background: #333 !important;
+}
+
+/* ========== 이용약관 페이지 스타일 시작 ========== */
+.terms-page-wrapper .page {
+  min-height: 800px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 40px 20px;
+  padding-top: 150px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.terms-page-wrapper h1 {
+  font-size: 2.5rem;
+  color: #2c3e50;
+  margin-bottom: 10px;
+  text-align: center;
+  font-weight: 700;
+  width: 100%;
+}
+
+.terms-updated {
+  text-align: center;
+  color: #7f8c8d;
+  font-size: 0.9rem;
+  margin-bottom: 40px;
+  padding-bottom: 30px;
+  border-bottom: 2px solid #ddd;
+  width: 100%;
+}
+
+.terms-section {
+  margin-bottom: 40px;
+  width: 100%;
+}
+
+.terms-section h2 {
+  font-size: 1.4rem;
+  color: #34495e;
+  margin-bottom: 15px;
+  padding-left: 15px;
+  border-left: 4px solid #3498db;
+  font-weight: 600;
+}
+
+.terms-section p {
+  color: #555;
+  line-height: 1.8;
+  margin-bottom: 15px;
+  font-size: 1rem;
+}
+
+.terms-section ol {
+  counter-reset: item;
+  list-style: none;
+  padding-left: 0;
+}
+
+.terms-section ol > li {
+  counter-increment: item;
+  margin-bottom: 15px;
+  color: #555;
+  line-height: 1.8;
+  padding-left: 30px;
+  position: relative;
+}
+
+.terms-section ol > li:before {
+  content: counter(item) ".";
+  position: absolute;
+  left: 0;
+  color: #3498db;
+  font-weight: 600;
+}
+
+.terms-section ul {
+  list-style: none;
+  padding-left: 20px;
+  margin-top: 10px;
+}
+
+.terms-section ul li {
+  margin-bottom: 8px;
+  padding-left: 20px;
+  position: relative;
+  color: #666;
+  line-height: 1.6;
+}
+
+.terms-section ul li:before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: #3498db;
+  font-weight: bold;
+}
+
+.terms-footer {
+  margin-top: 60px;
+  padding-top: 30px;
+  border-top: 2px solid #ddd;
+  text-align: center;
+  width: 100%;
+}
+
+.terms-footer p {
+  color: #7f8c8d;
+  font-size: 0.95rem;
+  margin-bottom: 8px;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .terms-page-wrapper .page {
+    padding: 40px 30px;
+    padding-top: 120px;
+  }
+
+  .terms-page-wrapper h1 {
+    font-size: 2rem;
+  }
+
+  .terms-section h2 {
+    font-size: 1.2rem;
+  }
+
+  .terms-section p,
+  .terms-section ol > li,
+  .terms-section ul li {
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .terms-page-wrapper .page {
+    padding: 30px 20px;
+    padding-top: 100px;
+  }
+
+  .terms-page-wrapper h1 {
+    font-size: 1.6rem;
+  }
+
+  .terms-section h2 {
+    font-size: 1.1rem;
+  }
+}
