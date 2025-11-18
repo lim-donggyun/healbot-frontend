@@ -26,18 +26,20 @@ const MemberManagement = () => {
         const data = await getAllMembers();
 
         // 백엔드 camelCase를 프론트엔드 대문자 형식으로 변환
-        const convertedData = data.map(member => ({
-          MEMBER_ID: member.memberId,
-          LOGIN_TYPE: member.loginType,
-          USER_NAME: member.userName,
-          EMAIL: member.email,
-          PHONE: member.phone,
-          BORN_DATE: member.bornDate,
-          GENDER: member.gender,
-          ADDRESS: member.address,
-          CREATED_AT: member.createdDate,
-          ADMIN_YN: member.adminYn
-        }));
+        const convertedData = data
+          .filter(member => member.adminYn !== 'Y') // 관리자 제외
+          .map(member => ({
+            MEMBER_ID: member.memberId,
+            LOGIN_TYPE: member.loginType,
+            USER_NAME: member.userName,
+            EMAIL: member.email,
+            PHONE: member.phone,
+            BORN_DATE: member.bornDate,
+            GENDER: member.gender,
+            ADDRESS: member.address,
+            CREATED_AT: member.createdDate,
+            ADMIN_YN: member.adminYn
+          }));
 
         setMembers(convertedData);
         setFilteredMembers(convertedData);
@@ -55,7 +57,16 @@ const MemberManagement = () => {
   // 유틸 함수
   const formatDate = (dateStr) => {
     if (!dateStr) return "-";
-    const [y, m, d] = dateStr.split("-");
+
+    // "2001.06.15 00:00:00" 형식 처리
+    if (dateStr.includes(" ")) {
+      const [datePart] = dateStr.split(" ");
+      return datePart; // 이미 YYYY.MM.DD 형식
+    }
+
+    // "2024-11-18T12:30:45" 형식이나 "2024-11-18" 형식 처리
+    const dateOnly = dateStr.split("T")[0];
+    const [y, m, d] = dateOnly.split("-");
     return `${y}.${m}.${d}`;
   };
 
@@ -163,18 +174,20 @@ const MemberManagement = () => {
         const data = await getAllMembers();
 
         // 백엔드 camelCase를 프론트엔드 대문자 형식으로 변환
-        const convertedData = data.map(member => ({
-          MEMBER_ID: member.memberId,
-          LOGIN_TYPE: member.loginType,
-          USER_NAME: member.userName,
-          EMAIL: member.email,
-          PHONE: member.phone,
-          BORN_DATE: member.bornDate,
-          GENDER: member.gender,
-          ADDRESS: member.address,
-          CREATED_AT: member.createdDate,
-          ADMIN_YN: member.adminYn
-        }));
+        const convertedData = data
+          .filter(member => member.adminYn !== 'Y') // 관리자 제외
+          .map(member => ({
+            MEMBER_ID: member.memberId,
+            LOGIN_TYPE: member.loginType,
+            USER_NAME: member.userName,
+            EMAIL: member.email,
+            PHONE: member.phone,
+            BORN_DATE: member.bornDate,
+            GENDER: member.gender,
+            ADDRESS: member.address,
+            CREATED_AT: member.createdDate,
+            ADMIN_YN: member.adminYn
+          }));
 
         setMembers(convertedData);
         setFilteredMembers(convertedData);
@@ -290,13 +303,13 @@ const MemberManagement = () => {
             <span className="icon">👥</span>
             <span>회원 관리</span>
           </div>
-          <div className="admin-nav-item">
-            <span className="icon">🩺</span>
-            <span>의료진 계정</span>
+          <div className="admin-nav-item" onClick={() => navigate('/admin/notice')}>
+            <span className="icon">📢</span>
+            <span>공지사항</span>
           </div>
-          <div className="admin-nav-item">
-            <span className="icon">⚙️</span>
-            <span>권한 · 설정</span>
+          <div className="admin-nav-item" onClick={() => navigate('/admin/review')}>
+            <span className="icon">⭐</span>
+            <span>리뷰관리</span>
           </div>
         </nav>
       </aside>

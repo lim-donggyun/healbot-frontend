@@ -16,9 +16,10 @@
 }
 
 .admin-page {
-  max-width: 1400px;
+  width: calc(100% - 80px);
+  max-width: 1800px;
   margin: 120px auto 32px;
-  padding: 0 16px 40px;
+  padding: 0 20px 40px;
   display: grid;
   grid-template-columns: 240px minmax(0, 1fr);
   gap: 24px;
@@ -353,7 +354,7 @@ aside.admin-sidebar nav.admin-nav {
 table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 800px;
+  min-width: 1000px;
   font-size: 13px;
 }
 
