@@ -35,6 +35,11 @@ const Step2 = ({ formData, updateFormData, nextStep, prevStep, socialId }) => {
     return /^[A-Za-z0-9]{6,20}$/.test(id);
   };
 
+  // 전화번호 010-0000-0000형식 검사
+  const validatePhoneFormat = (value) => {
+    return /^010-\d{4}-\d{4}$/.test(value);
+  };
+
   const handleCheckId = async () => {
     setIdCheckMessage("");
     setIdCheckStatus("");
@@ -110,6 +115,11 @@ const Step2 = ({ formData, updateFormData, nextStep, prevStep, socialId }) => {
   const handleSendCode = () => {
     if (!phone) {
       alert("휴대폰 번호를 입력해주세요.");
+      return;
+    }
+    // 형식 체크
+    if(!validatePhoneFormat(phone.trim())){
+      alert("전화번호는 010-0000-0000 형식으로 입력해주세요.");
       return;
     }
     setIsCodeSent(true);
