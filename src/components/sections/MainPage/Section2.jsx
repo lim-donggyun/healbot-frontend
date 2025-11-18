@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { symptomsByBodyPart } from "../../../data/symptomsData";
 import { searchSymptomsWithAI, searchDiseases } from "../../../utils/api";
 
@@ -30,6 +31,7 @@ const otherBodyParts = [
 ];
 
 function SymptomSearchNew() {
+  const navigate = useNavigate();
   const [selectedBodyPart, setSelectedBodyPart] = useState("머리");
   const [selectedSymptoms, setSelectedSymptoms] = useState([]);
   const [aiInput, setAiInput] = useState("");
@@ -132,7 +134,14 @@ function SymptomSearchNew() {
     try {
       const result = await searchDiseases(selectedSymptoms);
       console.log("검색 결과:", result);
-      alert("검색 완료! 콘솔을 확인하세요.");
+
+      // 결과 페이지로 이동하면서 데이터 전달
+      navigate("/disease-result", {
+        state: {
+          diseaseData: result,
+          symptoms: selectedSymptoms,
+        },
+      });
     } catch (error) {
       alert("검색 중 오류가 발생했습니다.");
     }

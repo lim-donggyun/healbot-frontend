@@ -139,7 +139,7 @@
 .login-page-wrapper .login-submit {
     width: 100%;
     padding: 18px;
-    background: #8b1538;
+    background: #3284b1;
     color: white;
     border: none;
     font-size: 18px;
@@ -150,7 +150,7 @@
 }
 
 .login-page-wrapper .login-submit:hover {
-    background: #6d0f2a;
+    background: #3fc1ec;
 }
 
 .login-page-wrapper .social-login {
