@@ -5,8 +5,7 @@ import MainPage from "./pages/MainPage";
 import LoginPage from "./pages/LoginPage";
 import OAuthCallback from "./pages/OAuthCallback";
 import Signup from "./pages/Signup";
-import FindId from "./pages/FindId";
-import FindPw from "./pages/FindPw";
+import FindAccount from "./pages/FindAccount";
 import DiseaseResultPage from "./pages/DiseaseResultPage";
 
 // 페이지 전환 시 스크롤을 맨 위로 리셋하는 컴포넌트
@@ -33,8 +32,9 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/oauth/callback" element={<OAuthCallback />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/find-id" element={<FindId />} />
-        <Route path="/find-pass" element={<FindPw />} />
+        <Route path="/find-account" element={<FindAccount />} />
+        <Route path="/find-id" element={<FindAccount />} />
+        <Route path="/find-pass" element={<FindAccount />} />
         <Route path="/disease-result" element={<DiseaseResultPage />} />
       </Routes>
     </Router>
