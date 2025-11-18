@@ -9,6 +9,7 @@ import FindId from "./pages/FindId";
 import FindPw from "./pages/FindPw";
 import AdminPage from "./pages/AdminPage";
 import DiseaseResultPage from "./pages/DiseaseResultPage";
+import MyPage from "./pages/Mypage";
 
 // 페이지 전환 시 스크롤을 맨 위로 리셋하는 컴포넌트
 function ScrollToTop() {
@@ -39,6 +40,7 @@ function App() {
         <Route path="/admin-dashboard" element={<AdminPage />} />
         <Route path="/admin/members" element={<AdminPage />} />
         <Route path="/disease-result" element={<DiseaseResultPage />} />
+        <Route path="/mypage" element={<MyPage />} />
       </Routes>
     </Router>
   );
