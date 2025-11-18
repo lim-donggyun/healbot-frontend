@@ -130,9 +130,9 @@ function Footer() {
           <p>
             <span>사업자등록번호: 123-45-67890</span>
             <span style={{ margin: "0 10px" }}>|</span>
-            <span>통신판매업신고: 2024-서울강남-1234</span>
+            <span>통신판매업신고: 2025-서울강남-1234</span>
             <span style={{ margin: "0 10px" }}>|</span>
-            <span>대표: 홍길동</span>
+            <span>대표: 남윤우</span>
           </p>
           <p
             style={{
@@ -143,7 +143,7 @@ function Footer() {
             HealBot은 의료 정보 제공 서비스이며, 의료 행위를 대체할 수 없습니다. 정확한 진단과 치료는 전문의와
             상담하시기 바랍니다.
           </p>
-          <p style={{ marginTop: "12px" }}>Copyright © 2024 HealBot. All Rights Reserved.</p>
+          <p style={{ marginTop: "12px" }}>Copyright © 2025 HealBot. All Rights Reserved.</p>
         </div>
       </div>
     </footer>
