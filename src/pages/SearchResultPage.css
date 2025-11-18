@@ -2,7 +2,7 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(135deg, #f5f7fa 0%, #e3f2fd 100%);
+  background: #f5f5f5;
 }
 
 .search-result-container {
@@ -16,7 +16,7 @@
 /* 페이지 헤더 */
 .search-result-header {
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 30px;
 }
 
 .search-result-header h1 {
@@ -31,6 +31,44 @@
 
 .search-icon {
   font-size: 40px;
+  color: #333;
+}
+
+/* 탭 메뉴 */
+.tab-menu {
+  display: flex;
+  gap: 0;
+  margin-bottom: 40px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 16px 24px;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: #666;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  white-space: nowrap;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tab-btn:hover {
+  color: #3fc1ec;
+  background: rgba(63, 193, 236, 0.05);
+}
+
+.tab-btn.active {
+  color: #3fc1ec;
+  border-bottom-color: #3fc1ec;
+  background: rgba(63, 193, 236, 0.05);
 }
 
 /* 증상 정보 카드 */
@@ -60,6 +98,29 @@
   margin: 0;
 }
 
+.symptom-item {
+  margin-bottom: 24px;
+}
+
+.symptom-item:last-child {
+  margin-bottom: 0;
+}
+
+.symptom-item h3 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.symptom-item p {
+  font-size: 16px;
+  line-height: 1.8;
+  opacity: 0.95;
+  white-space: pre-wrap;
+}
+
 .symptom-info-body h3 {
   font-size: 28px;
   font-weight: 700;
@@ -73,22 +134,55 @@
   white-space: pre-wrap;
 }
 
+/* 증상 검색 버튼 */
+.symptom-search-btn {
+  margin-top: 24px;
+  padding: 14px 32px;
+  background: white;
+  color: #3fc1ec;
+  border: 2px solid white;
+  border-radius: 30px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.symptom-search-btn:hover {
+  background: rgba(255, 255, 255, 0.9);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.symptom-search-btn svg {
+  transition: transform 0.3s;
+}
+
+.symptom-search-btn:hover svg {
+  transform: rotate(90deg);
+}
+
 /* 결과 섹션 */
 .result-section {
-  background: white;
-  border-radius: 16px;
-  padding: 30px;
-  margin-bottom: 30px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+  margin-bottom: 40px;
+  box-shadow: none;
 }
 
 .result-section-header {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
   padding-bottom: 16px;
-  border-bottom: 2px solid #f0f0f0;
+  border-bottom: 2px solid #333;
 }
 
 .result-section-header h2 {
@@ -105,13 +199,40 @@
   font-size: 28px;
 }
 
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
 .result-count {
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 400;
+  color: #666;
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+}
+
+.more-btn {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 0;
+  background: transparent;
   color: #3fc1ec;
-  background: rgba(63, 193, 236, 0.1);
-  padding: 6px 16px;
-  border-radius: 20px;
+  border: none;
+  border-radius: 0;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.more-btn:hover {
+  background: transparent;
+  color: #2a9dbf;
 }
 
 .result-section-body {
@@ -125,88 +246,185 @@
   font-size: 16px;
 }
 
-/* 병원 그리드 */
-.hospital-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
+/* 병원 리스트 스타일 */
+.hospital-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
 }
 
-.hospital-card {
-  background: #f8f9fa;
-  border-radius: 12px;
-  padding: 24px;
+.list-item {
+  background: transparent;
+  border-radius: 0;
+  padding: 20px 0;
   transition: all 0.3s;
-  border: 2px solid transparent;
+  border: none;
+  border-bottom: 1px solid #e0e0e0;
+  cursor: pointer;
 }
 
-.hospital-card:hover {
-  border-color: #3fc1ec;
-  box-shadow: 0 4px 16px rgba(63, 193, 236, 0.2);
-  transform: translateY(-4px);
+.list-item:last-child {
+  border-bottom: none;
 }
 
-.hospital-card h3 {
-  font-size: 20px;
+.list-item:hover {
+  background: rgba(63, 193, 236, 0.03);
+}
+
+.list-item h3 {
+  font-size: 18px;
   font-weight: 700;
   color: #333;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
+}
+
+.list-item p {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.6;
+  margin: 0;
 }
 
 .hospital-address {
   font-size: 14px;
   color: #666;
-  margin-bottom: 8px;
 }
 
-.hospital-phone,
-.hospital-hours {
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 4px;
-}
-
-/* 질병 그리드 */
-.disease-grid {
+/* 질병 2x2 그리드 스타일 */
+.disease-grid-2x2 {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
 }
 
-.disease-card {
-  background: #f8f9fa;
-  border-radius: 12px;
-  padding: 20px;
-  transition: all 0.3s;
-  border: 2px solid transparent;
-  cursor: pointer;
-}
-
-.disease-card:hover {
-  border-color: #3fc1ec;
-  box-shadow: 0 4px 16px rgba(63, 193, 236, 0.2);
-  transform: translateY(-4px);
-}
-
-.disease-card img {
-  width: 100%;
-  height: 160px;
-  object-fit: cover;
+.disease-card-horizontal {
+  background: white;
   border-radius: 8px;
-  margin-bottom: 16px;
+  padding: 20px;
+  display: flex;
+  gap: 20px;
+  transition: all 0.3s;
+  border: 1px solid #e0e0e0;
+  cursor: pointer;
+  min-height: 160px;
 }
 
-.disease-card h3 {
+.disease-card-horizontal:hover {
+  border-color: #3fc1ec;
+  box-shadow: 0 2px 8px rgba(63, 193, 236, 0.15);
+  transform: translateY(-2px);
+}
+
+.disease-card-horizontal .disease-image {
+  flex-shrink: 0;
+  width: 140px;
+  height: 120px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.disease-card-horizontal .disease-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.disease-card-horizontal .disease-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.disease-card-horizontal .disease-content h3 {
   font-size: 18px;
   font-weight: 700;
   color: #333;
-  margin-bottom: 12px;
+  margin: 0;
 }
 
-.disease-description {
+.disease-card-horizontal .disease-description {
   font-size: 14px;
   color: #666;
   line-height: 1.6;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+}
+
+/* 페이지네이션 */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 32px;
+  padding-top: 0;
+  border-top: none;
+}
+
+.pagination-btn {
+  min-width: 40px;
+  height: 40px;
+  padding: 8px 12px;
+  background: white;
+  color: #666;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.pagination-btn:hover {
+  border-color: #3fc1ec;
+  color: #3fc1ec;
+  transform: translateY(-2px);
+}
+
+.pagination-btn.active {
+  background: #3fc1ec;
+  color: white;
+  border-color: #3fc1ec;
+}
+
+.pagination-nav-btn {
+  min-width: 70px;
+  height: 40px;
+  padding: 8px 16px;
+  background: white;
+  color: #3fc1ec;
+  border: 2px solid #3fc1ec;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.pagination-nav-btn:hover:not(:disabled) {
+  background: #3fc1ec;
+  color: white;
+  transform: translateY(-2px);
+}
+
+.pagination-nav-btn:disabled {
+  background: #f0f0f0;
+  color: #ccc;
+  border-color: #e0e0e0;
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* 키워드 하이라이트 */
+.highlight {
+  background: linear-gradient(to bottom, transparent 50%, #ffeb3b 50%);
+  font-weight: 700;
+  padding: 0 2px;
 }
 
 /* 검색 데이터 없음 */
@@ -226,15 +444,226 @@
   color: #666;
 }
 
+/* 질병 상세 모달 */
+.detail-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.3s ease;
+  overflow-y: auto;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.detail-modal-content {
+  background: white;
+  border-radius: 0;
+  max-width: 1000px;
+  width: 100%;
+  max-height: 90vh;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: popIn 0.3s ease;
+  position: relative;
+}
+
+.modal-close-btn-top {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  z-index: 10;
+  background: white;
+  border: none;
+  border-radius: 0;
+  width: 36px;
+  height: 36px;
+  font-size: 20px;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.modal-close-btn-top:hover {
+  background: #f5f5f5;
+  color: #333;
+}
+
+.detail-modal-body {
+  padding: 0;
+  overflow-y: auto;
+  max-height: 90vh;
+}
+
+.detail-content-grid {
+  display: grid;
+  grid-template-columns: 420px 1fr;
+  gap: 0;
+  align-items: start;
+}
+
+.detail-left {
+  background: #fafafa;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  gap: 20px;
+}
+
+.detail-image-container {
+  width: 100%;
+  height: auto;
+  border-radius: 0;
+  overflow: hidden;
+  background: white;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.detail-image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.find-department-btn {
+  width: 100%;
+  padding: 14px 24px;
+  background: #3284b1;
+  color: white;
+  border: none;
+  border-radius: 0;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(50, 132, 177, 0.3);
+}
+
+.find-department-btn:hover {
+  background: #2a6d96;
+  box-shadow: 0 4px 12px rgba(50, 132, 177, 0.4);
+}
+
+.detail-right {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 50px 50px 50px 50px;
+}
+
+.detail-section {
+  margin-bottom: 35px;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.detail-section:last-child {
+  margin-bottom: 0;
+}
+
+.detail-section-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #999;
+  margin: 0 0 12px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.detail-text {
+  font-size: 15px;
+  line-height: 1.7;
+  color: #333;
+  margin: 0;
+  white-space: pre-line;
+}
+
+.detail-symptoms-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+}
+
+.detail-symptom-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 14px;
+  background: #f5f5f5;
+  color: #333;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  border: 1px solid #e0e0e0;
+  transition: all 0.2s;
+}
+
+.detail-symptom-badge:hover {
+  background: #e8e8e8;
+  border-color: #d0d0d0;
+}
+
 /* 반응형 */
 @media (max-width: 768px) {
   .search-result-header h1 {
     font-size: 28px;
   }
 
-  .hospital-grid,
-  .disease-grid {
+  .disease-grid-2x2 {
     grid-template-columns: 1fr;
+  }
+
+  .disease-card-horizontal {
+    flex-direction: column;
+    min-height: auto;
+  }
+
+  .disease-image {
+    width: 100%;
+    height: 180px;
+  }
+
+  .tab-menu {
+    overflow-x: auto;
+  }
+
+  .tab-btn {
+    flex: 0 0 auto;
+    min-width: 120px;
+    font-size: 14px;
+    padding: 14px 16px;
   }
 
   .result-section {
