@@ -12,7 +12,7 @@ function Header() {
   const location = useLocation();
 
   // 항상 hover 상태를 유지해야 하는 페이지들
-  const alwaysScrolledPages = ['/login', '/signup', '/find-id', '/find-pass', '/mypage'];
+  const alwaysScrolledPages = ['/login', '/signup', '/find-id', '/find-pass', '/mypage', '/search-result'];
   const isAlwaysScrolled = alwaysScrolledPages.includes(location.pathname);
 
   // 세션 확인
