@@ -1,0 +1,148 @@
+/* 탈퇴 카드 전체 스타일 */
+.mp-danger-card {
+margin-top: 24px;
+border: 1px solid #fecaca;
+border-radius: 12px;
+padding: 28px 26px 30px;
+background: #fef2f2;
+}
+
+/* 제목 */
+.mp-danger-title {
+display: flex;
+align-items: center;
+gap: 8px;
+font-size: 20px;
+font-weight: 700;
+color: #b91c1c;
+margin-bottom: 10px;
+}
+
+/* 설명 문단 */
+.mp-danger-desc {
+font-size: 14px;
+color: #7f1d1d;
+line-height: 1.7;
+margin-bottom: 18px;
+}
+
+/* 안내 박스 */
+.mp-danger-box {
+border-radius: 10px;
+background: #fee2e2;
+border: 1px solid #fecaca;
+padding: 14px 16px;
+margin-bottom: 22px;
+}
+
+.mp-danger-list {
+list-style: disc;
+padding-left: 20px;
+margin: 0;
+font-size: 13px;
+color: #7f1d1d;
+}
+
+.mp-danger-list li + li {
+margin-top: 4px;
+}
+
+/* 폼 영역 */
+.mp-danger-form {
+margin-top: 4px;
+}
+
+/* 텍스트 영역 */
+.mp-textarea {
+width: 100%;
+resize: vertical;
+min-height: 80px;
+padding: 10px 12px;
+border-radius: 8px;
+border: 1px solid #e5e7eb;
+font-size: 14px;
+font-family: inherit;
+outline: none;
+transition: border-color 0.15s, box-shadow 0.15s;
+background: #fff;
+}
+
+.mp-textarea::placeholder {
+color: #9ca3af;
+}
+
+.mp-textarea:focus {
+border-color: #f97373;
+box-shadow: 0 0 0 1px rgba(248, 113, 113, 0.25);
+}
+
+/* 체크박스 라인 */
+.mp-check-row {
+margin-top: 10px;
+margin-bottom: 18px;
+}
+
+.mp-check-label {
+display: flex;
+align-items: flex-start;
+gap: 8px;
+font-size: 13px;
+color: #4b5563;
+cursor: pointer;
+}
+
+.mp-check-label input[type="checkbox"] {
+margin-top: 2px;
+}
+
+/* 버튼 영역 */
+.mp-btn-row {
+display: flex;
+justify-content: flex-end;
+}
+
+.mp-btn {
+padding: 11px 20px;
+border-radius: 8px;
+border: none;
+font-size: 14px;
+font-weight: 600;
+cursor: pointer;
+transition: background-color 0.15s, box-shadow 0.15s, transform 0.05s;
+}
+
+/* 위험 버튼 공통 */
+.mp-btn-danger {
+background: #dc2626;
+color: #fff;
+box-shadow: 0 2px 6px rgba(220, 38, 38, 0.35);
+}
+
+.mp-btn-danger:hover:not(:disabled) {
+background: #b91c1c;
+box-shadow: 0 3px 10px rgba(220, 38, 38, 0.45);
+transform: translateY(-1px);
+}
+
+.mp-btn-danger:active:not(:disabled) {
+transform: translateY(0);
+box-shadow: 0 1px 4px rgba(220, 38, 38, 0.35);
+}
+
+.mp-btn-danger:disabled {
+background: #fca5a5;
+cursor: default;
+box-shadow: none;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+.mp-danger-card {
+    padding: 22px 18px 24px;
+}
+
+.mp-danger-title {
+    font-size: 18px;
+}
+
+}

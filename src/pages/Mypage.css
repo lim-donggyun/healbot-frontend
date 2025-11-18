@@ -1,7 +1,7 @@
 /* 헤더가 fixed라서 아래에서 시작 */
 .mypage-main {
 min-height: 100vh;
-background-color: #ffffff;
+background-color: #f5f5f5;
 padding-top: 120px;
 }
 
@@ -353,3 +353,4 @@ background: #b91c1c;
     padding: 20px;
 }
 }
+
