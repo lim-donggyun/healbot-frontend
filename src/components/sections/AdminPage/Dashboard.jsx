@@ -39,13 +39,13 @@ const Dashboard = () => {
             <span className="icon">👥</span>
             <span>회원 관리</span>
           </div>
-          <div className="admin-nav-item">
-            <span className="icon">🩺</span>
-            <span>의료진 계정</span>
+          <div className="admin-nav-item" onClick={() => navigate('/admin/notice')}>
+            <span className="icon">📢</span>
+            <span>공지사항</span>
           </div>
-          <div className="admin-nav-item">
-            <span className="icon">⚙️</span>
-            <span>권한 · 설정</span>
+          <div className="admin-nav-item" onClick={() => navigate('/admin/review')}>
+            <span className="icon">⭐</span>
+            <span>리뷰관리</span>
           </div>
         </nav>
       </aside>
