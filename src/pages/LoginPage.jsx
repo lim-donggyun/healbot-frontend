@@ -4,6 +4,8 @@ import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import ScrollToTop from '../components/common/ScrollToTop';
 import { socialLogin, normalLogin } from '../utils/api';
+import KakaoIcon from '../assets/icons/KakaoIcon';
+import NaverIcon from '../assets/icons/NaverIcon';
 import './MainPage.css';
 import './LoginPage.css';
 
@@ -227,10 +229,10 @@ const Login = () => {
 
                             <div className="social-login">
                                 <button type="button" className="social-btn kakao-btn" onClick={loginKakao}>
-                                    <span className="social-icon">💬</span> 카카오
+                                    <KakaoIcon size={20} /> 카카오
                                 </button>
                                 <button type="button" className="social-btn naver-btn" onClick={loginNaver}>
-                                    <span className="social-icon">N</span> 네이버
+                                    <NaverIcon size={20} /> 네이버
                                 </button>
                             </div>
                         </form>
