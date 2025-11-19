@@ -43,6 +43,12 @@ export const useScrollNavigation = () => {
 
     // 휠로 섹션 이동
     const handleWheel = (e) => {
+      // 모달이 열려있으면 스크롤 막기
+      if (document.body.classList.contains('modal-open')) {
+        e.preventDefault();
+        return;
+      }
+
       e.preventDefault();
       if (isScrolling) return;
 
@@ -55,6 +61,11 @@ export const useScrollNavigation = () => {
 
     // 키보드로 섹션 이동
     const handleKeydown = (e) => {
+      // 모달이 열려있으면 키보드 네비게이션 막기
+      if (document.body.classList.contains('modal-open')) {
+        return;
+      }
+
       // input, textarea, select에 포커스가 있으면 키보드 네비게이션 비활성화
       const activeElement = document.activeElement;
       if (

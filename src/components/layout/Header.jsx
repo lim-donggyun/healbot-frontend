@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { checkSession, searchAll } from "../../utils/api";
+import { checkSession } from "../../utils/memberApi";
+import { searchAll } from "../../utils/searchApi";
 import "./Header.css";
 
 function Header() {
@@ -100,8 +101,15 @@ function Header() {
         searchSection.scrollIntoView({ behavior: "smooth" });
       }
     } else {
-      // 다른 페이지에서는 메인페이지의 섹션2로 이동
-      navigate("/#search");
+      // 다른 페이지에서는 메인페이지로 이동 후 섹션2로 스크롤
+      navigate("/");
+      // 페이지 로드 후 스크롤
+      setTimeout(() => {
+        const searchSection = document.getElementById("search");
+        if (searchSection) {
+          searchSection.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 100);
     }
   };
 

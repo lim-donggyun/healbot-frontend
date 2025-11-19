@@ -136,7 +136,7 @@ function BMICalculatorModal({ onClose }) {
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content bmi-modal" onClick={(e) => e.stopPropagation()}>
+      <div className="self-test-modal-content bmi-modal" onClick={(e) => e.stopPropagation()}>
         <button className="modal-close" onClick={onClose}>
           ✕
         </button>
@@ -241,13 +241,37 @@ function BMICalculatorModal({ onClose }) {
 
             <div className="bmi-info">
               <h3>BMI 기준 (한국 기준)</h3>
-              <ul>
-                <li><span className="info-badge" style={{backgroundColor: "#17a2b8"}}>저체중</span> 18.5 미만</li>
-                <li><span className="info-badge" style={{backgroundColor: "#28a745"}}>정상</span> 18.5 ~ 22.9</li>
-                <li><span className="info-badge" style={{backgroundColor: "#ffc107"}}>과체중</span> 23.0 ~ 24.9</li>
-                <li><span className="info-badge" style={{backgroundColor: "#fd7e14"}}>비만</span> 25.0 ~ 29.9</li>
-                <li><span className="info-badge" style={{backgroundColor: "#dc3545"}}>고도비만</span> 30.0 이상</li>
-              </ul>
+              <div className="bmi-scale">
+                <div className="bmi-bar">
+                  <div className="bmi-section" style={{backgroundColor: "#17a2b8", flex: "3.5"}}>
+                    <span className="bmi-label">저체중</span>
+                  </div>
+                  <div className="bmi-divider">
+                    <span className="bmi-value">18.5</span>
+                  </div>
+                  <div className="bmi-section" style={{backgroundColor: "#28a745", flex: "4.5"}}>
+                    <span className="bmi-label">정상</span>
+                  </div>
+                  <div className="bmi-divider">
+                    <span className="bmi-value">23</span>
+                  </div>
+                  <div className="bmi-section" style={{backgroundColor: "#ffc107", flex: "2"}}>
+                    <span className="bmi-label">과체중</span>
+                  </div>
+                  <div className="bmi-divider">
+                    <span className="bmi-value">25</span>
+                  </div>
+                  <div className="bmi-section" style={{backgroundColor: "#fd7e14", flex: "5"}}>
+                    <span className="bmi-label">비만</span>
+                  </div>
+                  <div className="bmi-divider">
+                    <span className="bmi-value">30</span>
+                  </div>
+                  <div className="bmi-section" style={{backgroundColor: "#dc3545", flex: "5"}}>
+                    <span className="bmi-label">고도비만</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </>
         ) : (

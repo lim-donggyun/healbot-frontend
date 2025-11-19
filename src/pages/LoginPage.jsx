@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import ScrollToTop from '../components/common/ScrollToTop';
-import { socialLogin, normalLogin } from '../utils/api';
+import { socialLogin, normalLogin } from '../utils/memberApi';
 import KakaoIcon from '../assets/icons/KakaoIcon';
 import NaverIcon from '../assets/icons/NaverIcon';
 import './MainPage.css';

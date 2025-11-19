@@ -1,0 +1,90 @@
+// 전체 공지사항 목록 조회
+export const getAllNotices = async () => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/admin/notices`, {
+      method: "GET",
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("API 응답 에러:", response.status, errorText);
+      throw new Error(`공지사항 목록 조회 실패 (${response.status}): ${errorText}`);
+    }
+
+    const data = await response.json();
+    console.log("공지사항 데이터 로드 성공:", data);
+    return data;
+  } catch (error) {
+    console.error("공지사항 목록 조회 에러:", error);
+    throw error;
+  }
+};
+
+// 공지사항 생성
+export const createNotice = async (noticeData) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/admin/notices`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(noticeData),
+    });
+
+    if (!response.ok) {
+      throw new Error("공지사항 생성 실패");
+    }
+
+    const data = await response.json();
+    return data; // { success: true/false }
+  } catch (error) {
+    console.error("공지사항 생성 에러:", error);
+    throw error;
+  }
+};
+
+// 공지사항 수정
+export const updateNotice = async (noticeId, noticeData) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/admin/notices/${encodeURIComponent(noticeId)}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(noticeData),
+    });
+
+    if (!response.ok) {
+      throw new Error("공지사항 수정 실패");
+    }
+
+    const data = await response.json();
+    return data; // { success: true/false }
+  } catch (error) {
+    console.error("공지사항 수정 에러:", error);
+    throw error;
+  }
+};
+
+// 공지사항 삭제
+export const deleteNotice = async (noticeId) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/admin/notices/${encodeURIComponent(noticeId)}`, {
+      method: "DELETE",
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      throw new Error("공지사항 삭제 실패");
+    }
+
+    const data = await response.json();
+    return data; // { success: true/false }
+  } catch (error) {
+    console.error("공지사항 삭제 에러:", error);
+    throw error;
+  }
+};

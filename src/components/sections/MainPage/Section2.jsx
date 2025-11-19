@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { symptomsByBodyPart } from "../../../data/symptomsData";
-import { searchSymptomsWithAI, searchDiseases, getSymptomDetails } from "../../../utils/api";
+import { searchSymptomsWithAI, searchDiseases, getSymptomDetails } from "../../../utils/diseasesApi";
 
 const bodyParts = [
   { key: "머리", label: "머리", tab: "머리" },
@@ -75,6 +75,25 @@ function SymptomSearchNew() {
       window.removeEventListener("scroll", handleScroll);
     };
   }, [showOtherParts]);
+
+  // 증상 설명 모달 열릴 때 body 스크롤 막기
+  useEffect(() => {
+    if (showSymptomModal) {
+      document.body.classList.add('modal-open');
+      document.body.style.setProperty('overflow', 'hidden', 'important');
+      document.documentElement.style.setProperty('overflow', 'hidden', 'important');
+    } else {
+      document.body.classList.remove('modal-open');
+      document.body.style.removeProperty('overflow');
+      document.documentElement.style.removeProperty('overflow');
+    }
+
+    return () => {
+      document.body.classList.remove('modal-open');
+      document.body.style.removeProperty('overflow');
+      document.documentElement.style.removeProperty('overflow');
+    };
+  }, [showSymptomModal]);
 
   const handleBodyPartClick = (partKey, isExpandable, event) => {
     if (isExpandable) {
