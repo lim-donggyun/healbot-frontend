@@ -8,13 +8,14 @@ function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
 
-  // 항상 hover 상태를 유지해야 하는 페이지들
+  // 항상 hover 상태를 유지해야 하는 페이지들 (관리자 페이지도 포함)
   const alwaysScrolledPages = ['/login', '/signup', '/find-id', '/find-pass', '/mypage', '/search-result'];
-  const isAlwaysScrolled = alwaysScrolledPages.includes(location.pathname);
+  const isAlwaysScrolled = alwaysScrolledPages.includes(location.pathname) || location.pathname.startsWith('/admin');
 
   // 세션 확인
   useEffect(() => {
@@ -22,19 +23,16 @@ function Header() {
       try {
         const data = await checkSession();
         setIsLoggedIn(data.loggedIn);
-
-        // 로그인되어 있고 관리자인 경우, 관리자 페이지가 아니면 admin-dashboard로 이동
-        if (data.loggedIn && data.admin_YN === 'Y' && !location.pathname.startsWith('/admin')) {
-          navigate('/admin-dashboard');
-        }
+        setIsAdmin(data.admin_YN === 'Y');
       } catch (error) {
         console.error('세션 확인 실패:', error);
         setIsLoggedIn(false);
+        setIsAdmin(false);
       }
     };
 
     verifySession();
-  }, [location.pathname, navigate]);
+  }, [location.pathname]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -70,7 +68,12 @@ function Header() {
 
   const handleLoginClick = () => {
     if (isLoggedIn) {
-      navigate("/mypage");
+      // 관리자면 관리자 페이지로, 일반 사용자면 마이페이지로
+      if (isAdmin) {
+        navigate("/admin-dashboard");
+      } else {
+        navigate("/mypage");
+      }
     } else {
       navigate("/login");
     }

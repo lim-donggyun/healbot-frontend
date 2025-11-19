@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getAllNotices, createNotice, deleteNotice } from '../../../utils/noticeApi';
+import Sidebar from './Sidebar';
 import '../../../pages/MainPage.css';
 import './Notice.css';
 
@@ -300,38 +301,7 @@ const Notice = () => {
 
   return (
     <main className="admin-page">
-      {/* 사이드바 */}
-      <aside className="admin-sidebar">
-        <div className="admin-sidebar-header">
-          <div className="admin-avatar">AD</div>
-          <div>
-            <div className="admin-info-name">시스템 관리자</div>
-            <div className="admin-info-role">공지사항 관리</div>
-          </div>
-        </div>
-        <div className="admin-sidebar-sub">
-          사용자에게 공지할 내용을 작성하고
-          관리할 수 있습니다.
-        </div>
-        <nav className="admin-nav">
-          <div className="admin-nav-item" onClick={() => navigate('/admin-dashboard')}>
-            <span className="icon">📊</span>
-            <span>대시보드</span>
-          </div>
-          <div className="admin-nav-item" onClick={() => navigate('/admin/members')}>
-            <span className="icon">👥</span>
-            <span>회원 관리</span>
-          </div>
-          <div className="admin-nav-item active">
-            <span className="icon">📢</span>
-            <span>공지사항</span>
-          </div>
-          <div className="admin-nav-item" onClick={() => navigate('/admin/review')}>
-            <span className="icon">⭐</span>
-            <span>리뷰관리</span>
-          </div>
-        </nav>
-      </aside>
+      <Sidebar />
 
       {/* 메인 */}
       <section className="admin-main">

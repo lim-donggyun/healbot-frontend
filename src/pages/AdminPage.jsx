@@ -1,9 +1,10 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import AdminHeader from '../components/layout/AdminHeader';
+import Header from '../components/layout/Header';
 import Dashboard from '../components/sections/AdminPage/Dashboard';
 import MemberManagement from '../components/sections/AdminPage/MemberManagement';
 import Notice from '../components/sections/AdminPage/Notice';
+import './AdminPage.css';
 
 const AdminPage = () => {
   const location = useLocation();
@@ -20,10 +21,10 @@ const AdminPage = () => {
   };
 
   return (
-    <>
-      <AdminHeader />
+    <div data-admin-page>
+      <Header />
       {renderContent()}
-    </>
+    </div>
   );
 };
 

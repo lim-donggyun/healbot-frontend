@@ -1,0 +1,72 @@
+/* 관리자 페이지 전용 헤더 스타일 (LoginPage와 동일) */
+
+/* 관리자 페이지에서 헤더 스타일 오버라이드 */
+body:has([data-admin-page]) header {
+    background: white !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+/* 로고 색상 변경 */
+body:has([data-admin-page]) .logo-white {
+    display: none !important;
+}
+
+body:has([data-admin-page]) .logo-black {
+    display: block !important;
+}
+
+/* 네비게이션 및 버튼 색상 */
+body:has([data-admin-page]) .nav-link {
+    color: #333 !important;
+}
+
+body:has([data-admin-page]) .nav-link:hover {
+    color: #3284b1 !important;
+}
+
+body:has([data-admin-page]) .utility-btn:not(.emergency-btn) {
+    color: #333 !important;
+}
+
+body:has([data-admin-page]) .utility-btn:not(.emergency-btn):hover {
+    color: #3284b1 !important;
+}
+
+body:has([data-admin-page]) .utility-divider {
+    background: rgba(0, 0, 0, 0.2) !important;
+}
+
+body:has([data-admin-page]) .header-search-container:after {
+    background: #333 !important;
+}
+
+body:has([data-admin-page]) .header-search-input {
+    color: #333 !important;
+    border-color: #333 !important;
+}
+
+body:has([data-admin-page]) #nav-icon2 span {
+    background: #333 !important;
+}
+
+/* hover 효과 제거 - 항상 흰색 배경 유지 */
+body:has([data-admin-page]) header:hover {
+    background: white !important;
+}
+
+body:has([data-admin-page]) header:hover .logo-white {
+    display: none !important;
+}
+
+body:has([data-admin-page]) header:hover .logo-black {
+    display: block !important;
+}
+
+body:has([data-admin-page]) header:hover .nav-link {
+    color: #333 !important;
+}
+
+body:has([data-admin-page]) header:hover .utility-btn:not(.emergency-btn) {
+    color: #333 !important;
+}

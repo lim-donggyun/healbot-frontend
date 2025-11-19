@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import ScrollToTop from '../components/common/ScrollToTop';
-import { socialLogin, normalLogin } from '../utils/memberApi';
+import { socialLogin, normalLogin, checkSession } from '../utils/memberApi';
 import KakaoIcon from '../assets/icons/KakaoIcon';
 import NaverIcon from '../assets/icons/NaverIcon';
 import './MainPage.css';
@@ -39,7 +39,14 @@ const Login = () => {
             if (data.success === 1) {
                 // 로그인 성공
                 alert('로그인 성공!');
-                navigate('/');
+
+                // 세션 확인하여 관리자 여부 체크
+                const sessionData = await checkSession();
+                if (sessionData.loggedIn && sessionData.admin_YN === 'Y') {
+                    navigate('/admin-dashboard');
+                } else {
+                    navigate('/');
+                }
             } else {
                 // 로그인 실패
                 alert('아이디 또는 비밀번호가 일치하지 않습니다.');
@@ -88,11 +95,17 @@ const Login = () => {
                 // 로그인 성공
                 setModalMessage('로그인 성공!');
 
-                // 메인 페이지로 이동
-                setTimeout(() => {
+                // 세션 확인하여 관리자 여부 체크
+                setTimeout(async () => {
+                    const sessionData = await checkSession();
                     setShowModal(false);
                     isProcessingRef.current = false;
-                    navigate('/');
+
+                    if (sessionData.loggedIn && sessionData.admin_YN === 'Y') {
+                        navigate('/admin-dashboard');
+                    } else {
+                        navigate('/');
+                    }
                 }, 1000);
             } else {
                 // 회원가입 필요

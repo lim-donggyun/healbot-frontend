@@ -1,0 +1,91 @@
+/* 왼쪽 사이드바 */
+.admin-sidebar {
+  background: var(--card);
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  padding: 20px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.admin-sidebar-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.admin-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2563eb, #4f46e5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 20px;
+}
+
+.admin-info-name {
+  font-weight: 700;
+  font-size: 16px;
+  margin-bottom: 2px;
+}
+
+.admin-info-role {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.admin-sidebar-sub {
+  font-size: 12px;
+  color: var(--muted);
+  padding: 8px 10px;
+  border-radius: 12px;
+  background: #f9fafb;
+}
+
+aside.admin-sidebar nav.admin-nav {
+  margin-top: 4px;
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  grid-template-rows: auto auto auto auto auto !important;
+  gap: 6px !important;
+  width: 100%;
+  flex: none !important;
+  justify-content: normal !important;
+  align-items: normal !important;
+}
+
+.admin-sidebar .admin-nav-item {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 6px;
+  border-radius: 10px;
+  font-size: 11px;
+  color: var(--muted);
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.admin-sidebar .admin-nav-item span.icon {
+  text-align: center;
+  font-size: 16px;
+}
+
+.admin-sidebar .admin-nav-item.active {
+  background: var(--primary-soft);
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.admin-sidebar .admin-nav-item:hover {
+  background: #f3f4f6;
+  color: var(--text);
+}
