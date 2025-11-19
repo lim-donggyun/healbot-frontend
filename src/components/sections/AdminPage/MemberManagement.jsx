@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getAllMembers, deleteMember } from '../../../utils/adminApi';
+import { getAllMembers, updateMember, deleteMember } from '../../../utils/adminApi';
 import Sidebar from './Sidebar';
 import '../../../pages/MainPage.css';
 import './MemberManagement.css';
@@ -15,7 +15,14 @@ const MemberManagement = () => {
   const [roleFilter, setRoleFilter] = useState('ALL');
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [selectedMember, setSelectedMember] = useState(null);
-  const [showDetail, setShowDetail] = useState(false);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editFormData, setEditFormData] = useState({
+    userName: '',
+    email: '',
+    phone: '',
+    address: ''
+  });
 
   const rowsPerPage = 6;
 
@@ -144,31 +151,85 @@ const MemberManagement = () => {
     setCurrentPage(1);
   };
 
-  // 상세보기 토글
+  // 상세보기 모달 열기
   const handleDetailClick = (memberId) => {
-    // 이미 열려있는 회원을 다시 클릭하면 닫기
-    if (selectedMember?.MEMBER_ID === memberId && showDetail) {
-      setShowDetail(false);
-      setSelectedMember(null);
-    } else {
-      const member = members.find(m => m.MEMBER_ID === memberId);
-      if (member) {
-        setSelectedMember(member);
-        setShowDetail(true);
-      }
+    const member = members.find(m => m.MEMBER_ID === memberId);
+    if (member) {
+      setSelectedMember(member);
+      setIsDetailModalOpen(true);
+      setIsEditMode(false);
     }
   };
 
-  // 회원 삭제
-  const handleDeleteClick = async (memberId) => {
-    const member = members.find(m => m.MEMBER_ID === memberId);
-    if (!member) return;
+  // 수정 모드로 전환
+  const handleEditFromDetail = () => {
+    setEditFormData({
+      userName: selectedMember.USER_NAME,
+      email: selectedMember.EMAIL,
+      phone: selectedMember.PHONE,
+      address: selectedMember.ADDRESS
+    });
+    setIsEditMode(true);
+  };
 
-    const confirmed = window.confirm(`정말로 '${member.USER_NAME}' 회원을 삭제하시겠습니까?`);
+  // 수정 폼 입력 처리
+  const handleEditInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  // 수정 저장
+  const handleUpdateSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const result = await updateMember(selectedMember.MEMBER_ID, editFormData);
+
+      if (result.success) {
+        alert('회원 정보가 수정되었습니다.');
+
+        // 목록 새로고침
+        const data = await getAllMembers();
+        const convertedData = data
+          .filter(member => member.adminYn !== 'Y')
+          .map(member => ({
+            MEMBER_ID: member.memberId,
+            LOGIN_TYPE: member.loginType,
+            USER_NAME: member.userName,
+            EMAIL: member.email,
+            PHONE: member.phone,
+            BORN_DATE: member.bornDate,
+            GENDER: member.gender,
+            ADDRESS: member.address,
+            CREATED_AT: member.createdDate,
+            ADMIN_YN: member.adminYn
+          }));
+
+        setMembers(convertedData);
+        setFilteredMembers(convertedData);
+        setIsDetailModalOpen(false);
+        setIsEditMode(false);
+      } else {
+        alert('회원 정보 수정에 실패했습니다.');
+      }
+    } catch (error) {
+      console.error('회원 정보 수정 실패:', error);
+      alert('회원 정보 수정 중 오류가 발생했습니다.');
+    }
+  };
+
+  // 회원 삭제 (상세 모달에서)
+  const handleDeleteFromDetail = async () => {
+    if (!selectedMember) return;
+
+    const confirmed = window.confirm(`정말로 '${selectedMember.USER_NAME}' 회원을 삭제하시겠습니까?`);
     if (!confirmed) return;
 
     try {
-      const result = await deleteMember(memberId);
+      const result = await deleteMember(selectedMember.MEMBER_ID);
       if (result.success) {
         alert('회원이 삭제되었습니다.');
         // 삭제 후 목록 새로고침
@@ -192,8 +253,7 @@ const MemberManagement = () => {
 
         setMembers(convertedData);
         setFilteredMembers(convertedData);
-        setSelectedMember(null);
-        setShowDetail(false);
+        setIsDetailModalOpen(false);
       } else {
         alert('회원 삭제에 실패했습니다.');
       }
@@ -415,81 +475,27 @@ const MemberManagement = () => {
                 </thead>
                 <tbody>
                   {pageItems.map((m, idx) => (
-                    <React.Fragment key={m.MEMBER_ID}>
-                      <tr>
-                        <td className="text-center">{startIdx + idx + 1}</td>
-                        <td>{m.MEMBER_ID}</td>
-                        <td>{getLoginTypePill(m.LOGIN_TYPE)}</td>
-                        <td>{m.USER_NAME}</td>
-                        <td>{m.EMAIL}</td>
-                        <td>{m.PHONE}</td>
-                        <td>{formatDate(m.BORN_DATE)}</td>
-                        <td className="text-center">{m.GENDER === 'M' ? '남' : '여'}</td>
-                        <td>{m.ADDRESS}</td>
-                        <td>{formatDate(m.CREATED_AT)}</td>
-                        <td className="text-center">
-                          <button
-                            type="button"
-                            className="btn-sm primary"
-                            onClick={() => handleDetailClick(m.MEMBER_ID)}
-                          >
-                            {selectedMember?.MEMBER_ID === m.MEMBER_ID && showDetail ? '닫기' : '상세보기'}
-                          </button>
-                          <button
-                            type="button"
-                            className="btn-sm danger"
-                            onClick={() => handleDeleteClick(m.MEMBER_ID)}
-                          >
-                            삭제
-                          </button>
-                        </td>
-                      </tr>
-                      {/* 상세 정보 확장 행 */}
-                      {showDetail && selectedMember?.MEMBER_ID === m.MEMBER_ID && (
-                        <tr>
-                          <td colSpan="11" style={{ padding: 0, backgroundColor: '#f9fafb' }}>
-                            <div className="detail-panel-inline">
-                              <div className="detail-panel-header">
-                                <div className="detail-panel-title">
-                                  회원 상세 정보
-                                </div>
-                              </div>
-                              <div style={{ marginBottom: '6px' }}>
-                                <span className="badge-soft">회원ID : {selectedMember.MEMBER_ID}</span>
-                              </div>
-                              <div className="detail-grid">
-                                <div className="detail-label">회원ID</div>
-                                <div className="detail-value">{selectedMember.MEMBER_ID}</div>
-
-                                <div className="detail-label">로그인타입</div>
-                                <div className="detail-value">{getLoginTypePill(selectedMember.LOGIN_TYPE)}</div>
-
-                                <div className="detail-label">이름</div>
-                                <div className="detail-value">{selectedMember.USER_NAME}</div>
-
-                                <div className="detail-label">이메일</div>
-                                <div className="detail-value">{selectedMember.EMAIL}</div>
-
-                                <div className="detail-label">연락처</div>
-                                <div className="detail-value">{selectedMember.PHONE}</div>
-
-                                <div className="detail-label">생년월일</div>
-                                <div className="detail-value">{formatDate(selectedMember.BORN_DATE)}</div>
-
-                                <div className="detail-label">성별</div>
-                                <div className="detail-value">{selectedMember.GENDER === 'M' ? '남성' : '여성'}</div>
-
-                                <div className="detail-label">주소</div>
-                                <div className="detail-value">{selectedMember.ADDRESS}</div>
-
-                                <div className="detail-label">가입일</div>
-                                <div className="detail-value">{formatDate(selectedMember.CREATED_AT)}</div>
-                              </div>
-                            </div>
-                          </td>
-                        </tr>
-                      )}
-                    </React.Fragment>
+                    <tr key={m.MEMBER_ID}>
+                      <td className="text-center">{startIdx + idx + 1}</td>
+                      <td>{m.MEMBER_ID}</td>
+                      <td>{getLoginTypePill(m.LOGIN_TYPE)}</td>
+                      <td>{m.USER_NAME}</td>
+                      <td>{m.EMAIL}</td>
+                      <td>{m.PHONE}</td>
+                      <td>{formatDate(m.BORN_DATE)}</td>
+                      <td className="text-center">{m.GENDER === 'M' ? '남' : '여'}</td>
+                      <td>{m.ADDRESS}</td>
+                      <td>{formatDate(m.CREATED_AT)}</td>
+                      <td className="text-center">
+                        <button
+                          type="button"
+                          className="btn-sm primary"
+                          onClick={() => handleDetailClick(m.MEMBER_ID)}
+                        >
+                          상세
+                        </button>
+                      </td>
+                    </tr>
                   ))}
                 </tbody>
               </table>
@@ -507,6 +513,185 @@ const MemberManagement = () => {
           </div>
         </section>
       </section>
+
+      {/* 회원 상세 모달 */}
+      {isDetailModalOpen && selectedMember && (
+        <div className="modal-overlay" onClick={() => {
+          setIsDetailModalOpen(false);
+          setIsEditMode(false);
+        }}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>{isEditMode ? '회원 정보 수정' : '회원 상세'}</h3>
+              <button
+                className="modal-close"
+                onClick={() => {
+                  setIsDetailModalOpen(false);
+                  setIsEditMode(false);
+                }}
+              >
+                ✕
+              </button>
+            </div>
+
+            {!isEditMode ? (
+              /* 조회 모드 */
+              <>
+                <div className="modal-body">
+                  <div className="detail-section">
+                    <h4>기본 정보</h4>
+                    <div className="detail-grid">
+                      <div className="detail-item">
+                        <div className="detail-label">회원 ID</div>
+                        <div className="detail-value">{selectedMember.MEMBER_ID}</div>
+                      </div>
+                      <div className="detail-item">
+                        <div className="detail-label">로그인 타입</div>
+                        <div className="detail-value">{getLoginTypePill(selectedMember.LOGIN_TYPE)}</div>
+                      </div>
+                      <div className="detail-item">
+                        <div className="detail-label">이름</div>
+                        <div className="detail-value">{selectedMember.USER_NAME}</div>
+                      </div>
+                      <div className="detail-item">
+                        <div className="detail-label">성별</div>
+                        <div className="detail-value">{selectedMember.GENDER === 'M' ? '남성' : '여성'}</div>
+                      </div>
+                      <div className="detail-item">
+                        <div className="detail-label">생년월일</div>
+                        <div className="detail-value">{formatDate(selectedMember.BORN_DATE)}</div>
+                      </div>
+                      <div className="detail-item">
+                        <div className="detail-label">가입일</div>
+                        <div className="detail-value">{formatDate(selectedMember.CREATED_AT)}</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="detail-section">
+                    <h4>연락처 정보</h4>
+                    <div className="detail-grid">
+                      <div className="detail-item full-width">
+                        <div className="detail-label">이메일</div>
+                        <div className="detail-value">{selectedMember.EMAIL}</div>
+                      </div>
+                      <div className="detail-item full-width">
+                        <div className="detail-label">연락처</div>
+                        <div className="detail-value">{selectedMember.PHONE}</div>
+                      </div>
+                      <div className="detail-item full-width">
+                        <div className="detail-label">주소</div>
+                        <div className="detail-value">{selectedMember.ADDRESS}</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="modal-footer">
+                  <button className="edit-btn" onClick={handleEditFromDetail}>
+                    수정
+                  </button>
+                  <button className="delete-btn" onClick={handleDeleteFromDetail}>
+                    삭제
+                  </button>
+                </div>
+              </>
+            ) : (
+              /* 수정 모드 */
+              <form onSubmit={handleUpdateSubmit}>
+                <div className="modal-body">
+                  <div className="detail-section">
+                    <h4>기본 정보 (읽기 전용)</h4>
+                    <div className="detail-grid">
+                      <div className="detail-item">
+                        <div className="detail-label">회원 ID</div>
+                        <div className="detail-value">{selectedMember.MEMBER_ID}</div>
+                      </div>
+                      <div className="detail-item">
+                        <div className="detail-label">로그인 타입</div>
+                        <div className="detail-value">{getLoginTypePill(selectedMember.LOGIN_TYPE)}</div>
+                      </div>
+                      <div className="detail-item">
+                        <div className="detail-label">성별</div>
+                        <div className="detail-value">{selectedMember.GENDER === 'M' ? '남성' : '여성'}</div>
+                      </div>
+                      <div className="detail-item">
+                        <div className="detail-label">생년월일</div>
+                        <div className="detail-value">{formatDate(selectedMember.BORN_DATE)}</div>
+                      </div>
+                      <div className="detail-item">
+                        <div className="detail-label">가입일</div>
+                        <div className="detail-value">{formatDate(selectedMember.CREATED_AT)}</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="detail-section">
+                    <h4>수정 가능 정보</h4>
+                    <div className="form-group">
+                      <label className="form-label">이름</label>
+                      <input
+                        type="text"
+                        className="input"
+                        name="userName"
+                        value={editFormData.userName}
+                        onChange={handleEditInputChange}
+                        required
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">이메일</label>
+                      <input
+                        type="email"
+                        className="input"
+                        name="email"
+                        value={editFormData.email}
+                        onChange={handleEditInputChange}
+                        required
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">연락처</label>
+                      <input
+                        type="tel"
+                        className="input"
+                        name="phone"
+                        value={editFormData.phone}
+                        onChange={handleEditInputChange}
+                        required
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">주소</label>
+                      <input
+                        type="text"
+                        className="input"
+                        name="address"
+                        value={editFormData.address}
+                        onChange={handleEditInputChange}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="modal-footer">
+                  <button
+                    type="button"
+                    className="cancel-btn"
+                    onClick={() => setIsEditMode(false)}
+                  >
+                    취소
+                  </button>
+                  <button type="submit" className="submit-btn">
+                    저장
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
       </main>
   );
 };

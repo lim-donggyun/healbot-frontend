@@ -4,6 +4,7 @@ import Header from '../components/layout/Header';
 import Dashboard from '../components/sections/AdminPage/Dashboard';
 import MemberManagement from '../components/sections/AdminPage/MemberManagement';
 import Notice from '../components/sections/AdminPage/Notice';
+import HospitalManagement from '../components/sections/AdminPage/HospitalManagement';
 import './AdminPage.css';
 
 const AdminPage = () => {
@@ -16,6 +17,9 @@ const AdminPage = () => {
     }
     if (location.pathname === '/admin/notice') {
       return <Notice />;
+    }
+    if (location.pathname === '/admin/hospitals') {
+      return <HospitalManagement />;
     }
     return <Dashboard />;
   };
