@@ -1,5 +1,5 @@
 // src/pages/MyPage.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./MyPage.css";
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
@@ -7,7 +7,44 @@ import { useNavigate } from "react-router-dom";
 
 const MyPage = () => {
 const [isModalOpen, setIsModalOpen] = useState(false);
+const [profile, setProfile] = useState(null);
+const [loading, setLoading] = useState(true);
+
 const navigate = useNavigate();
+
+// 🔹 프로필 조회
+useEffect(() => {
+    const fetchProfile = async () => {
+    try {
+        const res = await fetch("/react/api/member/profile", {
+        method: "GET",
+        });
+
+        if (res.status === 401) {
+        // 인증 안 됨 → 로그인 페이지로
+        alert("로그인이 필요합니다.");
+        navigate("/login");
+        return;
+        }
+
+        if (!res.ok) {
+        console.error("프로필 조회 실패:", res.status);
+        alert("프로필 정보를 불러오지 못했습니다.");
+        return;
+        }
+
+        const data = await res.json();
+        setProfile(data);
+    } catch (err) {
+        console.error("프로필 조회 오류:", err);
+        alert("프로필 조회 중 오류가 발생했습니다.");
+    } finally {
+        setLoading(false);
+    }
+    };
+
+    fetchProfile();
+}, [navigate]);
 
 // 프로필 정보 페이지로 이동
 const handleProfileClick = (e) => {
@@ -33,7 +70,7 @@ const closeModal = () => {
     setIsModalOpen(false);
 };
 
-// 모달에서 "탈퇴하기" 눌렀을 때 → 탈퇴 페이지로 라우팅
+// 모달에서 "탈퇴하기" → 탈퇴 페이지로 이동
 const confirmDelete = () => {
     setIsModalOpen(false);
     navigate("/mypage/delete");
@@ -45,6 +82,19 @@ const handleModalBackgroundClick = (e) => {
     closeModal();
     }
 };
+
+// 🔹 표시용 값들 (null 안전 처리)
+const userName = profile?.userName || "회원";
+const userInitial = userName.charAt(0);
+const email = profile?.email || "-";
+const phone = profile?.phone || "-";
+
+// 가입일은 백엔드에서 내려주면 사용, 없으면 대체 텍스트
+const rawJoinDate = profile?.joinDate || profile?.createdAt || profile?.createDate || null;
+const joinDate =
+    rawJoinDate && typeof rawJoinDate === "string"
+    ? rawJoinDate.slice(0, 10).replace(/-/g, ".")
+    : "가입일 정보 없음";
 
 return (
     <>
@@ -59,74 +109,89 @@ return (
             <p className="mypage-subtitle">계정 정보와 활동을 관리하세요</p>
             </div>
             <div className="mypage-user-info">
-            <div className="user-avatar">장</div>
-            <span className="user-name">장원영님</span>
+            <div className="user-avatar">{userInitial}</div>
+            <span className="user-name">{userName}님</span>
             </div>
         </div>
 
-        {/* 프로필 카드 */}
-        <section className="profile-card">
+        {/* 로딩 중일 때 간단 표시 */}
+        {loading && (
+            <section className="profile-card">
             <div className="profile-header">
-            <div className="profile-avatar">장</div>
-            <div className="profile-info">
-                <h2>장원영</h2>
-                <p>회원님 환영합니다!</p>
+                <div className="profile-avatar">...</div>
+                <div className="profile-info">
+                <h2>정보 불러오는 중...</h2>
+                <p>잠시만 기다려 주세요.</p>
+                </div>
             </div>
+            </section>
+        )}
+
+        {/* 프로필 카드 */}
+        {!loading && (
+            <section className="profile-card">
+            <div className="profile-header">
+                <div className="profile-avatar">{userInitial}</div>
+                <div className="profile-info">
+                <h2>{userName}</h2>
+                <p>회원님 환영합니다!</p>
+                </div>
             </div>
 
             <div className="info-grid">
-            <div className="info-item">
+                <div className="info-item">
                 <div className="info-icon">
-                <svg fill="none" stroke="#2563eb" viewBox="0 0 24 24">
+                    <svg fill="none" stroke="#2563eb" viewBox="0 0 24 24">
                     <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
                     />
-                </svg>
+                    </svg>
                 </div>
                 <div className="info-content">
-                <div className="info-label">이메일</div>
-                <div className="info-value">example@email.com</div>
+                    <div className="info-label">이메일</div>
+                    <div className="info-value">{email}</div>
                 </div>
-            </div>
+                </div>
 
-            <div className="info-item">
+                <div className="info-item">
                 <div className="info-icon">
-                <svg fill="none" stroke="#16a34a" viewBox="0 0 24 24">
+                    <svg fill="none" stroke="#16a34a" viewBox="0 0 24 24">
                     <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
                     />
-                </svg>
+                    </svg>
                 </div>
                 <div className="info-content">
-                <div className="info-label">연락처</div>
-                <div className="info-value">010-1234-5678</div>
+                    <div className="info-label">연락처</div>
+                    <div className="info-value">{phone}</div>
                 </div>
-            </div>
+                </div>
 
-            <div className="info-item">
+                <div className="info-item">
                 <div className="info-icon">
-                <svg fill="none" stroke="#7c3aed" viewBox="0 0 24 24">
+                    <svg fill="none" stroke="#7c3aed" viewBox="0 0 24 24">
                     <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                     />
-                </svg>
+                    </svg>
                 </div>
                 <div className="info-content">
-                <div className="info-label">가입일</div>
-                <div className="info-value">2024.01.15</div>
+                    <div className="info-label">가입일</div>
+                    <div className="info-value">{joinDate}</div>
+                </div>
                 </div>
             </div>
-            </div>
-        </section>
+            </section>
+        )}
 
         {/* 메뉴 섹션 */}
         <section className="menu-section">
