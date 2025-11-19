@@ -38,7 +38,6 @@ function SymptomSearchNew() {
   const [aiInput, setAiInput] = useState("");
   const [isAiLoading, setIsAiLoading] = useState(false);
   const [showOtherParts, setShowOtherParts] = useState(false);
-  const [displayedBodyImage, setDisplayedBodyImage] = useState(null);
   const popoverRef = useRef(null);
   const triggerButtonRef = useRef(null);
 
@@ -110,13 +109,6 @@ function SymptomSearchNew() {
     } else {
       setSelectedBodyPart(partKey);
       setShowOtherParts(false);
-
-      // 머리 부위 클릭 시 이미지 표시
-      if (partKey === "머리") {
-        setDisplayedBodyImage("https://www.amc.seoul.kr/asan/images/healthinfo/@imgBodySearch0.jpg");
-      } else {
-        setDisplayedBodyImage(null);
-      }
     }
   };
 
@@ -261,19 +253,7 @@ function SymptomSearchNew() {
 
         {/* 신체 부위와 증상 선택 영역 */}
         <div className="symptom-selection-container">
-          {/* 왼쪽: 인체 이미지 영역 */}
-          <div className="body-image-area">
-            <div className="body-placeholder">
-              {displayedBodyImage ? (
-                <img src={displayedBodyImage} alt="신체 부위" className="body-part-image" />
-              ) : (
-                <p>신체 부위를 선택하세요</p>
-              )}
-            </div>
-          </div>
-
-          {/* 오른쪽: 탭과 증상 선택 영역 */}
-          <div className="symptoms-area">
+          <div className="symptoms-area-main">
             {/* 신체 부위 탭 */}
             <div className="body-parts-tabs">
               {bodyParts.map((part) => {
@@ -285,7 +265,6 @@ function SymptomSearchNew() {
                     displayLabel = selectedOtherPart.label;
                   }
                 }
-
                 return (
                   <button
                     key={part.key}
