@@ -229,7 +229,7 @@ function Header() {
                     <div className="dropdown-column">
                       <div className="dropdown-column-title">질병 정보</div>
                       <a href="/disease-result">질병 백과</a>
-                      <a href="/health-info?cat=chronic">만성질환</a>
+                      <a href="/chronic-diseases">만성질환</a>
                       <a href="/health-info?cat=infection">감염병</a>
                     </div>
                     <div className="dropdown-column">

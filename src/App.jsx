@@ -10,6 +10,7 @@ import AdminPage from "./pages/AdminPage";
 import DiseaseResultPage from "./pages/DiseaseResultPage";
 import SearchResultPage from "./pages/SearchResultPage";
 import MyPage from "./pages/Mypage";
+import ChronicDiseasePage from "./pages/ChronicDiseasePage";
 import Terms from "./pages/static/Terms";
 import Privacy from "./pages/static/Privacy";
 import Partners from "./pages/static/Partners";
@@ -55,6 +56,7 @@ function App() {
         <Route path="/admin/notice" element={<AdminPage />} />
         <Route path="/disease-result" element={<DiseaseResultPage />} />
         <Route path="/search-result" element={<SearchResultPage />} />
+        <Route path="/chronic-diseases" element={<ChronicDiseasePage />} />
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/terms" element={<Terms />} />
         <Route path="/privacy" element={<Privacy />} />
