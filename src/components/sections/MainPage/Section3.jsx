@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import StressTestModal from "../../modals/SelfTest/StressTestModal";
 import DepressionTestModal from "../../modals/SelfTest/DepressionTestModal";
 import AnxietyTestModal from "../../modals/SelfTest/AnxietyTestModal";
@@ -61,6 +61,25 @@ function Section3() {
   const closeModal = () => {
     setActiveModal(null);
   };
+
+  // 모달 열릴 때 스크롤 막기
+  useEffect(() => {
+    if (activeModal) {
+      document.body.classList.add('modal-open');
+      document.body.style.setProperty('overflow', 'hidden', 'important');
+      document.documentElement.style.setProperty('overflow', 'hidden', 'important');
+    } else {
+      document.body.classList.remove('modal-open');
+      document.body.style.removeProperty('overflow');
+      document.documentElement.style.removeProperty('overflow');
+    }
+
+    return () => {
+      document.body.classList.remove('modal-open');
+      document.body.style.removeProperty('overflow');
+      document.documentElement.style.removeProperty('overflow');
+    };
+  }, [activeModal]);
 
   return (
     <>

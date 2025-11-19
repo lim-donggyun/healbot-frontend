@@ -1224,11 +1224,15 @@ body:has(.main-page)::-webkit-scrollbar {
   align-items: center;
 }
 
-.more-btn {
+.info-box .more-btn {
   font-size: 14px;
   color: #3284b1;
   cursor: pointer;
   font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
+  position: static;
+  transform: none;
 }
 
 .notice-list {
@@ -1508,6 +1512,12 @@ body:has(.main-page)::-webkit-scrollbar {
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: color 0.3s;
+}
+
+.symptom-modal-close-btn:hover {
+  background: transparent;
+  color: #dc3545;
 }
 
 .symptom-modal-body {

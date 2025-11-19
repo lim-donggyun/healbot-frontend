@@ -76,6 +76,25 @@ function SymptomSearchNew() {
     };
   }, [showOtherParts]);
 
+  // 증상 설명 모달 열릴 때 body 스크롤 막기
+  useEffect(() => {
+    if (showSymptomModal) {
+      document.body.classList.add('modal-open');
+      document.body.style.setProperty('overflow', 'hidden', 'important');
+      document.documentElement.style.setProperty('overflow', 'hidden', 'important');
+    } else {
+      document.body.classList.remove('modal-open');
+      document.body.style.removeProperty('overflow');
+      document.documentElement.style.removeProperty('overflow');
+    }
+
+    return () => {
+      document.body.classList.remove('modal-open');
+      document.body.style.removeProperty('overflow');
+      document.documentElement.style.removeProperty('overflow');
+    };
+  }, [showSymptomModal]);
+
   const handleBodyPartClick = (partKey, isExpandable, event) => {
     if (isExpandable) {
       if (event) {
