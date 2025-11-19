@@ -1,3 +1,6 @@
+// API 기본 URL (Vite 프록시 사용)
+const API_BASE_URL = "/react/api";
+
 // 전체 공지사항 목록 조회
 export const getAllNotices = async () => {
   try {
