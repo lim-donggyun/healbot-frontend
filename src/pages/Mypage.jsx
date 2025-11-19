@@ -109,8 +109,6 @@ return (
             <p className="mypage-subtitle">계정 정보와 활동을 관리하세요</p>
             </div>
             <div className="mypage-user-info">
-            <div className="user-avatar">{userInitial}</div>
-            <span className="user-name">{userName}님</span>
             </div>
         </div>
 

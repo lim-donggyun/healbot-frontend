@@ -2,11 +2,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./DeleteAccount.css";
+import Footer from "../../layout/Footer";
+import Header from "../../layout/Header";
 
 const DeleteAccount = () => {
 const navigate = useNavigate();
-const [password, setPassword] = useState("");
-const [reason, setReason] = useState("");
 const [isAgree, setIsAgree] = useState(false);
 const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -14,12 +14,7 @@ const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!isAgree) {
-    alert("안내사항을 확인하고 동의해 주세요.");
-    return;
-    }
-
-    if (!password.trim()) {
-    alert("비밀번호를 입력해 주세요.");
+    alert("안내 사항을 모두 확인하고 동의해 주세요.");
     return;
     }
 
@@ -31,16 +26,13 @@ const handleSubmit = async (e) => {
     try {
     setIsSubmitting(true);
 
-    // 🔹 실제 회원 탈퇴 API 주소에 맞게 수정해서 사용
     const res = await fetch("/react/api/member/delete", {
         method: "POST",
         headers: {
         "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-        password,
-        reason,
-        }),
+        // 필요하면 추가 파라미터 넣어서 사용
+        body: JSON.stringify({}),
     });
 
     if (!res.ok) {
@@ -50,14 +42,12 @@ const handleSubmit = async (e) => {
 
     const data = await res.json().catch(() => ({}));
 
-    // 백엔드 응답 형식에 맞게 성공 여부 처리 (예: { success: true })
     if (data.success === false) {
-        alert(data.message || "비밀번호가 일치하지 않거나 탈퇴에 실패했습니다.");
+        alert(data.message || "탈퇴 처리에 실패했습니다.");
         return;
     }
 
-    alert("회원 탈퇴가 완료되었습니다. 이용해 주셔서 감사합니다.");
-    // 세션 제거 후 메인으로 이동
+    alert("회원 탈퇴가 완료되었습니다.");
     navigate("/");
     window.location.reload();
     } catch (err) {
@@ -68,78 +58,66 @@ const handleSubmit = async (e) => {
     }
 };
 
+const handleCancel = () => {
+    navigate(-1); // 이전 페이지로
+};
+
 return (
-    <section className="mp-card mp-danger-card">
-    <h2 className="mp-card-title mp-danger-title">회원 탈퇴</h2>
-    <p className="mp-danger-desc">
-        회원 탈퇴 시 작성하신 리뷰, 적립 포인트 등 계정과 연결된 정보가
-        <strong> 복구 불가능하게 삭제</strong>될 수 있습니다.
-        <br />
-        탈퇴 전에 꼭 필요한 데이터는 미리 백업해 주세요.
-    </p>
+    <>
+    <Header />
+    <section className="da-wrap">
+    <form className="da-box" onSubmit={handleSubmit}>
+        <h2 className="da-title">
+        회원 탈퇴를 신청하기 전, 다음 내용을 꼭 확인해 주세요.
+        </h2>
 
-    <div className="mp-danger-box">
-        <ul className="mp-danger-list">
-        <li>탈퇴 후 동일 아이디로 재가입이 제한될 수 있습니다.</li>
-        <li>법령에 따라 일부 정보는 일정 기간 보관될 수 있습니다.</li>
-        <li>병원 리뷰 등 공개 게시물은 익명화 처리 후 남을 수 있습니다.</li>
+        <ul className="da-list">
+        <li>
+            고객 정보 및 개인형 서비스 이용 기록은 개인정보 처리 방침 기준에 따라
+            삭제됩니다.
+        </li>
+        <li>
+            보유하고 계신 적립금은 최근 정보에 등록된 계좌로 3~7 영업일 이내에 자동
+            입금 처리됩니다.
+        </li>
+        <li>
+            회원 탈퇴 후에는 동일 아이디 재사용이 제한될 수 있으며, 서비스 이용이
+            불가능합니다.
+        </li>
         </ul>
-    </div>
 
-    <form className="mp-danger-form" onSubmit={handleSubmit}>
-        <div className="mp-form-group mp-form-full">
-        <label className="mp-label" htmlFor="da-reason">
-            탈퇴 사유 (선택)
-        </label>
-        <textarea
-            id="da-reason"
-            className="mp-textarea"
-            rows={3}
-            placeholder="서비스 이용이 불편했던 점이나 개선이 필요한 부분이 있다면 적어주세요."
-            value={reason}
-            onChange={(e) => setReason(e.target.value)}
-        />
-        </div>
-
-        <div className="mp-form-group mp-form-full">
-        <label className="mp-label" htmlFor="da-password">
-            비밀번호 확인 *
-        </label>
-        <input
-            id="da-password"
-            type="password"
-            className="mp-input"
-            placeholder="현재 비밀번호를 입력해 주세요."
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            autoComplete="current-password"
-        />
-        </div>
-
-        <div className="mp-check-row">
-        <label className="mp-check-label">
+        <div className="da-check-row">
+        <label className="da-check-label">
             <input
             type="checkbox"
             checked={isAgree}
             onChange={(e) => setIsAgree(e.target.checked)}
             />
-            <span>
-            위 안내사항을 모두 확인했으며, 계정 삭제에 동의합니다.
-            </span>
+            <span>안내 사항을 모두 확인하였으며, 이에 동의합니다.</span>
         </label>
         </div>
 
-        <div className="mp-btn-row">
+        <div className="da-btn-row">
         <button
             type="submit"
-            className="mp-btn mp-btn-danger"
+            className="da-btn da-btn-primary"
             disabled={isSubmitting}
         >
-            {isSubmitting ? "처리 중..." : "정말 탈퇴하기"}
+            {isSubmitting ? "처리 중..." : "회원 탈퇴하기"}
+        </button>
+        <button
+            type="button"
+            className="da-btn da-btn-secondary"
+            onClick={handleCancel}
+        >
+            취소
         </button>
         </div>
     </form>
     </section>
+
+    <Footer />
+</>
 );
 };
 

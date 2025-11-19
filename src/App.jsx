@@ -23,6 +23,7 @@ import Inquiry from "./pages/support/Inquiry";
 import Profile from "./components/sections/MyPage/Profile";
 import MyReview from "./components/sections/MyPage/MyReview";
 import DeleteAccount from "./components/sections/MyPage/DeleteAccount";
+import Community from "./pages/Community";
 
 // 페이지 전환 시 스크롤을 맨 위로 리셋하는 컴포넌트
 function ScrollToTop() {
@@ -72,6 +73,7 @@ function App() {
         <Route path="/mypage/profile" element={<Profile />} />
         <Route path="/mypage/reviews" element={<MyReview />} />
         <Route path="/mypage/delete" element={<DeleteAccount />} />
+        <Route path="/community" element={<Community />} />
       </Routes>
     </Router>
   );
