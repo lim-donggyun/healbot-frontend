@@ -1,9 +1,9 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import AdminHeader from '../components/layout/AdminHeader';
-import Footer from '../components/layout/Footer';
 import Dashboard from '../components/sections/AdminPage/Dashboard';
 import MemberManagement from '../components/sections/AdminPage/MemberManagement';
+import Notice from '../components/sections/AdminPage/Notice';
 
 const AdminPage = () => {
   const location = useLocation();
@@ -13,6 +13,9 @@ const AdminPage = () => {
     if (location.pathname === '/admin/members') {
       return <MemberManagement />;
     }
+    if (location.pathname === '/admin/notice') {
+      return <Notice />;
+    }
     return <Dashboard />;
   };
 
@@ -20,7 +23,6 @@ const AdminPage = () => {
     <>
       <AdminHeader />
       {renderContent()}
-      <Footer />
     </>
   );
 };
