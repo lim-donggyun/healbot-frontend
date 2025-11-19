@@ -5,7 +5,7 @@ import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
 import ScrollToTop from "../components/common/ScrollToTop";
 import { symptomsByBodyPart } from "../data/symptomsData";
-import { searchSymptomsWithAI, searchDiseases, getPopularDiseases, getSymptomDetails } from "../utils/api";
+import { searchSymptomsWithAI, searchDiseases, getPopularDiseases, getSymptomDetails } from "../utils/diseasesApi";
 
 const bodyParts = [
   { key: "머리", label: "머리", tab: "머리" },

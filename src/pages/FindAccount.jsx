@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
 import ScrollToTop from "../components/common/ScrollToTop";
-import { findId, verifyIdAndEmail, resetPassword } from "../utils/api";
+import { findId, verifyIdAndEmail, resetPassword } from "../utils/memberApi";
 import "./FindAccount.css";
 
 const FindAccount = () => {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { symptomsByBodyPart } from "../../../data/symptomsData";
-import { searchSymptomsWithAI, searchDiseases, getSymptomDetails } from "../../../utils/api";
+import { searchSymptomsWithAI, searchDiseases, getSymptomDetails } from "../../../utils/diseasesApi";
 
 const bodyParts = [
   { key: "머리", label: "머리", tab: "머리" },

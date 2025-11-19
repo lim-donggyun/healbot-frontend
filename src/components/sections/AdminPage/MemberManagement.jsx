@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getAllMembers, deleteMember } from '../../../utils/api';
+import { getAllMembers, deleteMember } from '../../../utils/adminApi';
 import '../../../pages/MainPage.css';
 import './MemberManagement.css';
 

@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
 import ScrollToTop from "../components/common/ScrollToTop";
-import { searchDiseases } from "../utils/api";
+import { searchDiseases } from "../utils/diseasesApi";
 import { FaSearch, FaLightbulb, FaHospital, FaPills, FaBell, FaComments } from "react-icons/fa";
 import "./SearchResultPage.css";
 

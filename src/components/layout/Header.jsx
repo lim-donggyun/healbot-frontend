@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { checkSession, searchAll } from "../../utils/api";
+import { checkSession } from "../../utils/memberApi";
+import { searchAll } from "../../utils/searchApi";
 import "./Header.css";
 
 function Header() {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../../../pages/Signup.css";
-import { signup, checkIdAvailability } from "../../../utils/api";
+import { signup, checkIdAvailability } from "../../../utils/memberApi";
 
 const Step2 = ({ formData, updateFormData, nextStep, prevStep, socialId }) => {
   const [userId, setUserId] = useState(formData.userId || "");

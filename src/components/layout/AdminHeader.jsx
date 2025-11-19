@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { checkSession } from "../../utils/api";
+import { checkSession } from "../../utils/memberApi";
 import "../../pages/MainPage.css";
 import "./AdminHeader.css";
 
