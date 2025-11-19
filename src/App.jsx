@@ -52,6 +52,7 @@ function App() {
         <Route path="/find-pass" element={<FindAccount />} />
         <Route path="/admin-dashboard" element={<AdminPage />} />
         <Route path="/admin/members" element={<AdminPage />} />
+        <Route path="/admin/hospitals" element={<AdminPage />} />
         <Route path="/admin/notice" element={<AdminPage />} />
         <Route path="/disease-result" element={<DiseaseResultPage />} />
         <Route path="/search-result" element={<SearchResultPage />} />

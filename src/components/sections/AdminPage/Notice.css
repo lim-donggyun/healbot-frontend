@@ -191,6 +191,57 @@
   box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.12);
 }
 
+/* 상세 모달 스타일 */
+.detail-section {
+  margin-bottom: 20px;
+}
+
+.detail-section h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #3284b1;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.detail-item.full-width {
+  grid-column: 1 / -1;
+}
+
+.detail-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #6c757d;
+}
+
+.detail-value {
+  font-size: 14px;
+  color: #333;
+}
+
+/* 삭제 버튼 */
+.btn-danger {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn-danger:hover {
+  background-color: #c82333;
+}
+
 /* 반응형 */
 @media (max-width: 720px) {
   .notice-detail-grid {

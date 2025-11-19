@@ -24,6 +24,29 @@ export const getAllMembers = async () => {
   }
 };
 
+// 회원 수정
+export const updateMember = async (memberId, memberData) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/admin/members/${encodeURIComponent(memberId)}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(memberData),
+    });
+
+    if (!response.ok) {
+      throw new Error("회원 수정 실패");
+    }
+
+    const data = await response.json();
+    return data; // { success: true/false }
+  } catch (error) {
+    console.error("회원 수정 에러:", error);
+    throw error;
+  }
+};
+
 // 회원 삭제
 export const deleteMember = async (memberId) => {
   try {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getAllNotices, createNotice, deleteNotice } from '../../../utils/noticeApi';
+import { getAllNotices, createNotice, updateNotice, deleteNotice } from '../../../utils/noticeApi';
 import Sidebar from './Sidebar';
 import '../../../pages/MainPage.css';
 import './Notice.css';
@@ -14,8 +14,14 @@ const Notice = () => {
   const [keyword, setKeyword] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('ALL');
   const [selectedNotice, setSelectedNotice] = useState(null);
-  const [showDetail, setShowDetail] = useState(false);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [editFormData, setEditFormData] = useState({
+    title: '',
+    content: '',
+    category: 'NOTICE'
+  });
   const [newNotice, setNewNotice] = useState({
     title: '',
     content: '',
@@ -127,30 +133,74 @@ const Notice = () => {
     setCurrentPage(1);
   };
 
-  // 상세보기 토글
+  // 상세보기 모달 열기
   const handleDetailClick = (noticeId) => {
-    if (selectedNotice?.NOTICE_ID === noticeId && showDetail) {
-      setShowDetail(false);
-      setSelectedNotice(null);
-    } else {
-      const notice = notices.find(n => n.NOTICE_ID === noticeId);
-      if (notice) {
-        setSelectedNotice(notice);
-        setShowDetail(true);
-      }
+    const notice = notices.find(n => n.NOTICE_ID === noticeId);
+    if (notice) {
+      setSelectedNotice(notice);
+      setIsDetailModalOpen(true);
+      setIsEditMode(false);
     }
   };
 
-  // 공지사항 삭제
-  const handleDeleteClick = async (noticeId) => {
-    const notice = notices.find(n => n.NOTICE_ID === noticeId);
-    if (!notice) return;
+  // 수정 모드로 전환
+  const handleEditFromDetail = () => {
+    setEditFormData({
+      title: selectedNotice.TITLE,
+      content: selectedNotice.CONTENT,
+      category: selectedNotice.CATEGORY
+    });
+    setIsEditMode(true);
+  };
 
-    const confirmed = window.confirm(`정말로 '${notice.TITLE}' 공지사항을 삭제하시겠습니까?`);
+  // 수정 폼 입력 처리
+  const handleEditInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  // 수정 저장
+  const handleUpdateSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const result = await updateNotice(selectedNotice.NOTICE_ID, editFormData);
+      if (result.success) {
+        alert('공지사항이 수정되었습니다.');
+        // 목록 새로고침
+        const data = await getAllNotices();
+        const convertedData = data.map(notice => ({
+          NOTICE_ID: notice.noticeId,
+          TITLE: notice.title,
+          CONTENT: notice.content,
+          CATEGORY: notice.category,
+          CREATED_AT: notice.createdAt,
+          VIEWS: notice.views || 0
+        }));
+
+        setNotices(convertedData);
+        setFilteredNotices(convertedData);
+        setIsDetailModalOpen(false);
+        setIsEditMode(false);
+      } else {
+        alert('공지사항 수정에 실패했습니다.');
+      }
+    } catch (error) {
+      console.error('공지사항 수정 실패:', error);
+      alert('공지사항 수정 중 오류가 발생했습니다.');
+    }
+  };
+
+  // 공지사항 삭제 (상세 모달에서)
+  const handleDeleteFromDetail = async () => {
+    const confirmed = window.confirm(`정말로 '${selectedNotice.TITLE}' 공지사항을 삭제하시겠습니까?`);
     if (!confirmed) return;
 
     try {
-      const result = await deleteNotice(noticeId);
+      const result = await deleteNotice(selectedNotice.NOTICE_ID);
       if (result.success) {
         alert('공지사항이 삭제되었습니다.');
         // 삭제 후 목록 새로고침
@@ -166,8 +216,7 @@ const Notice = () => {
 
         setNotices(convertedData);
         setFilteredNotices(convertedData);
-        setSelectedNotice(null);
-        setShowDetail(false);
+        setIsDetailModalOpen(false);
       } else {
         alert('공지사항 삭제에 실패했습니다.');
       }
@@ -414,64 +463,22 @@ const Notice = () => {
                 </thead>
                 <tbody>
                   {pageItems.map((n, idx) => (
-                    <React.Fragment key={n.NOTICE_ID}>
-                      <tr>
-                        <td className="text-center">{startIdx + idx + 1}</td>
-                        <td>{n.TITLE}</td>
-                        <td>{getCategoryPill(n.CATEGORY)}</td>
-                        <td>{n.VIEWS}</td>
-                        <td>{formatDate(n.CREATED_AT)}</td>
-                        <td className="text-center">
-                          <button
-                            type="button"
-                            className="btn-sm primary"
-                            onClick={() => handleDetailClick(n.NOTICE_ID)}
-                          >
-                            {selectedNotice?.NOTICE_ID === n.NOTICE_ID && showDetail ? '닫기' : '상세보기'}
-                          </button>
-                          <button
-                            type="button"
-                            className="btn-sm danger"
-                            onClick={() => handleDeleteClick(n.NOTICE_ID)}
-                          >
-                            삭제
-                          </button>
-                        </td>
-                      </tr>
-                      {/* 상세 정보 확장 행 */}
-                      {showDetail && selectedNotice?.NOTICE_ID === n.NOTICE_ID && (
-                        <tr>
-                          <td colSpan="7" style={{ padding: 0, backgroundColor: '#f9fafb' }}>
-                            <div className="detail-panel-inline">
-                              <div className="detail-panel-header">
-                                <div className="detail-panel-title">
-                                  공지사항 상세 정보
-                                </div>
-                              </div>
-                              <div style={{ marginBottom: '12px' }}>
-                                <span className="badge-soft">공지 ID : {selectedNotice.NOTICE_ID}</span>
-                              </div>
-                              <div className="notice-detail-grid">
-                                <div className="detail-label">제목</div>
-                                <div className="detail-value">{selectedNotice.TITLE}</div>
-
-                                <div className="detail-label">카테고리</div>
-                                <div className="detail-value">{getCategoryPill(selectedNotice.CATEGORY)}</div>
-
-                                <div className="detail-label">조회수</div>
-                                <div className="detail-value">{selectedNotice.VIEWS}</div>
-
-                                <div className="detail-label">등록일</div>
-                                <div className="detail-value">{formatDate(selectedNotice.CREATED_AT)}</div>
-
-                                <div className="detail-label">내용</div>
-                                <div className="detail-value notice-content">{selectedNotice.CONTENT}</div>
-                              </div>
-                            </div>
-                          </td>
-                        </tr>
-                      )}
-                    </React.Fragment>
+                    <tr key={n.NOTICE_ID}>
+                      <td className="text-center">{startIdx + idx + 1}</td>
+                      <td>{n.TITLE}</td>
+                      <td>{getCategoryPill(n.CATEGORY)}</td>
+                      <td>{n.VIEWS}</td>
+                      <td>{formatDate(n.CREATED_AT)}</td>
+                      <td className="text-center">
+                        <button
+                          type="button"
+                          className="btn-sm primary"
+                          onClick={() => handleDetailClick(n.NOTICE_ID)}
+                        >
+                          상세
+                        </button>
+                      </td>
+                    </tr>
                   ))}
                 </tbody>
               </table>
@@ -541,6 +548,130 @@ const Notice = () => {
                 등록
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* 공지사항 상세 모달 */}
+      {isDetailModalOpen && selectedNotice && (
+        <div className="modal-overlay" onClick={() => {
+          setIsDetailModalOpen(false);
+          setIsEditMode(false);
+        }}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>{isEditMode ? '공지사항 수정' : '공지사항 상세'}</h3>
+              <button
+                className="modal-close"
+                onClick={() => {
+                  setIsDetailModalOpen(false);
+                  setIsEditMode(false);
+                }}
+              >
+                ✕
+              </button>
+            </div>
+
+            {!isEditMode ? (
+              /* 조회 모드 */
+              <>
+                <div className="modal-body">
+                  <div className="detail-section">
+                    <h4>기본 정보</h4>
+                    <div className="detail-grid">
+                      <div className="detail-item">
+                        <div className="detail-label">공지사항 ID</div>
+                        <div className="detail-value">{selectedNotice.NOTICE_ID}</div>
+                      </div>
+                      <div className="detail-item">
+                        <div className="detail-label">카테고리</div>
+                        <div className="detail-value">{getCategoryPill(selectedNotice.CATEGORY)}</div>
+                      </div>
+                      <div className="detail-item">
+                        <div className="detail-label">조회수</div>
+                        <div className="detail-value">{selectedNotice.VIEWS}</div>
+                      </div>
+                      <div className="detail-item">
+                        <div className="detail-label">등록일</div>
+                        <div className="detail-value">{formatDate(selectedNotice.CREATED_AT)}</div>
+                      </div>
+                      <div className="detail-item full-width">
+                        <div className="detail-label">제목</div>
+                        <div className="detail-value">{selectedNotice.TITLE}</div>
+                      </div>
+                      <div className="detail-item full-width">
+                        <div className="detail-label">내용</div>
+                        <div className="detail-value" style={{ whiteSpace: 'pre-wrap' }}>
+                          {selectedNotice.CONTENT}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="modal-footer">
+                  <button className="btn-outline btn" onClick={handleEditFromDetail}>
+                    수정
+                  </button>
+                  <button className="btn btn-danger" onClick={handleDeleteFromDetail}>
+                    삭제
+                  </button>
+                </div>
+              </>
+            ) : (
+              /* 수정 모드 */
+              <form onSubmit={handleUpdateSubmit}>
+                <div className="modal-body">
+                  <div className="form-group">
+                    <label className="form-label">제목</label>
+                    <input
+                      type="text"
+                      className="input"
+                      name="title"
+                      value={editFormData.title}
+                      onChange={handleEditInputChange}
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">카테고리</label>
+                    <select
+                      className="select"
+                      name="category"
+                      value={editFormData.category}
+                      onChange={handleEditInputChange}
+                    >
+                      <option value="NOTICE">공지</option>
+                      <option value="IMPORTANT">중요</option>
+                      <option value="UPDATE">업데이트</option>
+                      <option value="EVENT">이벤트</option>
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">내용</label>
+                    <textarea
+                      className="textarea"
+                      name="content"
+                      value={editFormData.content}
+                      onChange={handleEditInputChange}
+                      rows="10"
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="modal-footer">
+                  <button
+                    type="button"
+                    className="btn-outline btn"
+                    onClick={() => setIsEditMode(false)}
+                  >
+                    취소
+                  </button>
+                  <button type="submit" className="btn">
+                    저장
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
         </div>
       )}
