@@ -59,6 +59,7 @@ function DiseaseResultPage() {
   const [showSymptomModal, setShowSymptomModal] = useState(false);
   const [selectedSymptomInfo, setSelectedSymptomInfo] = useState({ name: "", description: "" });
   const [isLoadingSymptom, setIsLoadingSymptom] = useState(false);
+  const [displayedBodyImage, setDisplayedBodyImage] = useState("https://www.amc.seoul.kr/asan/images/healthinfo/@imgBodySearch0.jpg");
 
   // 데이터가 없으면 빈 배열로 초기화 (초기 페이지 표시)
   const diseaseList = diseaseData?.data || [];
@@ -150,6 +151,51 @@ function DiseaseResultPage() {
     } else {
       setSelectedBodyPart(partKey);
       setShowOtherParts(false);
+
+      // 신체 부위별 이미지 표시
+      if (partKey === "머리") {
+        setDisplayedBodyImage("https://www.amc.seoul.kr/asan/images/healthinfo/@imgBodySearch0.jpg");
+      } else if (partKey === "목") {
+        setDisplayedBodyImage("https://www.amc.seoul.kr/asan/images/healthinfo/@imgBodySearch1.jpg");
+      } else if (partKey === "가슴") {
+        setDisplayedBodyImage("https://www.amc.seoul.kr/asan/images/healthinfo/@imgBodySearch2.jpg");
+      } else if (partKey === "배") {
+        setDisplayedBodyImage("https://www.amc.seoul.kr/asan/images/healthinfo/@imgBodySearch3.jpg");
+      } else if (partKey === "등") {
+        setDisplayedBodyImage("https://www.amc.seoul.kr/asan/images/healthinfo/@imgBodySearch4.jpg");
+      } else if (partKey === "엉덩이") {
+        setDisplayedBodyImage("https://www.amc.seoul.kr/asan/images/healthinfo/@imgBodySearch5.jpg");
+      } else if (partKey === "팔") {
+        setDisplayedBodyImage("https://www.amc.seoul.kr/asan/images/healthinfo/@imgBodySearch6.jpg");
+      } else if (partKey === "다리") {
+        setDisplayedBodyImage("https://www.amc.seoul.kr/asan/images/healthinfo/@imgBodySearch7.jpg");
+      } else if (partKey === "눈") {
+        setDisplayedBodyImage("https://www.amc.seoul.kr/asan/images/healthinfo/@imgBodySearch8.jpg");
+      } else if (partKey === "귀") {
+        setDisplayedBodyImage("https://www.amc.seoul.kr/asan/images/healthinfo/@imgBodySearch9.jpg");
+      } else if (partKey === "코") {
+        setDisplayedBodyImage("https://www.amc.seoul.kr/asan/images/healthinfo/@imgBodySearch10.jpg");
+      } else if (partKey === "입") {
+        setDisplayedBodyImage("https://www.amc.seoul.kr/asan/images/healthinfo/@imgBodySearch11.jpg");
+      } else if (partKey === "전신") {
+        setDisplayedBodyImage("https://www.amc.seoul.kr/asan/images/healthinfo/@imgBodySearch12.jpg");
+      } else if (partKey === "피부") {
+        setDisplayedBodyImage("https://www.amc.seoul.kr/asan/images/healthinfo/@imgBodySearch13.jpg");
+      } else if (partKey === "유방") {
+        setDisplayedBodyImage("https://www.amc.seoul.kr/asan/images/healthinfo/@imgBodySearch14.jpg");
+      } else if (partKey === "생식기") {
+        setDisplayedBodyImage("https://www.amc.seoul.kr/asan/images/healthinfo/@imgBodySearch15.jpg");
+      } else if (partKey === "골반") {
+        setDisplayedBodyImage("https://www.amc.seoul.kr/asan/images/healthinfo/@imgBodySearch16.jpg");
+      } else if (partKey === "손") {
+        setDisplayedBodyImage("https://www.amc.seoul.kr/asan/images/healthinfo/@imgBodySearch17.jpg");
+      } else if (partKey === "발") {
+        setDisplayedBodyImage("https://www.amc.seoul.kr/asan/images/healthinfo/@imgBodySearch18.jpg");
+      } else if (partKey === "기타") {
+        setDisplayedBodyImage("https://www.amc.seoul.kr/asan/images/healthinfo/@imgBodySearch19.jpg");
+      } else {
+        setDisplayedBodyImage(null);
+      }
     }
   };
 
@@ -332,7 +378,13 @@ function DiseaseResultPage() {
             <div className="symptom-selection-container">
               {/* 왼쪽: 인체 이미지 영역 */}
               <div className="body-image-area">
-                <div className="body-placeholder">{/* 여기에 나중에 이미지가 들어갈 자리 */}</div>
+                <div className="body-placeholder">
+                  {displayedBodyImage ? (
+                    <img src={displayedBodyImage} alt="신체 부위" className="body-part-image" />
+                  ) : (
+                    <p>신체 부위를 선택하세요</p>
+                  )}
+                </div>
               </div>
 
               {/* 오른쪽: 탭과 증상 선택 영역 */}
