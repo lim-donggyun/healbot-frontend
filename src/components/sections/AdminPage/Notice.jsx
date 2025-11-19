@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getAllNotices, createNotice, deleteNotice } from '../../../utils/api';
+import { getAllNotices, createNotice, deleteNotice } from '../../../utils/noticeApi';
 import '../../../pages/MainPage.css';
 import './Notice.css';
 
