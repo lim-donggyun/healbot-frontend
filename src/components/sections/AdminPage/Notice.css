@@ -1,5 +1,220 @@
 /* Notice.css - 공지사항 관리 페이지 전용 스타일 */
 
+/* 공지사항 관리 */
+.notice-management {
+  padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.notice-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.notice-header h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #333;
+  margin: 0;
+}
+
+.notice-count {
+  color: #3284b1;
+  font-weight: 700;
+}
+
+.add-notice-btn {
+  padding: 10px 20px;
+  background-color: #3284b1;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.add-notice-btn:hover {
+  background-color: #2a6d94;
+}
+
+.notice-search-filters {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.notice-search-filters .search-input {
+  flex: 2;
+  padding: 10px 14px;
+  border: 1px solid #dee2e6;
+  border-radius: 5px;
+  font-size: 14px;
+  transition: all 0.3s;
+  height: 44px;
+  box-sizing: border-box;
+}
+
+.notice-search-filters .search-input:focus {
+  outline: none;
+  border-color: #3284b1;
+  box-shadow: 0 0 0 3px rgba(50, 132, 177, 0.1);
+}
+
+.notice-search-filters .filter-group {
+  display: flex;
+  gap: 10px;
+}
+
+.notice-search-filters .filter-select {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1px solid #dee2e6;
+  border-radius: 5px;
+  font-size: 14px;
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.3s;
+  height: 44px;
+  box-sizing: border-box;
+}
+
+.notice-search-filters .filter-select:hover {
+  border-color: #3284b1;
+}
+
+.notice-search-filters .filter-select:focus {
+  outline: none;
+  border-color: #3284b1;
+  box-shadow: 0 0 0 3px rgba(50, 132, 177, 0.1);
+}
+
+/* 공지사항 테이블 스타일 */
+.notice-table-container {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.notice-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.notice-table thead {
+  background-color: #f8f9fa;
+}
+
+.notice-table th {
+  padding: 12px;
+  text-align: center;
+  font-weight: 600;
+  color: #495057;
+  border-bottom: 2px solid #dee2e6;
+  font-size: 14px;
+}
+
+.notice-table th:nth-child(1) {
+  width: 10%;
+}
+
+.notice-table th:nth-child(2) {
+  width: 45%;
+}
+
+.notice-table th:nth-child(3) {
+  width: 15%;
+}
+
+.notice-table th:nth-child(4) {
+  width: 15%;
+}
+
+.notice-table th:nth-child(5) {
+  width: 15%;
+}
+
+.notice-table td {
+  padding: 12px;
+  border-bottom: 1px solid #dee2e6;
+  font-size: 14px;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+}
+
+.notice-table tbody tr {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.notice-table tbody tr:hover {
+  background-color: #e3f2fd;
+  transform: scale(1.01);
+  box-shadow: 0 2px 8px rgba(50, 132, 177, 0.15);
+}
+
+/* 페이지네이션 */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  margin-top: 20px;
+}
+
+.page-btn {
+  min-width: 40px;
+  height: 40px;
+  padding: 0 12px;
+  border: none;
+  background-color: transparent;
+  color: #495057;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.page-btn.arrow-btn {
+  padding: 0 16px;
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0 5px;
+}
+
+.page-btn:hover {
+  color: #3284b1;
+}
+
+.page-btn.active {
+  background-color: #3284b1;
+  color: white;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+}
+
+.page-btn.disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.page-btn.disabled:hover {
+  color: #495057;
+}
+
 /* 카테고리 뱃지 */
 .category-pill {
   display: inline-flex;
