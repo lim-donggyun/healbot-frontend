@@ -68,7 +68,7 @@ const handleSubmit = async (e) => {
     };
 
     // 🔥 반드시 이렇게 바꿔야 함!!
-    const res = await fetch("/react/api/community/posts", {   // ✅ 컨트롤러랑 딱 맞음
+    const res = await fetch("/react/api/community/posts", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
@@ -79,15 +79,11 @@ const handleSubmit = async (e) => {
         return;
     }
 
-    const data = await res.json().catch(() => ({}));
+    const postId = await res.json();
 
     alert("게시글이 등록되었습니다.");
+    navigate(`/community/${postId}`);
 
-    if (data.postId) {
-        navigate(`/community/${data.postId}`);
-    } else {
-        navigate("/community");
-    }
     } catch (err) {
     console.error("글쓰기 요청 오류:", err);
     alert("게시글 등록 중 오류가 발생했습니다.");
