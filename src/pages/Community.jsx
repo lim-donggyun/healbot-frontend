@@ -1,64 +1,9 @@
 // src/pages/Community.jsx
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
 import "./Community.css";
-
-const MOCK_POSTS = [
-{
-    id: 1,
-    category: "notice",
-    title: "커뮤니티 오픈 안내",
-    content: "HealBot 커뮤니티가 정식 오픈했습니다. 이용 안내를 꼭 확인해 주세요.",
-    author: "운영자",
-    createdAt: "2025-11-10",
-    views: 123,
-    tags: ["공지", "이벤트"],
-},
-{
-    id: 2,
-    category: "free",
-    title: "야간 응급실 다녀온 후기 공유합니다",
-    content:
-    "어제 야간에 응급실 다녀왔는데, 예약/대기 시간 포함해서 경험을 정리해 봤어요.",
-    author: "healing**",
-    createdAt: "2025-11-18",
-    views: 87,
-    tags: ["응급실", "후기"],
-},
-{
-    id: 3,
-    category: "question",
-    title: "위염 진단받았는데 식단 어떻게 관리해야 하나요?",
-    content: "위염 진단받고 약 먹는 중인데, 무엇을 피해야 하는지 궁금합니다.",
-    author: "mint***",
-    createdAt: "2025-11-17",
-    views: 154,
-    tags: ["질문", "소화기내과"],
-},
-{
-    id: 4,
-    category: "review",
-    title: "서울 ○○병원 내시경센터 솔직 후기",
-    content:
-    "내시경 받을 병원 찾다가 여기 이용해 봤는데, 대기 동선이랑 안내가 괜찮았어요.",
-    author: "med***",
-    createdAt: "2025-11-15",
-    views: 64,
-    tags: ["병원후기", "내시경"],
-},
-{
-    id: 5,
-    category: "free",
-    title: "건강검진 전날 꿀팁 공유",
-    content: "공복 유지할 때 덜 힘들게 하는 방법 몇 가지 공유합니다.",
-    author: "check***",
-    createdAt: "2025-11-14",
-    views: 43,
-    tags: ["건강검진", "팁"],
-},
-];
 
 const CATEGORY_TABS = [
 { key: "all", label: "전체" },
@@ -71,40 +16,62 @@ const CATEGORY_TABS = [
 function Community() {
 const navigate = useNavigate();
 const [activeCategory, setActiveCategory] = useState("all");
+
+// 검색 인풋 / 실제 적용된 검색어 분리
 const [searchKeyword, setSearchKeyword] = useState("");
+const [appliedKeyword, setAppliedKeyword] = useState("");
 
-const filteredPosts = useMemo(() => {
-    let list = [...MOCK_POSTS];
+const [posts, setPosts] = useState([]);
+const [loading, setLoading] = useState(false);
+const [error, setError] = useState(null);
 
-    if (activeCategory !== "all") {
-    list = list.filter((p) => p.category === activeCategory);
+// 게시글 목록 조회
+useEffect(() => {
+    const fetchPosts = async () => {
+    try {
+        setLoading(true);
+        setError(null);
+
+        const params = new URLSearchParams();
+        params.append("category", activeCategory);
+        if (appliedKeyword.trim() !== "") {
+        params.append("keyword", appliedKeyword.trim());
+        }
+
+        const res = await fetch(`/react/api/community/posts?${params.toString()}`, {
+        method: "GET",
+        });
+
+        if (!res.ok) {
+        throw new Error("게시글을 불러오지 못했습니다.");
+        }
+
+        const data = await res.json(); // CommunityPostDto[]
+        setPosts(Array.isArray(data) ? data : []);
+    } catch (err) {
+        console.error("커뮤니티 목록 조회 오류:", err);
+        setError(err.message || "오류가 발생했습니다.");
+    } finally {
+        setLoading(false);
     }
+    };
 
-    if (searchKeyword.trim() !== "") {
-    const kw = searchKeyword.trim().toLowerCase();
-    list = list.filter(
-        (p) =>
-        p.title.toLowerCase().includes(kw) ||
-        p.content.toLowerCase().includes(kw) ||
-        p.author.toLowerCase().includes(kw)
-    );
-    }
-
-    // 최신 글이 위로 오도록 정렬 (createdAt 기준, 간단 문자열 정렬)
-    return list.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
-}, [activeCategory, searchKeyword]);
+    fetchPosts();
+}, [activeCategory, appliedKeyword]);
 
 const handleWriteClick = () => {
-    // 나중에 /community/write 만들면 여기 라우팅만 살리면 됨
-    // navigate("/community/write");
-    alert("글쓰기 페이지는 추후에 연결할 수 있게 남겨두었습니다.");
+    navigate("/community/write");
 };
 
 const handlePostClick = (postId) => {
-    // 나중에 /community/:id 디테일 페이지로 연결
-    // navigate(`/community/${postId}`);
-    alert(`게시글 상세 페이지는 추후에 /community/${postId} 로 연결하면 됩니다.`);
+    navigate(`/community/${postId}`);
 };
+
+const handleSearch = () => {
+    setAppliedKeyword(searchKeyword);
+};
+
+const filteredPosts = useMemo(() => posts, [posts]);
 
 return (
     <>
@@ -128,10 +95,16 @@ return (
                 placeholder="제목, 내용, 작성자를 검색해 보세요"
                 value={searchKeyword}
                 onChange={(e) => setSearchKeyword(e.target.value)}
+                onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                    e.preventDefault();
+                    handleSearch();
+                    }
+                }}
                 />
                 <button
                 type="button"
-                onClick={() => {}}
+                onClick={handleSearch}
                 className="community-search-btn"
                 >
                 <svg
@@ -178,20 +151,34 @@ return (
 
         {/* 게시글 리스트 */}
         <section className="community-list-section">
-            {filteredPosts.length === 0 ? (
+            {loading && (
+            <div className="community-empty">
+                <p>게시글을 불러오는 중입니다…</p>
+            </div>
+            )}
+
+            {error && !loading && (
+            <div className="community-empty">
+                <p>{error}</p>
+            </div>
+            )}
+
+            {!loading && !error && filteredPosts.length === 0 && (
             <div className="community-empty">
                 <p>아직 등록된 게시글이 없습니다.</p>
                 <p>첫 번째 글의 주인공이 되어 보세요.</p>
             </div>
-            ) : (
+            )}
+
+            {!loading && !error && filteredPosts.length > 0 && (
             <ul className="community-list">
                 {filteredPosts.map((post) => (
                 <li
-                    key={post.id}
+                    key={post.postId}
                     className={`community-card community-card-${
                     post.category === "notice" ? "notice" : "default"
                     }`}
-                    onClick={() => handlePostClick(post.id)}
+                    onClick={() => handlePostClick(post.postId)}
                 >
                     <div className="community-card-header">
                     <div className="community-card-badge-wrap">
@@ -216,11 +203,13 @@ return (
                     <div className="community-card-footer">
                     <div className="community-meta-left">
                         <span className="community-author">
-                        {post.author}
+                        {post.memberId}
                         </span>
                         <span className="community-dot">·</span>
                         <span className="community-date">
-                        {post.createdAt.replace(/-/g, ".")}
+                        {(post.createdAt || "")
+                            .substring(0, 10)
+                            .replace(/-/g, ".")}
                         </span>
                     </div>
                     <div className="community-meta-right">
@@ -230,15 +219,7 @@ return (
                     </div>
                     </div>
 
-                    {post.tags && post.tags.length > 0 && (
-                    <div className="community-tags">
-                        {post.tags.map((tag) => (
-                        <span key={tag} className="community-tag">
-                            #{tag}
-                        </span>
-                        ))}
-                    </div>
-                    )}
+                    {/* 태그는 DB에 없으니 일단 숨김 / 필요하면 나중에 컬럼 추가 */}
                 </li>
                 ))}
             </ul>
