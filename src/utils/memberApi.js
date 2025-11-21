@@ -174,3 +174,22 @@ export const checkSession = async () => {
     throw error;
   }
 };
+
+// 프로필 조회
+export const getProfile = async () => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/member/profile`, {
+      method: "GET",
+    });
+
+    if (!response.ok) {
+      throw new Error("프로필 조회 실패");
+    }
+
+    const data = await response.json();
+    return data; // ProfileResponse (userName, email, phone, address, etc.)
+  } catch (error) {
+    console.error("프로필 조회 에러:", error);
+    throw error;
+  }
+};
