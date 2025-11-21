@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import Header from '../../components/layout/Header';
 import Footer from '../../components/layout/Footer';
 import ScrollToTop from '../../components/common/ScrollToTop';
@@ -6,6 +7,7 @@ import { getAllNotices } from '../../utils/noticeApi';
 import './Notice.css';
 
 function Notice() {
+  const [searchParams] = useSearchParams();
   const [notices, setNotices] = useState([]);
   const [expandedNoticeId, setExpandedNoticeId] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -19,6 +21,21 @@ function Notice() {
         const data = await getAllNotices();
         setNotices(data);
         setError(null);
+
+        // URL 파라미터에서 noticeId 가져오기
+        const noticeIdFromUrl = searchParams.get('id');
+        if (noticeIdFromUrl) {
+          const noticeId = parseInt(noticeIdFromUrl);
+          setExpandedNoticeId(noticeId);
+
+          // 해당 공지사항으로 스크롤
+          setTimeout(() => {
+            const element = document.getElementById(`notice-${noticeId}`);
+            if (element) {
+              element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+          }, 100);
+        }
       } catch (err) {
         console.error('공지사항 로딩 실패:', err);
         setError('공지사항을 불러오는데 실패했습니다.');
@@ -28,7 +45,7 @@ function Notice() {
     };
 
     fetchNotices();
-  }, []);
+  }, [searchParams]);
 
   // 공지사항 클릭 시 확장/축소 토글
   const toggleNotice = (noticeId) => {
@@ -62,7 +79,7 @@ function Notice() {
           ) : (
             <div className="notice-list">
               {notices.map((notice) => (
-                <div key={notice.noticeId} className="notice-accordion-item">
+                <div key={notice.noticeId} id={`notice-${notice.noticeId}`} className="notice-accordion-item">
                   <div
                     className="notice-item"
                     onClick={() => toggleNotice(notice.noticeId)}

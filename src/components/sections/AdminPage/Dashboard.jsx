@@ -38,14 +38,17 @@ const Dashboard = () => {
           getDailyLoginCount()
         ]);
 
-        // 오늘 가입한 회원 수 계산
+        // 관리자 제외한 일반 회원만 필터링
+        const regularMembers = members.filter(member => member.adminYn !== 'Y');
+
+        // 오늘 가입한 회원 수 계산 (관리자 제외)
         const today = new Date().toISOString().split('T')[0];
-        const newToday = members.filter(member =>
+        const newToday = regularMembers.filter(member =>
           member.createdAt && member.createdAt.startsWith(today)
         ).length;
 
         setStats({
-          totalMembers: members.length,
+          totalMembers: regularMembers.length,
           totalHospitals: hospitals.length,
           totalNotices: notices.length,
           newToday: newToday
