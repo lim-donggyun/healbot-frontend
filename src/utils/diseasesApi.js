@@ -89,3 +89,22 @@ export const getSymptomDetails = async (symptomName) => {
     throw error;
   }
 };
+
+// 질병 이름으로 질병 정보 조회
+export const getDiseaseByName = async (diseaseName) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/diseases?name=${encodeURIComponent(diseaseName)}`, {
+      method: "GET",
+    });
+
+    if (!response.ok) {
+      throw new Error("질병 정보 조회 실패");
+    }
+
+    const data = await response.json();
+    return data; // Map 형태로 반환 (질환명, 진료과, 전체증상목록, 이미지, 설명, 환자수)
+  } catch (error) {
+    console.error("질병 정보 조회 에러:", error);
+    throw error;
+  }
+};

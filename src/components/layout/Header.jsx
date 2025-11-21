@@ -230,7 +230,7 @@ function Header() {
                       <div className="dropdown-column-title">질병 정보</div>
                       <a href="/disease-result">질병 백과</a>
                       <a href="/chronic-diseases">만성질환</a>
-                      <a href="/health-info?cat=infection">감염병</a>
+                      <a href="/infectious-diseases">감염병</a>
                     </div>
                     <div className="dropdown-column">
                       <div className="dropdown-column-title">건강 관리</div>
@@ -288,8 +288,6 @@ function Header() {
                       <rect x="7" y="4" width="10" height="16" rx="1" stroke="currentColor" strokeWidth="2" fill="none" className="door-frame" />
                       {/* 문짝 (왼쪽 경첩 기준으로 회전) */}
                       <rect x="7" y="4" width="10" height="16" rx="1" fill="currentColor" className="door" style={{ transformOrigin: '7px 12px' }} />
-                      {/* 문 손잡이 */}
-                      <circle cx="15" cy="12" r="0.8" fill="white" className="door-handle" />
                     </svg>
                   </button>
                 </>

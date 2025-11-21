@@ -70,14 +70,6 @@ header.menu-open #nav-icon2 span {
   transform: rotateY(-120deg);
 }
 
-.logout-icon .door-handle {
-  transition: opacity 0.3s ease;
-}
-
-.logout-icon-btn:hover .door-handle {
-  opacity: 0;
-}
-
 .logo {
   display: flex;
   align-items: center;
