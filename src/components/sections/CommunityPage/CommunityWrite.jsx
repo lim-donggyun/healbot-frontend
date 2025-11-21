@@ -68,10 +68,10 @@ const handleSubmit = async (e) => {
     };
 
     // 🔥 반드시 이렇게 바꿔야 함!!
-    const res = await fetch("/api/community/posts", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+    const res = await fetch("/react/api/community/posts", {   // ✅ 컨트롤러랑 딱 맞음
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
     });
 
     if (!res.ok) {
