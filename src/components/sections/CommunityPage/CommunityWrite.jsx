@@ -17,7 +17,6 @@ const navigate = useNavigate();
 const [category, setCategory] = useState("free");
 const [title, setTitle] = useState("");
 const [content, setContent] = useState("");
-const [tags, setTags] = useState("");
 const [isSubmitting, setIsSubmitting] = useState(false);
 
 // 로그인 체크
@@ -64,7 +63,6 @@ const handleSubmit = async (e) => {
         category,
         title: title.trim(),
         content: content.trim(),
-        tags: tags.trim(), // DB에 없지만 남겨두기
     };
 
     // 🔥 반드시 이렇게 바꿔야 함!!
@@ -145,16 +143,6 @@ return (
             <div className="cw-help-text">
                 의료기관·개인 실명 언급 및 비방성 내용은 삭제될 수 있습니다.
             </div>
-            </div>
-
-            <div className="cw-row">
-            <label className="cw-label">태그 (선택)</label>
-            <input
-                className="cw-input"
-                placeholder="예: 위염, 내시경, 건강검진"
-                value={tags}
-                onChange={(e) => setTags(e.target.value)}
-            />
             </div>
 
             <div className="cw-footer">
