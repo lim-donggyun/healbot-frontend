@@ -82,7 +82,7 @@ const handleSubmit = async (e) => {
     const postId = await res.json();
 
     alert("게시글이 등록되었습니다.");
-    navigate(`/community/${postId}`);
+    navigate("/community");
 
     } catch (err) {
     console.error("글쓰기 요청 오류:", err);

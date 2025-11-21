@@ -7,7 +7,6 @@ import "./Community.css";
 
 const CATEGORY_TABS = [
 { key: "all", label: "전체" },
-{ key: "notice", label: "공지" },
 { key: "free", label: "자유게시판" },
 { key: "question", label: "질문게시판" },
 { key: "review", label: "후기게시판" },
