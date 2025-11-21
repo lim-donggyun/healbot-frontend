@@ -1,0 +1,36 @@
+.operating-hours-input {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.day-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.day-label {
+  width: 50px;
+  font-weight: 500;
+}
+
+.day-row input[type="time"] {
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  padding: 4px 8px;
+}
+
+.day-row input[type="time"]:disabled {
+  background-color: #f8f9fa;
+  color: #6c757d;
+}
+
+.day-row label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+  cursor: pointer;
+}

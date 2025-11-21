@@ -24,12 +24,21 @@ export const getAllHospitals = async () => {
 // 병원 추가
 export const createHospital = async (hospitalData) => {
   try {
+    const headers = {};
+    let body;
+
+    if (hospitalData instanceof FormData) {
+      // When sending FormData with files, browser automatically sets Content-Type to multipart/form-data
+      body = hospitalData;
+    } else {
+      headers['Content-Type'] = 'application/json';
+      body = JSON.stringify(hospitalData);
+    }
+
     const response = await fetch(`${API_BASE_URL}/admin/hospitals`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(hospitalData),
+      headers: headers,
+      body: body,
     });
 
     if (!response.ok) {
@@ -46,12 +55,21 @@ export const createHospital = async (hospitalData) => {
 // 병원 수정
 export const updateHospital = async (hospitalId, hospitalData) => {
   try {
+    const headers = {};
+    let body;
+
+    if (hospitalData instanceof FormData) {
+      // When sending FormData with files, browser automatically sets Content-Type to multipart/form-data
+      body = hospitalData;
+    } else {
+      headers['Content-Type'] = 'application/json';
+      body = JSON.stringify(hospitalData);
+    }
+
     const response = await fetch(`${API_BASE_URL}/admin/hospitals/${hospitalId}`, {
       method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(hospitalData),
+      headers: headers,
+      body: body,
     });
 
     if (!response.ok) {
