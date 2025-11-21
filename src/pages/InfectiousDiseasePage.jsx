@@ -1,121 +1,121 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import "./ChronicDiseasePage.css";
+import "./InfectiousDiseasePage.css";
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
 import ScrollToTop from "../components/common/ScrollToTop";
 import { getDiseaseByName } from "../utils/diseasesApi";
 
-// 만성질환 목록 (카테고리와 이름만 하드코딩, 상세정보는 API로 가져오기)
-const chronicDiseasesList = [
+// 감염병 목록 (카테고리와 이름만 하드코딩, 상세정보는 API로 가져오기)
+const infectiousDiseasesList = [
   {
     id: 1,
-    name: "고혈압(Essential (primary) hypertension)",
-    category: "심혈관계",
+    name: "결핵(Tuberculosis)",
+    category: "세균성 감염",
   },
   {
     id: 2,
-    name: "당뇨병(Diabetes mellitus)",
-    category: "내분비계",
+    name: "폐렴(Pneumonia)",
+    category: "세균성 감염",
   },
   {
     id: 3,
-    name: "협심증(Angina pectoris)",
-    category: "심혈관계",
+    name: "인플루엔자(Influenza)",
+    category: "바이러스성 감염",
   },
   {
     id: 4,
-    name: "만성 전립선염(Chronic prostatitis)",
-    category: "비뇨기계",
+    name: "수두(Varicella (chickenpox))",
+    category: "바이러스성 감염",
   },
   {
     id: 5,
-    name: "만성 기관지염(Chronic bronchitis)",
-    category: "호흡기계",
+    name: "홍역(Measles)",
+    category: "바이러스성 감염",
   },
   {
     id: 6,
-    name: "골다공증(Osteoporosis)",
-    category: "근골격계",
+    name: "급성 A형 간염(Acute hepatitis A)",
+    category: "바이러스성 감염",
   },
   {
     id: 7,
-    name: "류마티스 관절염(Rheumatoid arthritis)",
-    category: "근골격계",
+    name: "급성 B형 간염(Acute hepatitis B)",
+    category: "바이러스성 감염",
   },
   {
     id: 8,
-    name: "위식도 역류성 질환(Gastro-esophagus reflux disease)",
-    category: "소화기계",
+    name: "급성 C형 간염(Acute hepatitis C)",
+    category: "바이러스성 감염",
   },
   {
     id: 9,
-    name: "갑상선기능저하증(Hypothyroidism)",
-    category: "내분비계",
+    name: "대상포진(Herpes zoster)",
+    category: "바이러스성 감염",
   },
   {
     id: 10,
-    name: "천식(Asthma)",
-    category: "호흡기계",
+    name: "백일해(Pertussis)",
+    category: "세균성 감염",
   },
   {
     id: 11,
-    name: "궤양성 대장염(Ulcerative colitis)",
-    category: "소화기계",
+    name: "콜레라(Cholera)",
+    category: "세균성 감염",
   },
   {
     id: 12,
-    name: "만성 위염(Chronic gastritis)",
-    category: "소화기계",
+    name: "장티푸스(typhoid fever)",
+    category: "세균성 감염",
   },
   {
     id: 13,
-    name: "통풍(Gout)",
-    category: "근골격계",
+    name: "말라리아(Malaria)",
+    category: "기생충 감염",
   },
   {
     id: 14,
-    name: "뇌전증(Epilepsy)",
-    category: "신경계",
+    name: "아메바성 이질(Amebic dysentery)",
+    category: "기생충 감염",
   },
   {
     id: 15,
-    name: "강직성 척추염(Ankylosing spondylitis)",
-    category: "근골격계",
+    name: "뎅기열(Dengue fever)",
+    category: "바이러스성 감염",
   },
   {
     id: 16,
-    name: "파킨슨병(Parkinson's disease)",
-    category: "신경계",
+    name: "파상풍(Tetanus)",
+    category: "세균성 감염",
   },
   {
     id: 17,
-    name: "알츠하이머병(Alzheimer's disease)",
-    category: "신경계",
+    name: "디프테리아(Diphtheritia)",
+    category: "세균성 감염",
   },
   {
     id: 18,
-    name: "만성 피로 증후군(Chronic Fatigue Syndrome)",
-    category: "내분비계",
+    name: "일본 뇌염(Japanese encephalitis)",
+    category: "바이러스성 감염",
   },
   {
     id: 19,
-    name: "만성 췌장염(Chronic pancreatitis)",
-    category: "소화기계",
+    name: "광견병(Rabies)",
+    category: "바이러스성 감염",
   },
   {
     id: 20,
-    name: "크론병(Crohn's disease)",
-    category: "소화기계",
+    name: "요충증(Enterobiasis)",
+    category: "기생충 감염",
   },
   {
     id: 21,
-    name: "요실금(Urinary incontinence)",
-    category: "비뇨기계",
+    name: "선모충증(Trichinellosis)",
+    category: "기생충 감염",
   },
 ];
 
-function ChronicDiseasePage() {
+function InfectiousDiseasePage() {
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [selectedDisease, setSelectedDisease] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState("전체");
@@ -124,12 +124,12 @@ function ChronicDiseasePage() {
   const navigate = useNavigate();
 
   // 카테고리별 필터링
-  const categories = ["전체", "심혈관계", "내분비계", "비뇨기계", "호흡기계", "근골격계", "소화기계", "신경계"];
+  const categories = ["전체", "세균성 감염", "바이러스성 감염", "기생충 감염"];
 
   const filteredDiseases =
     selectedCategory === "전체"
-      ? chronicDiseasesList
-      : chronicDiseasesList.filter((disease) => disease.category === selectedCategory);
+      ? infectiousDiseasesList
+      : infectiousDiseasesList.filter((disease) => disease.category === selectedCategory);
 
   // 질병 데이터 로드 (클릭 시)
   const loadDiseaseData = async (diseaseName) => {
@@ -162,23 +162,23 @@ function ChronicDiseasePage() {
   // 페이지 로드 시 모든 질병 데이터 미리 로드
   useEffect(() => {
     const loadAllDiseases = async () => {
-      const promises = chronicDiseasesList.map((disease) => loadDiseaseData(disease.name));
+      const promises = infectiousDiseasesList.map((disease) => loadDiseaseData(disease.name));
       await Promise.all(promises);
     };
     loadAllDiseases();
   }, []);
 
   return (
-    <div className="chronic-disease-page-wrapper">
+    <div className="infectious-disease-page-wrapper">
       <Header />
       <ScrollToTop />
 
-      <div className="chronic-disease-page-container">
+      <div className="infectious-disease-page-container">
         {/* 페이지 헤더 */}
-        <div className="chronic-page-header">
+        <div className="infectious-page-header">
           <div className="header-content">
-            <h1>만성질환 정보</h1>
-            <p className="header-subtitle">주요 만성질환에 대한 정보를 확인하세요</p>
+            <h1>감염병 정보</h1>
+            <p className="header-subtitle">주요 감염병에 대한 정보를 확인하세요</p>
           </div>
         </div>
 
@@ -197,8 +197,8 @@ function ChronicDiseasePage() {
         </div>
 
         {/* 질환 그리드 */}
-        <div className="chronic-disease-content">
-          <div className="chronic-disease-grid">
+        <div className="infectious-disease-content">
+          <div className="infectious-disease-grid">
             {filteredDiseases.map((disease) => {
               const diseaseData = diseasesData[disease.name];
               const isLoading = loadingDiseases[disease.name];
@@ -206,20 +206,20 @@ function ChronicDiseasePage() {
               return (
                 <div
                   key={disease.id}
-                  className="chronic-disease-card"
+                  className="infectious-disease-card"
                   onClick={() => handleDiseaseClick(disease)}
                   style={{ cursor: isLoading ? "wait" : "pointer" }}>
                   {diseaseData?.이미지 && (
-                    <div className="chronic-disease-image-container">
-                      <img src={diseaseData.이미지} alt={disease.name} className="chronic-disease-image" />
+                    <div className="infectious-disease-image-container">
+                      <img src={diseaseData.이미지} alt={disease.name} className="infectious-disease-image" />
                     </div>
                   )}
 
-                  <div className="chronic-disease-content-area">
-                    <div className="chronic-disease-category-badge">{disease.category}</div>
-                    <h3 className="chronic-disease-name">{disease.name}</h3>
+                  <div className="infectious-disease-content-area">
+                    <div className="infectious-disease-category-badge">{disease.category}</div>
+                    <h3 className="infectious-disease-name">{disease.name}</h3>
                     {diseaseData?.전체증상목록 && (
-                      <div className="chronic-disease-symptoms">
+                      <div className="infectious-disease-symptoms">
                         {diseaseData.전체증상목록
                           .split(", ")
                           .slice(0, 4)
@@ -304,4 +304,4 @@ function ChronicDiseasePage() {
   );
 }
 
-export default ChronicDiseasePage;
+export default InfectiousDiseasePage;

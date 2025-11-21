@@ -18,8 +18,12 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .loading-text {
@@ -37,7 +41,7 @@
 .hospital-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-end;
   margin-bottom: 20px;
 }
 
@@ -45,6 +49,12 @@
   font-size: 24px;
   font-weight: 600;
   color: #333;
+}
+
+.hospital-count {
+  font-size: 24px;
+  font-weight: 600;
+  color: #3284b1;
 }
 
 .add-hospital-btn {
@@ -57,6 +67,7 @@
   font-size: 14px;
   font-weight: 500;
   transition: background-color 0.3s;
+  margin-bottom: 10px;
 }
 
 .add-hospital-btn:hover {
@@ -117,12 +128,13 @@
   background: white;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  overflow-x: auto;
+  overflow: hidden;
 }
 
 .hospital-table {
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed;
 }
 
 .hospital-table thead {
@@ -131,11 +143,37 @@
 
 .hospital-table th {
   padding: 12px;
-  text-align: left;
+  text-align: center;
   font-weight: 600;
   color: #495057;
   border-bottom: 2px solid #dee2e6;
   font-size: 14px;
+}
+
+.hospital-table th:nth-child(1) {
+  width: 12%;
+}
+
+.hospital-table th:nth-child(2) {
+  width: 18%;
+}
+
+.hospital-table th:nth-child(3) {
+  width: 30%;
+}
+
+.hospital-table th:nth-child(4),
+.hospital-table th:nth-child(5) {
+  width: 10%;
+}
+
+.hospital-table th:nth-child(6) {
+  width: 8%;
+  text-align: center;
+}
+
+.hospital-table th:nth-child(7) {
+  width: 12%;
 }
 
 .hospital-table td {
@@ -143,10 +181,27 @@
   border-bottom: 1px solid #dee2e6;
   font-size: 14px;
   color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hospital-table td:nth-child(1),
+.hospital-table td:nth-child(4),
+.hospital-table td:nth-child(5),
+.hospital-table td:nth-child(6),
+.hospital-table td:nth-child(7) {
+  text-align: center;
+}
+
+.hospital-table tbody tr {
+  transition: all 0.3s ease;
 }
 
 .hospital-table tbody tr:hover {
-  background-color: #f8f9fa;
+  background-color: #e3f2fd;
+  transform: scale(1.01);
+  box-shadow: 0 2px 8px rgba(50, 132, 177, 0.15);
 }
 
 .hospital-table .no-data {
@@ -204,40 +259,47 @@
 }
 
 .page-btn {
-  min-width: 36px;
-  padding: 8px 12px;
-  border: 1px solid #dee2e6;
-  background-color: white;
+  min-width: 40px;
+  height: 40px;
+  padding: 0 12px;
+  border: none;
+  background-color: transparent;
   color: #495057;
-  border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
   transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .page-btn.arrow-btn {
-  padding: 8px 16px;
+  padding: 0 16px;
   font-size: 18px;
   font-weight: bold;
   margin: 0 5px;
 }
 
-.page-btn:hover:not(:disabled) {
-  background-color: #f8f9fa;
-  border-color: #3284b1;
+.page-btn:hover {
   color: #3284b1;
 }
 
 .page-btn.active {
   background-color: #3284b1;
   color: white;
-  border-color: #3284b1;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
 }
 
-.page-btn:disabled {
-  cursor: not-allowed;
+.page-btn.disabled {
   opacity: 0.3;
-  background-color: #f8f9fa;
+  cursor: not-allowed;
+}
+
+.page-btn.disabled:hover {
+  color: #495057;
 }
 
 /* 모달 */
@@ -247,137 +309,182 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.6);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  backdrop-filter: blur(2px);
 }
 
 .modal-content {
   background: white;
-  border-radius: 8px;
+  border-radius: 12px;
   width: 90%;
-  max-width: 800px;
-  max-height: 90vh;
+  max-width: 900px;
+  max-height: 85vh;
   overflow-y: auto;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
 }
 
 .modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px;
-  border-bottom: 1px solid #dee2e6;
+  padding: 24px 28px;
+  border-bottom: 2px solid #f0f0f0;
+  background: linear-gradient(to bottom, #ffffff, #fafafa);
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 .modal-header h3 {
   margin: 0;
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 600;
-  color: #333;
+  color: #2c3e50;
+  letter-spacing: -0.5px;
 }
 
 .modal-close {
   background: none;
   border: none;
-  font-size: 28px;
-  color: #6c757d;
+  font-size: 20px;
+  color: #666;
   cursor: pointer;
   padding: 0;
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  min-height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: color 0.3s;
+  transition: all 0.2s;
+  border-radius: 50%;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 20;
+  margin-top: -45px;
 }
 
 .modal-close:hover {
-  color: #333;
+  background: transparent;
+  color: #dc3545;
 }
 
 .hospital-form {
-  padding: 20px;
+  padding: 10px 28px;
 }
 
-.form-grid {
+.form-two-column {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 15px;
-  margin-bottom: 20px;
+  gap: 40px; /* Reverted gap to 40px */
 }
 
-.form-group {
+.form-column {
   display: flex;
   flex-direction: column;
+  gap: 14px;
 }
 
-.form-group.full-width {
-  grid-column: 1 / -1;
+.form-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; /* Explicitly set */
+  padding: 0 0 10px 0;
+  border-bottom: 1px solid #f0f0f0;
+  width: 340px; /* Set fixed width */
 }
 
-.form-group label {
-  font-size: 14px;
-  font-weight: 500;
+.form-row:last-child {
+  border-bottom: none;
+}
+
+.form-row label {
+  width: 120px; /* Changed from min-width to fixed width */
+  flex-shrink: 0;
+  font-size: 13px;
+  font-weight: 600;
   color: #495057;
-  margin-bottom: 5px;
+  letter-spacing: 0.3px;
+  text-align: left; /* Ensure label is left-aligned */
 }
 
-.form-group input,
-.form-group textarea,
-.form-group select {
-  padding: 8px 12px;
-  border: 1px solid #ced4da;
-  border-radius: 4px;
+.form-row input,
+.form-row textarea,
+.form-row select {
+  width: 200px; /* Set fixed width */
+  flex-grow: 0; /* Prevent stretching */
+  flex-shrink: 0; /* Prevent shrinking */
+  /* Removed flex: 1; to allow natural width */
+  padding: 10px 14px;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
   font-size: 14px;
-  transition: border-color 0.3s;
+  transition: all 0.2s;
+  background-color: #ffffff;
+  /* Removed margin-left: 10px; */
 }
 
-.form-group input:focus,
-.form-group textarea:focus,
-.form-group select:focus {
+.form-row input:focus,
+.form-row textarea:focus,
+.form-row select:focus {
   outline: none;
   border-color: #3284b1;
+  box-shadow: 0 0 0 3px rgba(50, 132, 177, 0.08);
 }
 
-.form-group input:disabled {
-  background-color: #e9ecef;
+.form-row input:disabled {
+  background-color: #f8f9fa;
+  color: #6c757d;
   cursor: not-allowed;
+  border-color: #e9ecef;
 }
 
-.form-group textarea {
+.form-row textarea {
   resize: vertical;
   font-family: inherit;
+  min-height: 80px;
+  line-height: 1.5;
+}
+
+.form-row input::placeholder,
+.form-row textarea::placeholder {
+  color: #adb5bd;
 }
 
 .form-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 10px;
-  padding-top: 20px;
-  border-top: 1px solid #dee2e6;
+  gap: 12px;
+  padding-top: 24px;
+  padding-right: 40px;
+  border-top: 2px solid #f0f0f0;
 }
 
 .cancel-btn,
 .submit-btn {
-  padding: 10px 20px;
+  padding: 11px 24px;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.2s;
+  letter-spacing: 0.3px;
 }
 
 .cancel-btn {
-  background-color: #6c757d;
-  color: white;
+  background-color: #e9ecef;
+  color: #495057;
 }
 
 .cancel-btn:hover {
-  background-color: #5a6268;
+  background-color: #dee2e6;
+  transform: translateY(-1px);
 }
 
 .submit-btn {
@@ -387,40 +494,195 @@
 
 .submit-btn:hover {
   background-color: #2a6d94;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(50, 132, 177, 0.3);
 }
 
 /* 상세 모달 */
 .detail-modal {
   max-width: 900px;
+  max-height: 90vh;
+  overflow-y: hidden; /* Added to remove scrollbar from detail modal */
 }
 
 .detail-content {
   padding: 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 20px;
 }
 
 .detail-section {
-  margin-bottom: 30px;
+  margin: 0;
+  padding: 0;
+  padding-bottom: 0;
+}
+
+.detail-section:nth-child(1) {
+  grid-column: 1;
+  grid-row: 1 / 3;
+  overflow: hidden;
+}
+
+.detail-section:nth-child(1) .detail-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.detail-section:nth-child(1) .detail-item {
+  flex-direction: row;
+  gap: 10px;
+  padding: 6px 0;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.detail-section:nth-child(1) .detail-item:last-child {
+  border-bottom: none;
+}
+
+.detail-section:nth-child(1) .detail-label {
+  min-width: 120px;
+  flex-shrink: 0;
+}
+
+.detail-section:nth-child(1) .detail-value {
+  flex: 1;
+}
+
+.detail-section:nth-child(2) {
+  grid-column: 2;
+  grid-row: 1;
+  display: flex; /* Use Flexbox */
+  flex-direction: column; /* Stack children vertically */
+  max-height: 150px; /* Set a fixed height for the entire section */
+  margin-bottom: 15px; /* Added margin-bottom */
+}
+
+.detail-section:nth-child(3) {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.detail-section:nth-child(3) .detail-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.detail-section:nth-child(3) .detail-item {
+  flex-direction: row;
+  gap: 10px;
+  padding: 6px 0;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.detail-section:nth-child(3) .detail-item:last-child {
+  border-bottom: none;
+}
+
+.detail-section:nth-child(3) .detail-label {
+  min-width: 100px;
+  flex-shrink: 0;
+}
+
+.detail-section:nth-child(3) .detail-value {
+  flex: 1;
+  word-break: break-all;
+}
+
+.hospital-image-box {
+  width: 100%;
+  height: 250px;
+  margin-top: 10px;
+  border: 2px solid #dee2e6;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #f8f9fa;
+  display: flex;
+  align-items: center;
+  /* Removed justify-content: center; to left-align content */
+}
+
+.image-link {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.hospital-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.image-link:hover .hospital-image {
+  transform: scale(1.05);
+}
+
+.no-image {
+  color: #6c757d;
+  font-size: 14px;
+  text-align: center;
+}
+
+.detail-info {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.detail-item-single {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  padding: 6px 0;
+  flex-shrink: 0;
+  text-align: left;
+}
+
+.detail-item-single .detail-label {
+  min-width: 80px;
+  flex-shrink: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #6c757d;
+}
+
+.detail-item-single .detail-value {
+  flex: 1;
+  font-size: 14px;
+  color: #333;
+  word-break: break-word;
 }
 
 .detail-section h4 {
   font-size: 18px;
   font-weight: 600;
   color: #333;
-  margin-bottom: 15px;
-  padding-bottom: 10px;
+  margin-bottom: 4px;
+  padding-bottom: 4px;
   border-bottom: 2px solid #3284b1;
+  text-align: left;
 }
 
 .detail-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 15px;
+  gap: 10px;
 }
 
 .detail-item {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 3px;
+  text-align: left;
 }
 
 .detail-item.full-width {
@@ -451,7 +713,11 @@
 .departments-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 6px;
+  justify-content: flex-start;
+  overflow-y: auto; /* Enable vertical scrolling */
+  flex-grow: 1; /* Allow it to take up available space */
+  min-height: 0; /* Necessary for flex item with overflow */
 }
 
 .department-tag {
@@ -462,6 +728,7 @@
   border-radius: 16px;
   font-size: 13px;
   font-weight: 500;
+  height: 32px;
 }
 
 .departments-list .no-data {
@@ -475,9 +742,8 @@
   display: flex;
   justify-content: flex-end;
   gap: 10px;
-  padding-top: 20px;
+  padding: 20px;
   border-top: 1px solid #dee2e6;
-  margin-top: 20px;
 }
 
 .detail-actions .edit-btn,
@@ -505,4 +771,17 @@
   .hospital-table td {
     padding: 8px;
   }
+}
+
+/* Address Search Specific Styles */
+.address-input-group {
+  display: flex;
+  gap: 8px;
+}
+
+.address-input-group input {
+  width: 200px; /* Set fixed width */
+  flex-grow: 0; /* Prevent stretching */
+  flex-shrink: 0; /* Prevent shrinking */
+  /* Removed flex: 1 */
 }

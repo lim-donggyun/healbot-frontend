@@ -11,6 +11,7 @@ import DiseaseResultPage from "./pages/DiseaseResultPage";
 import SearchResultPage from "./pages/SearchResultPage";
 import MyPage from "./pages/Mypage";
 import ChronicDiseasePage from "./pages/ChronicDiseasePage";
+import InfectiousDiseasePage from "./pages/InfectiousDiseasePage";
 import Terms from "./pages/static/Terms";
 import Privacy from "./pages/static/Privacy";
 import Partners from "./pages/static/Partners";
@@ -26,6 +27,7 @@ import DeleteAccount from "./components/sections/MyPage/DeleteAccount";
 import Community from "./pages/Community";
 import CommunityDetail from "./components/sections/CommunityPage/CommunityDetail";
 import CommunityWrite from "./components/sections/CommunityPage/CommunityWrite";
+import HospitalMap from "./pages/HospitalMap";
 
 // 페이지 전환 시 스크롤을 맨 위로 리셋하는 컴포넌트
 function ScrollToTop() {
@@ -61,6 +63,7 @@ function App() {
         <Route path="/disease-result" element={<DiseaseResultPage />} />
         <Route path="/search-result" element={<SearchResultPage />} />
         <Route path="/chronic-diseases" element={<ChronicDiseasePage />} />
+        <Route path="/infectious-diseases" element={<InfectiousDiseasePage />} />
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/terms" element={<Terms />} />
         <Route path="/privacy" element={<Privacy />} />
@@ -78,6 +81,7 @@ function App() {
         <Route path="/community" element={<Community />} />
         <Route path="/community/:id" element={<CommunityDetail />} />
         <Route path="/community/write" element={<CommunityWrite />} />
+        <Route path="/hospitals" element={<HospitalMap />} />
       </Routes>
     </Router>
   );
