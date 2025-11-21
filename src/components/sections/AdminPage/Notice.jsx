@@ -28,7 +28,7 @@ const Notice = () => {
     category: 'NOTICE'
   });
 
-  const rowsPerPage = 6;
+  const rowsPerPage = 5;
 
   // 컴포넌트 마운트 시 공지사항 데이터 로드
   useEffect(() => {
@@ -99,12 +99,6 @@ const Notice = () => {
         {label}
       </span>
     );
-  };
-
-  // 통계 계산
-  const stats = {
-    total: notices.length,
-    totalViews: notices.reduce((sum, n) => sum + n.VIEWS, 0)
   };
 
   // 필터 적용
@@ -291,43 +285,24 @@ const Notice = () => {
   const endIdx = Math.min(startIdx + rowsPerPage, total);
   const pageItems = filteredNotices.slice(startIdx, endIdx);
 
-  const renderPagination = () => {
-    const pages = [];
-    const windowSize = 2;
-    const start = Math.max(1, currentPage - windowSize);
-    const end = Math.min(totalPages, currentPage + windowSize);
+  // 페이지 번호 5개씩 그룹화
+  const pageGroupSize = 5;
+  const currentPageGroup = Math.ceil(currentPage / pageGroupSize);
+  const startPage = (currentPageGroup - 1) * pageGroupSize + 1;
+  const endPage = Math.min(currentPageGroup * pageGroupSize, totalPages);
+  const pageNumbers = [];
+  for (let i = startPage; i <= endPage; i++) {
+    pageNumbers.push(i);
+  }
 
-    for (let p = start; p <= end; p++) {
-      pages.push(
-        <button
-          key={p}
-          className={`page-btn ${p === currentPage ? 'active' : ''}`}
-          onClick={() => setCurrentPage(p)}
-        >
-          {p}
-        </button>
-      );
-    }
+  const goToPrevGroup = () => {
+    const prevGroupLastPage = (currentPageGroup - 2) * pageGroupSize + pageGroupSize;
+    setCurrentPage(prevGroupLastPage);
+  };
 
-    return (
-      <>
-        <button
-          className="page-btn"
-          disabled={currentPage === 1}
-          onClick={() => setCurrentPage(prev => prev - 1)}
-        >
-          ‹
-        </button>
-        {pages}
-        <button
-          className="page-btn"
-          disabled={currentPage === totalPages}
-          onClick={() => setCurrentPage(prev => prev + 1)}
-        >
-          ›
-        </button>
-      </>
-    );
+  const goToNextGroup = () => {
+    const nextGroupFirstPage = currentPageGroup * pageGroupSize + 1;
+    setCurrentPage(nextGroupFirstPage);
   };
 
   if (loading) {
@@ -354,147 +329,117 @@ const Notice = () => {
 
       {/* 메인 */}
       <section className="admin-main">
-        {/* 통계 카드 */}
-        <section className="admin-stats">
-          <article className="stat-card">
-            <div className="stat-label">전체 공지사항</div>
-            <div className="stat-main">
-              <div className="stat-value">{stats.total}</div>
-              <span className="stat-chip">총 게시물</span>
-              <div className="stat-icon">📢</div>
-            </div>
-          </article>
-          <article className="stat-card">
-            <div className="stat-label">총 조회수</div>
-            <div className="stat-main">
-              <div className="stat-value">{stats.totalViews}</div>
-              <span className="stat-chip">누적 조회</span>
-              <div className="stat-icon">👁️</div>
-            </div>
-          </article>
-        </section>
+        {/* 공지사항 관리 */}
+        <div className="notice-management">
+          <div className="notice-header">
+            <h2>
+              검색된 공지사항 <span className="notice-count">{filteredNotices.length}</span>개
+            </h2>
+            <button className="add-notice-btn" onClick={() => setShowCreateModal(true)}>
+              공지사항 추가
+            </button>
+          </div>
 
-        {/* 검색 / 필터 카드 */}
-        <section className="admin-card">
-          <div className="admin-card-header">
-            <div>
-              <div className="admin-card-title">검색 및 필터</div>
-              <div className="admin-card-sub">
-                제목, 내용으로 검색하거나 카테고리를 선택해 결과를 좁혀볼 수 있습니다.
-              </div>
-            </div>
-            <div style={{ display: 'flex', gap: '8px' }}>
-              <button type="button" className="btn-outline btn" onClick={handleReset}>
-                초기화
-              </button>
-              <button type="button" className="btn" onClick={() => setShowCreateModal(true)}>
-                + 새 공지사항
-              </button>
+          <div className="notice-search-filters">
+            <input
+              type="text"
+              className="search-input"
+              placeholder="제목, 내용으로 검색..."
+              value={keyword}
+              onChange={(e) => {
+                setKeyword(e.target.value);
+                applyFilter();
+              }}
+            />
+
+            <div className="filter-group">
+              <select className="filter-select" value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)}>
+                <option value="ALL">전체 카테고리</option>
+                <option value="NOTICE">공지</option>
+                <option value="IMPORTANT">중요</option>
+                <option value="UPDATE">업데이트</option>
+                <option value="EVENT">이벤트</option>
+              </select>
             </div>
           </div>
 
-          <form onSubmit={(e) => e.preventDefault()}>
-            <div className="filter-grid">
-              <div className="form-group">
-                <label className="form-label">통합 검색</label>
-                <input
-                  type="text"
-                  className="input"
-                  placeholder="제목 / 내용"
-                  value={keyword}
-                  onChange={(e) => setKeyword(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                />
-              </div>
-              <div className="form-group">
-                <label className="form-label">카테고리</label>
-                <select
-                  className="select"
-                  value={categoryFilter}
-                  onChange={(e) => setCategoryFilter(e.target.value)}
-                >
-                  <option value="ALL">전체</option>
-                  <option value="NOTICE">공지</option>
-                  <option value="IMPORTANT">중요</option>
-                  <option value="UPDATE">업데이트</option>
-                  <option value="EVENT">이벤트</option>
-                </select>
-              </div>
-              <div className="filter-actions">
-                <button className="btn" type="button" onClick={applyFilter}>
-                  🔍 검색
-                </button>
-              </div>
-            </div>
-          </form>
-        </section>
-
-        {/* 공지사항 목록 카드 */}
-        <section className="admin-card">
-          <div className="admin-card-header">
-            <div>
-              <div className="admin-card-title">
-                공지사항 목록
-                <span style={{ fontSize: '13px', color: 'var(--muted)', marginLeft: '4px' }}>
-                  ({total}개)
-                </span>
-              </div>
-              <div className="admin-card-sub">
-                최신순으로 정렬됩니다. 상세보기에서 개별 공지사항의 모든 정보를 확인할 수 있습니다.
-              </div>
-            </div>
-            <span className="admin-badge-muted">
-              카테고리별, 상태별 필터 기능 제공
-            </span>
-          </div>
-
-          <div className="table-wrapper">
-            <div className="table-scroll">
-              <table>
-                <thead>
+          <div className="notice-table-container">
+            <table className="notice-table">
+              <thead>
+                <tr>
+                  <th>카테고리</th>
+                  <th>제목</th>
+                  <th>등록일</th>
+                  <th>조회수</th>
+                </tr>
+              </thead>
+              <tbody>
+                {pageItems.length === 0 ? (
                   <tr>
-                    <th className="text-center" style={{ width: '48px' }}>No</th>
-                    <th>제목</th>
-                    <th>카테고리</th>
-                    <th>조회수</th>
-                    <th>등록일</th>
-                    <th className="text-center" style={{ width: '140px' }}>관리</th>
+                    <td colSpan="4" className="no-data">
+                      등록된 공지사항이 없습니다.
+                    </td>
                   </tr>
-                </thead>
-                <tbody>
-                  {pageItems.map((n, idx) => (
-                    <tr key={n.NOTICE_ID}>
-                      <td className="text-center">{startIdx + idx + 1}</td>
-                      <td>{n.TITLE}</td>
+                ) : (
+                  pageItems.map((n) => (
+                    <tr key={n.NOTICE_ID} onClick={() => handleDetailClick(n.NOTICE_ID)} style={{ cursor: "pointer" }}>
                       <td>{getCategoryPill(n.CATEGORY)}</td>
-                      <td>{n.VIEWS}</td>
+                      <td>{n.TITLE}</td>
                       <td>{formatDate(n.CREATED_AT)}</td>
-                      <td className="text-center">
-                        <button
-                          type="button"
-                          className="btn-sm primary"
-                          onClick={() => handleDetailClick(n.NOTICE_ID)}
-                        >
-                          상세
-                        </button>
-                      </td>
+                      <td>{n.VIEWS}</td>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <div className="table-footer">
-              <div>
-                <span>
-                  {total === 0 ? '0개 중 0–0개' : `${total}개 중 ${startIdx + 1}–${endIdx}개`}
-                </span>
-              </div>
-              <div className="pagination">
-                {renderPagination()}
-              </div>
-            </div>
+                  ))
+                )}
+              </tbody>
+            </table>
           </div>
-        </section>
+
+          {/* 페이징 */}
+          {totalPages > 1 && (
+            <div className="pagination">
+              <button
+                onClick={() => setCurrentPage(1)}
+                className={`page-btn arrow-btn ${currentPage === 1 ? "disabled" : ""}`}
+                disabled={currentPage === 1}
+                title="첫 페이지">
+                처음 페이지
+              </button>
+
+              <button
+                onClick={goToPrevGroup}
+                className={`page-btn arrow-btn ${currentPageGroup === 1 ? "disabled" : ""}`}
+                disabled={currentPageGroup === 1}
+                title="이전 5페이지">
+                «
+              </button>
+
+              {pageNumbers.map((number) => (
+                <button
+                  key={number}
+                  onClick={() => setCurrentPage(number)}
+                  className={`page-btn ${currentPage === number ? "active" : ""}`}>
+                  {number}
+                </button>
+              ))}
+
+              <button
+                onClick={goToNextGroup}
+                className={`page-btn arrow-btn ${endPage >= totalPages ? "disabled" : ""}`}
+                disabled={endPage >= totalPages}
+                title="다음 5페이지">
+                »
+              </button>
+
+              <button
+                onClick={() => setCurrentPage(totalPages)}
+                className={`page-btn arrow-btn ${currentPage === totalPages ? "disabled" : ""}`}
+                disabled={currentPage === totalPages}
+                title="마지막 페이지">
+                끝 페이지
+              </button>
+            </div>
+          )}
+        </div>
       </section>
 
       {/* 공지사항 생성 모달 */}
