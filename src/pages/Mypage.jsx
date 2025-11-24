@@ -10,18 +10,21 @@ const [isModalOpen, setIsModalOpen] = useState(false);
 const [profile, setProfile] = useState(null);
 const [loading, setLoading] = useState(true);
 
+// 🔹 내가 작성한 글 개수
+const [postCount, setPostCount] = useState(0);
+
 const navigate = useNavigate();
 
-// 🔹 프로필 조회
+// 🔹 프로필 조회 + 내가 쓴 글 개수 조회
 useEffect(() => {
-    const fetchProfile = async () => {
+    const fetchProfileAndCount = async () => {
     try {
+        // 1) 프로필
         const res = await fetch("/react/api/member/profile", {
         method: "GET",
         });
 
         if (res.status === 401) {
-        // 인증 안 됨 → 로그인 페이지로
         alert("로그인이 필요합니다.");
         navigate("/login");
         return;
@@ -35,6 +38,30 @@ useEffect(() => {
 
         const data = await res.json();
         setProfile(data);
+
+        // 2) 내가 쓴 글 개수
+        try {
+        const res2 = await fetch("/react/api/community/my-post-count", {
+            method: "GET",
+        });
+
+        if (res2.status === 401) {
+            // 세션 만료 등
+            alert("로그인이 필요합니다.");
+            navigate("/login");
+            return;
+        }
+
+        if (res2.ok) {
+            const data2 = await res2.json();
+            const count = typeof data2.count === "number" ? data2.count : 0;
+            setPostCount(count);
+        } else {
+            console.error("내 글 개수 조회 실패:", res2.status);
+        }
+        } catch (e) {
+        console.error("내 글 개수 조회 오류:", e);
+        }
     } catch (err) {
         console.error("프로필 조회 오류:", err);
         alert("프로필 조회 중 오류가 발생했습니다.");
@@ -43,7 +70,7 @@ useEffect(() => {
     }
     };
 
-    fetchProfile();
+    fetchProfileAndCount();
 }, [navigate]);
 
 // 프로필 정보 페이지로 이동
@@ -89,8 +116,8 @@ const userInitial = userName.charAt(0);
 const email = profile?.email || "-";
 const phone = profile?.phone || "-";
 
-// 가입일은 백엔드에서 내려주면 사용, 없으면 대체 텍스트
-const rawJoinDate = profile?.joinDate || profile?.createdAt || profile?.createDate || null;
+const rawJoinDate =
+    profile?.joinDate || profile?.createdAt || profile?.createDate || null;
 const joinDate =
     rawJoinDate && typeof rawJoinDate === "string"
     ? rawJoinDate.slice(0, 10).replace(/-/g, ".")
@@ -108,8 +135,7 @@ return (
             <h1 className="mypage-title">마이페이지</h1>
             <p className="mypage-subtitle">계정 정보와 활동을 관리하세요</p>
             </div>
-            <div className="mypage-user-info">
-            </div>
+            <div className="mypage-user-info"></div>
         </div>
 
         {/* 로딩 중일 때 간단 표시 */}
@@ -230,8 +256,9 @@ return (
                 </svg>
             </div>
             <div className="menu-content">
-                <div className="menu-title">내가 쓴 리뷰</div>
-                <div className="menu-description">작성한 리뷰 12개</div>
+                <div className="menu-title">내가 작성한 글</div>
+                {/* 🔥 여기 하드코딩 제거 */}
+                <div className="menu-description">작성 {postCount}개</div>
             </div>
             <div className="menu-arrow">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
