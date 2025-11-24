@@ -75,18 +75,30 @@ const Step2 = ({ formData, updateFormData, nextStep, prevStep, socialId }) => {
     }
   };
 
-  const checkPasswordMatch = () => {
+  // 비밀번호 일치 확인을 위한 useEffect
+  useEffect(() => {
     if (!password && !passwordConfirm) {
       setPasswordMessage("");
-      return false;
+      return;
     }
-    if (password === passwordConfirm) {
-      setPasswordMessage("비밀번호가 일치합니다.");
-      return true;
-    } else {
+    if (password && passwordConfirm) {
+      if (password === passwordConfirm) {
+        setPasswordMessage("비밀번호가 일치합니다.");
+      } else {
+        setPasswordMessage("비밀번호가 일치하지 않습니다.");
+      }
+    } else if (passwordConfirm) {
       setPasswordMessage("비밀번호가 일치하지 않습니다.");
+    } else {
+      setPasswordMessage("");
+    }
+  }, [password, passwordConfirm]);
+
+  const checkPasswordMatch = () => {
+    if (!password && !passwordConfirm) {
       return false;
     }
+    return password === passwordConfirm;
   };
 
   const calcAgeFromBirth = (birthDateString) => {
@@ -294,10 +306,7 @@ const Step2 = ({ formData, updateFormData, nextStep, prevStep, socialId }) => {
               id="pw"
               type="password"
               value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-                checkPasswordMatch();
-              }}
+              onChange={(e) => setPassword(e.target.value)}
             />
 
             <label htmlFor="pwConfirm">비밀번호 확인 *</label>
@@ -305,10 +314,7 @@ const Step2 = ({ formData, updateFormData, nextStep, prevStep, socialId }) => {
               id="pwConfirm"
               type="password"
               value={passwordConfirm}
-              onChange={(e) => {
-                setPasswordConfirm(e.target.value);
-                checkPasswordMatch();
-              }}
+              onChange={(e) => setPasswordConfirm(e.target.value)}
             />
             {passwordMessage && (
               <div className={`message ${password === passwordConfirm ? "msg-ok" : "msg-err"}`}>{passwordMessage}</div>

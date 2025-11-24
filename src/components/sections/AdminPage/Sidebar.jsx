@@ -35,11 +35,11 @@ const Sidebar = () => {
         role: '공지사항 관리',
         description: '사용자에게 공지할 내용을 작성하고 관리할 수 있습니다.'
       };
-    } else if (location.pathname === '/admin/review') {
+    } else if (location.pathname === '/admin/community') {
       return {
         title: '시스템 관리자',
-        role: '리뷰 관리',
-        description: '사용자 리뷰를 조회하고 관리할 수 있습니다.'
+        role: '커뮤니티 관리',
+        description: '사용자 커뮤니티 게시글을 조회하고 관리할 수 있습니다.'
       };
     }
     return {
@@ -93,11 +93,11 @@ const Sidebar = () => {
           <span>공지사항</span>
         </div>
         <div
-          className={`admin-nav-item ${isActive('/admin/review') ? 'active' : ''}`}
-          onClick={() => navigate('/admin/review')}
+          className={`admin-nav-item ${isActive('/admin/community') ? 'active' : ''}`}
+          onClick={() => navigate('/admin/community')}
         >
-          <span className="icon">⭐</span>
-          <span>리뷰관리</span>
+          <span className="icon">💬</span>
+          <span>커뮤니티</span>
         </div>
       </nav>
     </aside>

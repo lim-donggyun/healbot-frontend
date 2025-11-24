@@ -336,10 +336,6 @@ function Notice() {
                     <div className="detail-value">{getCategoryPill(selectedNotice.category)}</div>
                   </div>
                   <div className="detail-item">
-                    <div className="detail-label">조회수</div>
-                    <div className="detail-value">{selectedNotice.viewCount?.toLocaleString() || 0}</div>
-                  </div>
-                  <div className="detail-item">
                     <div className="detail-label">등록일</div>
                     <div className="detail-value">{formatDate(selectedNotice.createdAt)}</div>
                   </div>

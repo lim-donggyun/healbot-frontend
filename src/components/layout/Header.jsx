@@ -234,22 +234,20 @@ function Header() {
                     </div>
                     <div className="dropdown-column">
                       <div className="dropdown-column-title">건강 관리</div>
-                      <a href="/health-info?cat=prevention">예방법</a>
-                      <a href="/health-info?cat=nutrition">영양 가이드</a>
-                      <a href="/health-info?cat=exercise">운동 정보</a>
-                      <a href="/health-info?cat=mental">정신 건강</a>
+                      <a href="/prevention">예방법</a>
+                      <a href="/nutrition">영양 가이드</a>
+                      <a href="/exercise">운동 정보</a>
                     </div>
                     <div className="dropdown-column">
-                      <div className="dropdown-column-title">약물 정보</div>
-                      <a href="/health-info?cat=medicine">약물 검색</a>
-                      <a href="/health-info?cat=side-effect">부작용 정보</a>
-                      <a href="/health-info?cat=interaction">약물 상호작용</a>
+                      <div className="dropdown-column-title">헬스케어 플러스</div>
+                      <a href="/mental-health">정신 건강</a>
+                      <a href="/seasonal-health">계절 건강</a>
+                      <a href="/health-checkup">건강 검진 가이드</a>
                     </div>
                     <div className="dropdown-column">
-                      <div className="dropdown-column-title">미디어</div>
-                      <a href="/health-info">건강 영상</a>
-                      <a href="/health-info?cat=webinar">전문의 강의</a>
-                      <a href="/health-info?cat=infographic">인포그래픽</a>
+                      <div className="dropdown-column-title">응급 의료</div>
+                      <a href="/first-aid">응급 처치법</a>
+                      <a href="/home-medicine">가정 상비약</a>
                     </div>
                   </div>
                 </div>

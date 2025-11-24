@@ -113,11 +113,12 @@
 
 .notice-table th {
   padding: 12px;
-  text-align: center;
+  text-align: center !important;
   font-weight: 600;
   color: #495057;
   border-bottom: 2px solid #dee2e6;
   font-size: 14px;
+  vertical-align: middle;
 }
 
 .notice-table th:nth-child(1) {
@@ -148,7 +149,8 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  text-align: center;
+  text-align: center !important;
+  vertical-align: middle;
 }
 
 .notice-table tbody tr {

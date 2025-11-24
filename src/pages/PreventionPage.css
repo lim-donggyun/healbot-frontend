@@ -1,0 +1,248 @@
+/* 페이지 래퍼 */
+.prevention-page-wrapper {
+  min-height: 100vh;
+  background: #f8f9fa;
+}
+
+/* 헤더 스타일 오버라이드 */
+.prevention-page-wrapper header {
+  background: white !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+/* 로고 색상 변경 */
+.prevention-page-wrapper .logo-white {
+  display: none !important;
+}
+
+.prevention-page-wrapper .logo-black {
+  display: block !important;
+}
+
+/* 네비게이션 및 버튼 색상 */
+.prevention-page-wrapper .nav-link {
+  color: #333 !important;
+}
+
+.prevention-page-wrapper .nav-link:hover {
+  color: #3284b1 !important;
+}
+
+.prevention-page-wrapper .utility-btn:not(.emergency-btn) {
+  color: #333 !important;
+}
+
+.prevention-page-wrapper .utility-btn:not(.emergency-btn):hover {
+  color: #3284b1 !important;
+}
+
+.prevention-page-wrapper .utility-divider {
+  background: rgba(0, 0, 0, 0.2) !important;
+}
+
+.prevention-page-wrapper .header-search-container:after {
+  background: #333 !important;
+}
+
+.prevention-page-wrapper .header-search-input {
+  color: #333 !important;
+  border-color: #333 !important;
+}
+
+.prevention-page-wrapper #nav-icon2 span {
+  background: #333 !important;
+}
+
+/* 페이지 컨테이너 */
+.prevention-page-container {
+  min-height: 800px;
+  padding-top: 80px;
+  padding-bottom: 60px;
+}
+
+/* 페이지 헤더 */
+.prevention-page-header {
+  background: linear-gradient(135deg, #3fc1ec 0%, #3284b1 100%);
+  padding: 60px 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  margin-bottom: 40px;
+}
+
+.prevention-page-header .header-content {
+  max-width: 1200px;
+  width: 90%;
+  margin: 0 auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.prevention-page-header h1 {
+  color: white;
+  font-size: 42px;
+  font-weight: 700;
+  margin: 0 0 15px 0;
+}
+
+.prevention-page-header .header-subtitle {
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 18px;
+  margin: 0;
+}
+
+/* 예방법 콘텐츠 */
+.prevention-content {
+  max-width: 1200px;
+  width: 90%;
+  margin: 0 auto;
+}
+
+/* 예방법 그리드 */
+.prevention-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 30px;
+  margin-bottom: 40px;
+}
+
+/* 예방법 카드 */
+.prevention-card {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s;
+  display: flex;
+  flex-direction: column;
+}
+
+.prevention-card:hover {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.prevention-image-container {
+  width: 100%;
+  height: 220px;
+  overflow: hidden;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.prevention-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.prevention-content-area {
+  padding: 24px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.prevention-name {
+  font-size: 20px;
+  font-weight: 700;
+  color: #222;
+  margin: 0;
+}
+
+.prevention-description {
+  font-size: 15px;
+  color: #333;
+  line-height: 1.6;
+  margin: 0;
+  font-weight: 600;
+}
+
+.prevention-details {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.prevention-tips {
+  margin-top: 8px;
+  padding-top: 16px;
+  border-top: 1px solid #eee;
+}
+
+.tips-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #3284b1;
+  margin-bottom: 10px;
+}
+
+.tips-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tip-badge {
+  padding: 6px 12px;
+  background: #f0f8ff;
+  color: #3284b1;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid #d0e8f5;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 1024px) {
+  .prevention-grid {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
+  }
+}
+
+@media (max-width: 768px) {
+  .prevention-page-header h1 {
+    font-size: 32px;
+  }
+
+  .prevention-page-header .header-subtitle {
+    font-size: 16px;
+  }
+
+  .prevention-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .prevention-page-header {
+    padding: 40px 0;
+  }
+
+  .prevention-page-header h1 {
+    font-size: 28px;
+  }
+
+  .prevention-page-header .header-subtitle {
+    font-size: 14px;
+  }
+
+  .prevention-name {
+    font-size: 18px;
+  }
+
+  .prevention-description {
+    font-size: 14px;
+  }
+
+  .prevention-details {
+    font-size: 13px;
+  }
+}
