@@ -119,54 +119,6 @@ const Dashboard = () => {
           </article>
         </section>
 
-        {/* 조회수 높은 공지사항 TOP 3 */}
-        <section className="admin-card">
-          <div className="admin-card-header">
-            <div>
-              <div className="admin-card-title">조회수 높은 공지사항 TOP 3</div>
-              <div className="admin-card-sub">
-                가장 많이 조회된 공지사항을 확인할 수 있습니다.
-              </div>
-            </div>
-          </div>
-          <div className="top-notices-list">
-            {loading ? (
-              <div style={{ textAlign: 'center', padding: '40px', color: '#888' }}>
-                로딩 중...
-              </div>
-            ) : topNotices.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '40px', color: '#888' }}>
-                등록된 공지사항이 없습니다.
-              </div>
-            ) : (
-              topNotices.map((notice, index) => (
-                <div key={notice.noticeId} className="top-notice-item">
-                  <div className="top-notice-rank">{index + 1}</div>
-                  <div className="top-notice-content">
-                    <div className="top-notice-title">{notice.title}</div>
-                    <div className="top-notice-meta">
-                      <span className="top-notice-category">
-                        {notice.category === 'IMPORTANT' ? '중요' :
-                         notice.category === 'UPDATE' ? '업데이트' :
-                         notice.category === 'EVENT' ? '이벤트' : '공지'}
-                      </span>
-                      <span className="top-notice-date">
-                        {notice.createdAt ? notice.createdAt.split('T')[0].replace(/-/g, '.') : ''}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="top-notice-views">
-                    <div className="top-notice-views-icon">👁️</div>
-                    <div className="top-notice-views-count">
-                      {(notice.viewCount || 0).toLocaleString()}
-                    </div>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        </section>
-
         {/* 일별 로그인 횟수 */}
         <section className="admin-card">
           <div className="admin-card-header">
@@ -212,6 +164,54 @@ const Dashboard = () => {
                 />
               </LineChart>
             </ResponsiveContainer>
+          </div>
+        </section>
+
+        {/* 조회수 높은 공지사항 TOP 3 */}
+        <section className="admin-card">
+          <div className="admin-card-header">
+            <div>
+              <div className="admin-card-title">조회수 높은 공지사항 TOP 3</div>
+              <div className="admin-card-sub">
+                가장 많이 조회된 공지사항을 확인할 수 있습니다.
+              </div>
+            </div>
+          </div>
+          <div className="top-notices-list">
+            {loading ? (
+              <div style={{ textAlign: 'center', padding: '40px', color: '#888' }}>
+                로딩 중...
+              </div>
+            ) : topNotices.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '40px', color: '#888' }}>
+                등록된 공지사항이 없습니다.
+              </div>
+            ) : (
+              topNotices.map((notice, index) => (
+                <div key={notice.noticeId} className="top-notice-item">
+                  <div className="top-notice-rank">{index + 1}</div>
+                  <div className="top-notice-content">
+                    <div className="top-notice-title">{notice.title}</div>
+                    <div className="top-notice-meta">
+                      <span className="top-notice-category">
+                        {notice.category === 'IMPORTANT' ? '중요' :
+                         notice.category === 'UPDATE' ? '업데이트' :
+                         notice.category === 'EVENT' ? '이벤트' : '공지'}
+                      </span>
+                      <span className="top-notice-date">
+                        {notice.createdAt ? notice.createdAt.split('T')[0].replace(/-/g, '.') : ''}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="top-notice-views">
+                    <div className="top-notice-views-icon">👁️</div>
+                    <div className="top-notice-views-count">
+                      {(notice.viewCount || 0).toLocaleString()}
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </section>
       </section>

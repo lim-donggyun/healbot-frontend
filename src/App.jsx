@@ -60,6 +60,7 @@ function App() {
         <Route path="/admin/members" element={<AdminPage />} />
         <Route path="/admin/hospitals" element={<AdminPage />} />
         <Route path="/admin/notice" element={<AdminPage />} />
+        <Route path="/admin/community" element={<AdminPage />} />
         <Route path="/disease-result" element={<DiseaseResultPage />} />
         <Route path="/search-result" element={<SearchResultPage />} />
         <Route path="/chronic-diseases" element={<ChronicDiseasePage />} />
