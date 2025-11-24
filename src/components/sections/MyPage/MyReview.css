@@ -1,276 +1,176 @@
-/* 전체 카드 컨테이너 */
-.mr-card {
-margin-top: 24px;
-padding: 24px 24px 26px;
-background: #ffffff;
-border-radius: 14px;
-border: 1px solid #e5e7eb;
-box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+/* ===================== 공통 레이아웃 ===================== */
+
+.mr-main {
+background: #f5f7fb;
+min-height: calc(100vh - 160px); /* 헤더/푸터 높이 고려해서 적당히 */
+padding-top: 60px;
 }
 
-/* 헤더 영역 */
-.mr-header {
+.mr-container {
+max-width: 960px;
+margin: 0 auto;
+padding: 40px 16px 80px;
+box-sizing: border-box;
+}
+
+/* ===================== 헤더 영역 ===================== */
+
+.mr-header-row {
 display: flex;
 justify-content: space-between;
-align-items: flex-start;
-gap: 16px;
-margin-bottom: 18px;
+align-items: flex-end;
+gap: 24px;
+margin-bottom: 24px;
+flex-wrap: wrap;
 }
 
-.mr-title {
-font-size: 20px;
+.mr-title-wrap {
+display: flex;
+flex-direction: column;
+gap: 8px;
+}
+
+.mr-page-title {
+font-size: 24px;
 font-weight: 700;
 color: #111827;
-margin-bottom: 4px;
-}
-
-.mr-sub {
-font-size: 13px;
-color: #6b7280;
-}
-
-/* 정렬 버튼 그룹 */
-.mr-sort-group {
-display: inline-flex;
-padding: 3px;
-border-radius: 999px;
-background: #f3f4f6;
-}
-
-.mr-sort-btn {
-border: none;
-background: transparent;
-padding: 6px 12px;
-font-size: 13px;
-color: #6b7280;
-border-radius: 999px;
-cursor: pointer;
-font-weight: 500;
-transition: all 0.15s;
-}
-
-.mr-sort-btn.active {
-background: #111827;
-color: #ffffff;
-}
-
-.mr-sort-btn:not(.active):hover {
-background: #e5e7eb;
-}
-
-/* 리스트 */
-.mr-list {
-list-style: none;
 margin: 0;
-padding: 0;
+padding-left: 200px;
 }
 
-.mr-item + .mr-item {
-margin-top: 14px;
-}
-
-.mr-item {
-padding: 16px 14px 14px;
-border-radius: 12px;
-border: 1px solid #e5e7eb;
-background: #f9fafb;
-}
-
-/* 상단 (병원, 태그, 별점) */
-.mr-item-top {
-display: flex;
-justify-content: space-between;
-align-items: flex-start;
-gap: 12px;
-margin-bottom: 10px;
-}
-
-.mr-hospital {
-font-size: 15px;
-font-weight: 600;
-color: #111827;
-}
-
-.mr-tags {
-margin-top: 4px;
-display: flex;
-flex-wrap: wrap;
-gap: 6px;
-}
-
-.mr-tag {
-display: inline-flex;
-align-items: center;
-padding: 2px 8px;
-border-radius: 999px;
-font-size: 11px;
-font-weight: 500;
-background: #e0f2fe;
-color: #0369a1;
-}
-
-.mr-tag-ghost {
-background: #f3f4f6;
-color: #4b5563;
-}
-
-.mr-rating-box {
-display: inline-flex;
-align-items: center;
-padding: 4px 9px;
-border-radius: 999px;
-background: #fef3c7;
-color: #92400e;
-font-size: 13px;
-font-weight: 600;
-}
-
-.mr-rating-star {
-margin-right: 3px;
-}
-
-/* 본문 텍스트 */
-.mr-item-body {
-margin-bottom: 8px;
-}
-
-.mr-review-title {
+.mr-page-sub {
 font-size: 14px;
-font-weight: 600;
-color: #111827;
-margin-bottom: 4px;
+color: #6b7280;
+margin: 0;
+padding-left: 200px;
 }
 
-.mr-review-content {
-font-size: 13px;
-color: #4b5563;
-line-height: 1.6;
-}
+/* ===================== 검색 영역 ===================== */
 
-/* 하단 메타 */
-.mr-item-bottom {
+.mr-actions {
 display: flex;
-justify-content: space-between;
 align-items: center;
 gap: 12px;
-margin-top: 4px;
+margin-left: auto;
 }
 
-.mr-meta-left {
+.mr-search {
 display: flex;
 align-items: center;
-gap: 6px;
-font-size: 12px;
-color: #6b7280;
-}
-
-.mr-help {
-display: inline-flex;
-align-items: center;
-gap: 2px;
-}
-
-.mr-dot {
-color: #d1d5db;
-}
-
-.mr-meta-right {
-display: flex;
-align-items: center;
-gap: 6px;
-}
-
-/* 상태 배지 */
-.mr-status {
-padding: 2px 8px;
-border-radius: 999px;
-font-size: 11px;
-font-weight: 600;
-}
-
-.mr-status-public {
-background: #ecfdf5;
-color: #15803d;
-}
-
-.mr-status-hidden {
-background: #f3f4f6;
-color: #4b5563;
-}
-
-/* 작은 버튼들 */
-.mr-small-btn {
-border-radius: 999px;
-border: none;
-padding: 4px 10px;
-font-size: 12px;
-font-weight: 500;
-background: #111827;
-color: #ffffff;
-cursor: pointer;
-transition: background-color 0.15s, transform 0.05s;
-}
-
-.mr-small-btn:hover {
-background: #020617;
-transform: translateY(-0.5px);
-}
-
-.mr-small-btn:active {
-transform: translateY(0);
-}
-
-.mr-small-btn-outline {
+gap: 8px;
+padding: 6px 10px 6px 14px;
 background: #ffffff;
-color: #374151;
-border: 1px solid #d1d5db;
+border-radius: 999px;
+border: 1px solid #e5e7eb;
+box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+min-width: 260px;
 }
 
-.mr-small-btn-outline:hover {
-background: #f3f4f6;
+.mr-search input {
+flex: 1;
+border: none;
+outline: none;
+font-size: 14px;
+color: #111827;
+background: transparent;
 }
 
-/* 비어 있을 때 */
+.mr-search input::placeholder {
+color: #9ca3af;
+}
+
+.mr-search-btn {
+border: none;
+outline: none;
+background: #111827;
+border-radius: 999px;
+padding: 6px 10px;
+cursor: pointer;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+
+.mr-search-btn svg {
+stroke: #ffffff;
+}
+
+/* ===================== 리스트 섹션 ===================== */
+
+.mr-list-section {
+margin-top: 12px;
+}
+
+/* 커뮤니티 카드 리스트와 간격 조정 */
+.mr-review-list {
+margin-top: 12px;
+}
+
+/* ===================== 빈 상태 ===================== */
+
 .mr-empty {
-padding: 40px 10px 34px;
+background: #ffffff;
+border-radius: 16px;
+padding: 40px 24px;
 text-align: center;
+border: 1px dashed #d1d5db;
+color: #4b5563;
 }
 
 .mr-empty-icon {
-font-size: 34px;
-margin-bottom: 8px;
+font-size: 28px;
+margin-bottom: 12px;
 }
 
 .mr-empty-text {
-font-size: 14px;
+font-size: 16px;
 font-weight: 600;
+margin: 0 0 6px;
 color: #111827;
-margin-bottom: 4px;
 }
 
 .mr-empty-sub {
 font-size: 13px;
+margin: 0;
 color: #6b7280;
 }
 
-/* 반응형 */
+/* ===================== 페이징 ===================== */
+
+.mr-pagination {
+margin-top: 24px;
+display: flex;
+justify-content: center;
+gap: 6px;
+}
+
+/* Community.css 에 page-btn 이 있을 가능성 높아서, 살짝만 보정 */
+.mr-pagination .page-btn {
+min-width: 32px;
+height: 32px;
+padding: 0 10px;
+border-radius: 999px;
+font-size: 13px;
+}
+
+/* ===================== 반응형 ===================== */
+
 @media (max-width: 768px) {
-.mr-card {
-    padding: 18px 16px 20px;
+.mr-container {
+    padding: 24px 12px 48px;
 }
 
-.mr-header {
-    flex-direction: column;
+.mr-header-row {
     align-items: flex-start;
 }
 
-.mr-item-bottom {
-    flex-direction: column;
-    align-items: flex-start;
+.mr-actions {
+    width: 100%;
+    margin-left: 0;
 }
 
-.mr-meta-right {
-    align-self: stretch;
-    justify-content: flex-end;
+.mr-search {
+    width: 100%;
+    min-width: 0;
 }
 }
