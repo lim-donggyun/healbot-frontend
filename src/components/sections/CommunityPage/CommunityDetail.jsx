@@ -1,5 +1,5 @@
 // components/sections/CommunityPage/CommunityDetail.jsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import "./CommunityDetail.css";
 import Header from "../../layout/Header";
@@ -36,8 +36,15 @@ const [commentError, setCommentError] = useState(null);
 const [commentText, setCommentText] = useState("");
 const [submitLoading, setSubmitLoading] = useState(false);
 
-// 게시글 상세 조회
+// 🔥 React StrictMode에서 useEffect가 두 번 도는 것 방지용
+const fetchedPostRef = useRef(false);
+
+// ===== 게시글 상세 조회 (조회수 +1은 백엔드에서 처리) =====
 useEffect(() => {
+    // 이미 한 번 불렀으면 두 번째 호출은 무시
+    if (fetchedPostRef.current) return;
+    fetchedPostRef.current = true;
+
     const fetchPost = async () => {
     try {
         setPostLoading(true);
@@ -71,7 +78,7 @@ useEffect(() => {
     }
 }, [postId]);
 
-// 댓글 목록 조회
+// ===== 댓글 목록 조회 =====
 const loadComments = async () => {
     try {
     setCommentLoading(true);
@@ -106,7 +113,7 @@ const handleBackToList = () => {
     navigate("/community");
 };
 
-// 댓글 작성 (로그인한 회원만 가능 / 백엔드에서 세션 체크)
+// ===== 댓글 작성 =====
 const handleCommentSubmit = async (e) => {
     e.preventDefault();
     const trimmed = commentText.trim();
@@ -213,13 +220,11 @@ return (
 
             {/* 본문 */}
             <section className="cd-body">
-            {(post.content || "")
-                .split("\n")
-                .map((line, idx) => (
+            {(post.content || "").split("\n").map((line, idx) => (
                 <p key={idx} className="cd-content-line">
-                    {line}
+                {line}
                 </p>
-                ))}
+            ))}
             </section>
 
             {/* 댓글 섹션 */}

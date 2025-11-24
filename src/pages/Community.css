@@ -31,6 +31,7 @@ margin-bottom: 8px;
 font-size: 15px;
 color: #666;
 margin-bottom: 25px;
+text-align: center;
 }
 
 /* 검색 + 글쓰기 버튼 */
@@ -65,8 +66,8 @@ outline: none;
 
 .community-search-btn {
 position: absolute;
-right: 12px;
-top: 50%;
+right: 1px;
+top: 55%;
 transform: translateY(-50%);
 border: none;
 background: transparent;

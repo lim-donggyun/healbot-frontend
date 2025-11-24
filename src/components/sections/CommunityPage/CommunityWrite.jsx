@@ -98,7 +98,9 @@ return (
         <section className="community-write-header">
             <h1 className="community-write-title">글쓰기</h1>
             <p className="community-write-subtitle">
-            진료 경험, 건강 고민, 작은 팁까지 서로 편하게 나누어 보세요.
+            진료 경험, 건강 고민, 작은 팁까지 서로 편하게 나누어 보세요.<br/>
+            서비스의 투명성을 유지하고 기록의 일관성을 위해 게시물 수정은 지원되지 않습니다.
+            게시물을 삭제하신 후 다시 작성해 주시기 바랍니다.
             </p>
         </section>
 

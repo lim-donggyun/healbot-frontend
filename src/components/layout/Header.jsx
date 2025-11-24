@@ -247,7 +247,7 @@ function Header() {
                     </div>
                     <div className="dropdown-column">
                       <div className="dropdown-column-title">미디어</div>
-                      <a href="/health-info?cat=video">건강 영상</a>
+                      <a href="/health-info">건강 영상</a>
                       <a href="/health-info?cat=webinar">전문의 강의</a>
                       <a href="/health-info?cat=infographic">인포그래픽</a>
                     </div>
