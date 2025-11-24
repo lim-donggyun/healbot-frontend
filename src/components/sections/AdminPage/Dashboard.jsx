@@ -24,6 +24,9 @@ const Dashboard = () => {
   // 일별 로그인 횟수 데이터 (최근 7일)
   const [loginTrendData, setLoginTrendData] = useState([]);
 
+  // 조회수 상위 3개 공지사항
+  const [topNotices, setTopNotices] = useState([]);
+
   // 컴포넌트 마운트 시 통계 데이터 가져오기
   useEffect(() => {
     const fetchStats = async () => {
@@ -56,6 +59,10 @@ const Dashboard = () => {
 
         // 로그인 추이 데이터 설정
         setLoginTrendData(loginData || []);
+
+        // 조회수 높은 순으로 정렬하여 상위 3개 추출
+        const sortedNotices = [...notices].sort((a, b) => (b.viewCount || 0) - (a.viewCount || 0));
+        setTopNotices(sortedNotices.slice(0, 3));
       } catch (error) {
         console.error('통계 데이터 로딩 실패:', error);
       } finally {
@@ -110,6 +117,54 @@ const Dashboard = () => {
               <div className="stat-icon">📢</div>
             </div>
           </article>
+        </section>
+
+        {/* 조회수 높은 공지사항 TOP 3 */}
+        <section className="admin-card">
+          <div className="admin-card-header">
+            <div>
+              <div className="admin-card-title">조회수 높은 공지사항 TOP 3</div>
+              <div className="admin-card-sub">
+                가장 많이 조회된 공지사항을 확인할 수 있습니다.
+              </div>
+            </div>
+          </div>
+          <div className="top-notices-list">
+            {loading ? (
+              <div style={{ textAlign: 'center', padding: '40px', color: '#888' }}>
+                로딩 중...
+              </div>
+            ) : topNotices.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '40px', color: '#888' }}>
+                등록된 공지사항이 없습니다.
+              </div>
+            ) : (
+              topNotices.map((notice, index) => (
+                <div key={notice.noticeId} className="top-notice-item">
+                  <div className="top-notice-rank">{index + 1}</div>
+                  <div className="top-notice-content">
+                    <div className="top-notice-title">{notice.title}</div>
+                    <div className="top-notice-meta">
+                      <span className="top-notice-category">
+                        {notice.category === 'IMPORTANT' ? '중요' :
+                         notice.category === 'UPDATE' ? '업데이트' :
+                         notice.category === 'EVENT' ? '이벤트' : '공지'}
+                      </span>
+                      <span className="top-notice-date">
+                        {notice.createdAt ? notice.createdAt.split('T')[0].replace(/-/g, '.') : ''}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="top-notice-views">
+                    <div className="top-notice-views-icon">👁️</div>
+                    <div className="top-notice-views-count">
+                      {(notice.viewCount || 0).toLocaleString()}
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
         </section>
 
         {/* 일별 로그인 횟수 */}

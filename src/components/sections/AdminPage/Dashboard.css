@@ -120,7 +120,14 @@ aside.admin-sidebar nav.admin-nav {
 .admin-main {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+}
+
+.admin-main > section {
+  margin-bottom: 32px;
+}
+
+.admin-main > section:last-child {
+  margin-bottom: 0;
 }
 
 .admin-header {
@@ -153,7 +160,7 @@ aside.admin-sidebar nav.admin-nav {
   background: var(--card);
   border-radius: 16px;
   border: 1px solid var(--border);
-  padding: 18px 20px 18px;
+  padding: 24px;
 }
 
 .admin-card-header {
@@ -187,7 +194,7 @@ aside.admin-sidebar nav.admin-nav {
 .admin-stats {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
+  gap: 16px;
 }
 
 .stat-card {
@@ -587,6 +594,113 @@ tbody tr:hover {
 .quick-menu-desc {
   font-size: 12px;
   color: var(--muted);
+}
+
+/* 조회수 높은 공지사항 TOP 3 */
+.top-notices-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.top-notice-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: #f9fafb;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  transition: all 0.2s;
+}
+
+.top-notice-item:hover {
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transform: translateY(-1px);
+}
+
+.top-notice-rank {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3284b1, #2563eb);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.top-notice-item:nth-child(1) .top-notice-rank {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+.top-notice-item:nth-child(2) .top-notice-rank {
+  background: linear-gradient(135deg, #94a3b8, #64748b);
+}
+
+.top-notice-item:nth-child(3) .top-notice-rank {
+  background: linear-gradient(135deg, #cd7f32, #b87333);
+}
+
+.top-notice-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.top-notice-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 6px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.top-notice-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+}
+
+.top-notice-category {
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-weight: 500;
+  font-size: 11px;
+}
+
+.top-notice-date {
+  color: var(--muted);
+}
+
+.top-notice-views {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: #ffffff;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.top-notice-views-icon {
+  font-size: 16px;
+}
+
+.top-notice-views-count {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
 }
 
 @media (max-width: 900px) {

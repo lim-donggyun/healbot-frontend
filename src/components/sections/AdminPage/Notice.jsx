@@ -44,7 +44,7 @@ const Notice = () => {
           CONTENT: notice.content,
           CATEGORY: notice.category,
           CREATED_AT: notice.createdAt,
-          VIEWS: notice.views || 0
+          VIEWS: notice.viewCount || notice.VIEW_COUNT || 0
         }));
 
         setNotices(convertedData);
@@ -172,7 +172,7 @@ const Notice = () => {
           CONTENT: notice.content,
           CATEGORY: notice.category,
           CREATED_AT: notice.createdAt,
-          VIEWS: notice.views || 0
+          VIEWS: notice.viewCount || notice.VIEW_COUNT || 0
         }));
 
         setNotices(convertedData);
@@ -205,7 +205,7 @@ const Notice = () => {
           CONTENT: notice.content,
           CATEGORY: notice.category,
           CREATED_AT: notice.createdAt,
-          VIEWS: notice.views || 0
+          VIEWS: notice.viewCount || notice.VIEW_COUNT || 0
         }));
 
         setNotices(convertedData);
@@ -249,7 +249,7 @@ const Notice = () => {
           CONTENT: notice.content,
           CATEGORY: notice.category,
           CREATED_AT: notice.createdAt,
-          VIEWS: notice.views || 0
+          VIEWS: notice.viewCount || notice.VIEW_COUNT || 0
         }));
 
         setNotices(convertedData);
