@@ -91,3 +91,26 @@ export const deleteNotice = async (noticeId) => {
     throw error;
   }
 };
+
+// 공지사항 조회수 증가
+export const incrementNoticeView = async (noticeId) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/notices/${encodeURIComponent(noticeId)}/view`, {
+      method: "POST",
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      console.error("조회수 증가 실패:", response.status);
+      // 조회수 증가 실패해도 에러를 throw하지 않음 (UX에 영향 없도록)
+      return { success: false };
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("조회수 증가 에러:", error);
+    // 조회수 증가 실패해도 에러를 throw하지 않음
+    return { success: false };
+  }
+};

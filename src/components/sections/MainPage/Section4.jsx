@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAllNotices } from "../../../utils/noticeApi";
+import { checkSession } from "../../../utils/memberApi";
 
 // 건강정보 하드코딩 데이터
 const healthInfoData = [
@@ -57,13 +58,37 @@ function InfoSection() {
   };
 
   // 공지사항 더보기 클릭
-  const handleNoticeMore = () => {
-    navigate('/notice');
+  const handleNoticeMore = async () => {
+    try {
+      const sessionData = await checkSession();
+      if (!sessionData.loggedIn) {
+        alert('로그인되어 있지 않을 경우 로그인 해야 이용 가능합니다.');
+        navigate('/login');
+        return;
+      }
+      navigate('/notice');
+    } catch (error) {
+      console.error('세션 확인 실패:', error);
+      alert('로그인되어 있지 않을 경우 로그인 해야 이용 가능합니다.');
+      navigate('/login');
+    }
   };
 
   // 공지사항 클릭 시 상세 페이지로 이동
-  const handleNoticeClick = (noticeId) => {
-    navigate(`/notice?id=${noticeId}`);
+  const handleNoticeClick = async (noticeId) => {
+    try {
+      const sessionData = await checkSession();
+      if (!sessionData.loggedIn) {
+        alert('로그인되어 있지 않을 경우 로그인 해야 이용 가능합니다.');
+        navigate('/login');
+        return;
+      }
+      navigate(`/notice?id=${noticeId}`);
+    } catch (error) {
+      console.error('세션 확인 실패:', error);
+      alert('로그인되어 있지 않을 경우 로그인 해야 이용 가능합니다.');
+      navigate('/login');
+    }
   };
 
   return (

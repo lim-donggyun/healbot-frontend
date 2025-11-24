@@ -327,7 +327,27 @@ function Header() {
           <div className="hamburger-menu-column">
             <div className="hamburger-menu-title">서비스</div>
             <a href="/about">서비스 소개</a>
-            <a href="/notice">공지사항</a>
+            <a
+              href="/notice"
+              onClick={async (e) => {
+                e.preventDefault();
+                try {
+                  const sessionData = await checkSession();
+                  if (!sessionData.loggedIn) {
+                    alert('로그인되어 있지 않을 경우 로그인 해야 이용 가능합니다.');
+                    navigate('/login');
+                    return;
+                  }
+                  navigate('/notice');
+                } catch (error) {
+                  console.error('세션 확인 실패:', error);
+                  alert('로그인되어 있지 않을 경우 로그인 해야 이용 가능합니다.');
+                  navigate('/login');
+                }
+              }}
+            >
+              공지사항
+            </a>
             <a href="/event">이벤트</a>
           </div>
           <div className="hamburger-menu-column">
