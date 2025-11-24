@@ -12,6 +12,14 @@ import SearchResultPage from "./pages/SearchResultPage";
 import MyPage from "./pages/Mypage";
 import ChronicDiseasePage from "./pages/ChronicDiseasePage";
 import InfectiousDiseasePage from "./pages/InfectiousDiseasePage";
+import PreventionPage from "./pages/PreventionPage";
+import NutritionPage from "./pages/NutritionPage";
+import ExercisePage from "./pages/ExercisePage";
+import MentalHealthPage from "./pages/MentalHealthPage";
+import SeasonalHealthPage from "./pages/SeasonalHealthPage";
+import FirstAidPage from "./pages/FirstAidPage";
+import HealthCheckupPage from "./pages/HealthCheckupPage";
+import HomeMedicinePage from "./pages/HomeMedicinePage";
 import Terms from "./pages/static/Terms";
 import Privacy from "./pages/static/Privacy";
 import Partners from "./pages/static/Partners";
@@ -64,6 +72,14 @@ function App() {
         <Route path="/search-result" element={<SearchResultPage />} />
         <Route path="/chronic-diseases" element={<ChronicDiseasePage />} />
         <Route path="/infectious-diseases" element={<InfectiousDiseasePage />} />
+        <Route path="/prevention" element={<PreventionPage />} />
+        <Route path="/nutrition" element={<NutritionPage />} />
+        <Route path="/exercise" element={<ExercisePage />} />
+        <Route path="/mental-health" element={<MentalHealthPage />} />
+        <Route path="/seasonal-health" element={<SeasonalHealthPage />} />
+        <Route path="/first-aid" element={<FirstAidPage />} />
+        <Route path="/health-checkup" element={<HealthCheckupPage />} />
+        <Route path="/home-medicine" element={<HomeMedicinePage />} />
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/terms" element={<Terms />} />
         <Route path="/privacy" element={<Privacy />} />
