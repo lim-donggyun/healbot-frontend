@@ -1,0 +1,235 @@
+/* =========================
+제재 내역 페이지 레이아웃
+========================= */
+.sanction-main {
+background: #f5f7fb;
+min-height: calc(100vh - 160px);
+padding: 120px 16px 64px;
+}
+
+.sanction-container {
+max-width: 960px;
+margin: 0 auto;
+}
+
+/* 상단 타이틀 */
+.sanction-header-row {
+display: flex;
+justify-content: space-between;
+align-items: flex-end;
+gap: 16px;
+margin-bottom: 24px;
+}
+
+.sanction-title {
+font-size: 26px;
+font-weight: 700;
+margin: 0 0 6px;
+color: #111827;
+}
+
+.sanction-subtitle {
+margin: 0;
+font-size: 14px;
+color: #6b7280;
+}
+
+.sanction-back-btn {
+border: 0;
+outline: 0;
+border-radius: 999px;
+padding: 8px 14px;
+font-size: 13px;
+font-weight: 500;
+background: #e5e7eb;
+color: #111827;
+cursor: pointer;
+white-space: nowrap;
+transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+}
+
+.sanction-back-btn:hover {
+background: #d1d5db;
+box-shadow: 0 8px 18px rgba(15, 23, 42, 0.12);
+}
+
+.sanction-back-btn:active {
+transform: translateY(1px);
+box-shadow: none;
+}
+
+/* 카드 공통 */
+.sanction-card {
+background: #ffffff;
+border-radius: 18px;
+padding: 18px 18px 16px;
+box-shadow: 0 18px 40px rgba(15, 23, 42, 0.06);
+border: 1px solid #e5e7eb;
+margin-bottom: 20px;
+}
+
+.sanction-card-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+gap: 12px;
+margin-bottom: 12px;
+}
+
+.sanction-card-title {
+font-size: 18px;
+font-weight: 700;
+margin: 0 0 4px;
+color: #111827;
+}
+
+.sanction-card-desc {
+margin: 0;
+font-size: 13px;
+color: #6b7280;
+}
+
+.sanction-count-pill {
+border-radius: 999px;
+padding: 6px 12px;
+font-size: 12px;
+font-weight: 600;
+background: #eff6ff;
+color: #1d4ed8;
+}
+
+/* 상태 문구 */
+.sanction-loading,
+.sanction-error {
+margin: 4px 0;
+font-size: 14px;
+color: #4b5563;
+}
+
+.sanction-error {
+color: #dc2626;
+}
+
+/* 빈 상태 */
+.sanction-empty {
+padding: 16px 8px 4px;
+text-align: center;
+font-size: 13px;
+color: #6b7280;
+}
+
+/* 테이블 */
+.sanction-table-wrapper {
+width: 100%;
+overflow-x: auto;
+}
+
+.sanction-table {
+width: 100%;
+border-collapse: collapse;
+font-size: 13px;
+}
+
+.sanction-table thead tr {
+background: #f9fafb;
+}
+
+.sanction-table th,
+.sanction-table td {
+padding: 9px 8px;
+border-bottom: 1px solid #e5e7eb;
+text-align: left;
+vertical-align: top;
+}
+
+.sanction-table th {
+font-size: 12px;
+font-weight: 600;
+color: #6b7280;
+}
+
+.sanction-table tbody tr:hover {
+background: #f9fafb;
+}
+
+/* 대상 제목 + 메타 */
+.sanction-title-cell {
+min-width: 180px;
+}
+
+.sanction-target-title {
+font-size: 13px;
+font-weight: 500;
+color: #111827;
+margin-bottom: 3px;
+}
+
+.sanction-meta-line {
+font-size: 11px;
+color: #9ca3af;
+}
+
+/* 배지 / 칩 */
+.sanction-badge {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+padding: 3px 8px;
+border-radius: 999px;
+background: #eef2ff;
+color: #4f46e5;
+font-size: 11px;
+font-weight: 600;
+}
+
+.sanction-chip {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+padding: 3px 8px;
+border-radius: 999px;
+font-size: 11px;
+font-weight: 600;
+white-space: nowrap;
+}
+
+.sanction-chip.action {
+background: #fef3c7;
+color: #92400e;
+}
+
+.sanction-chip.status {
+background: #ecfdf3;
+color: #166534;
+}
+
+/* 사유 텍스트 */
+.sanction-reason {
+font-size: 12px;
+color: #4b5563;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+.sanction-main {
+    padding: 32px 12px 48px;
+}
+
+.sanction-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.sanction-card {
+    padding: 16px 12px 14px;
+}
+
+.sanction-title {
+    font-size: 22px;
+}
+
+.sanction-table th,
+.sanction-table td {
+    padding: 8px 6px;
+}
+}
