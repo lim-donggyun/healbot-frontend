@@ -41,6 +41,12 @@ const Sidebar = () => {
         role: '커뮤니티 관리',
         description: '사용자 커뮤니티 게시글을 조회하고 관리할 수 있습니다.'
       };
+    } else if (location.pathname === '/admin/reports') {
+      return {
+        title: '시스템 관리자',
+        role: '신고 관리',
+        description: '사용자가 신고한 게시글과 댓글을 조회하고 관리할 수 있습니다.'
+      };
     }
     return {
       title: '시스템 관리자',
@@ -98,6 +104,13 @@ const Sidebar = () => {
         >
           <span className="icon">💬</span>
           <span>커뮤니티</span>
+        </div>
+        <div
+          className={`admin-nav-item ${isActive('/admin/reports') ? 'active' : ''}`}
+          onClick={() => navigate('/admin/reports')}
+        >
+          <span className="icon">🚨</span>
+          <span>신고 관리</span>
         </div>
       </nav>
     </aside>
