@@ -8,6 +8,8 @@ function HospitalMap() {
   const [hospitals, setHospitals] = useState([]); // 사이드바에 표시할 병원 리스트
   const [mapMarkers, setMapMarkers] = useState([]); // 지도에 표시할 마커용 병원 데이터
   const [selectedHospital, setSelectedHospital] = useState(null);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false); // 상세 정보 모달 열림 상태
+  const [modalDepartments, setModalDepartments] = useState([]); // 모달용 진료과 목록
   const [searchKeyword, setSearchKeyword] = useState('');
   const [filterType, setFilterType] = useState('all'); // all, emergency, night, weekend
   const [userAddress, setUserAddress] = useState(null); // 사용자 등록 주소
@@ -698,6 +700,37 @@ function HospitalMap() {
     selectedDepartmentsRef.current = selectedDepartments;
   }, [selectedDepartments]);
 
+  // 상세 모달이 열릴 때 병원 위치 지도 표시
+  useEffect(() => {
+    if (isDetailModalOpen && selectedHospital && selectedHospital.latitude && selectedHospital.longitude) {
+      setTimeout(() => {
+        const container = document.getElementById('detail-kakao-map');
+        if (!container || !window.kakao || !window.kakao.maps) return;
+
+        const options = {
+          center: new window.kakao.maps.LatLng(
+            parseFloat(selectedHospital.latitude),
+            parseFloat(selectedHospital.longitude)
+          ),
+          level: 3,
+        };
+
+        const detailMap = new window.kakao.maps.Map(container, options);
+
+        // 병원 위치 마커 표시
+        const markerPosition = new window.kakao.maps.LatLng(
+          parseFloat(selectedHospital.latitude),
+          parseFloat(selectedHospital.longitude)
+        );
+
+        const marker = new window.kakao.maps.Marker({
+          position: markerPosition,
+        });
+
+        marker.setMap(detailMap);
+      }, 100);
+    }
+  }, [isDetailModalOpen, selectedHospital]);
   // userAddress 또는 지도 초기화 상태 변경 시 마커 표시
   useEffect(() => {
     console.log('🔄 [useEffect] 트리거됨');
@@ -1076,6 +1109,25 @@ function HospitalMap() {
     );
   };
 
+  // 상세보기 버튼 클릭 시 모달 열기
+  const handleDetailButtonClick = async (hospital, e) => {
+    if (e) {
+      e.stopPropagation(); // 부모 요소 클릭 이벤트 전파 방지
+    }
+
+    setSelectedHospital(hospital);
+    setIsDetailModalOpen(true);
+
+    // 진료과 목록 조회
+    try {
+      const depts = await getHospitalDepartments(hospital.hospitalId);
+      setModalDepartments(depts || []);
+    } catch (error) {
+      console.error('진료과 목록 조회 실패:', error);
+      setModalDepartments([]);
+    }
+  };
+
   // InfoWindow 표시
   const showInfoWindow = async (hospital, lat, lng) => {
     // 기존 InfoWindow 닫기
@@ -1212,6 +1264,21 @@ function HospitalMap() {
             </div>
           ` : ''}
         </div>
+
+        <!-- 상세보기 버튼 (오른쪽 하단) -->
+        <div style="display: flex; justify-content: flex-end; margin-top: 12px;">
+          <button class="info-detail-btn" style="
+            padding: 5px 12px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+          " onmouseover="this.style.background='#2563eb'" onmouseout="this.style.background='#3b82f6'">상세보기</button>
+        </div>
       </div>
     `;
 
@@ -1229,13 +1296,29 @@ function HospitalMap() {
     customOverlay.setMap(kakaoMapRef.current);
     currentInfoWindowRef.current = customOverlay;
 
-    // 닫기 버튼 이벤트
-    const closeBtn = contentWrapper.querySelector('.info-close-btn');
-    if (closeBtn) {
-      closeBtn.addEventListener('click', () => {
-        customOverlay.setMap(null);
-      });
-    }
+    // DOM이 렌더링된 후 이벤트 리스너 추가
+    setTimeout(() => {
+      // 닫기 버튼 이벤트
+      const closeBtn = contentWrapper.querySelector('.info-close-btn');
+      if (closeBtn) {
+        closeBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          customOverlay.setMap(null);
+        });
+      }
+
+      // 상세보기 버튼 이벤트 (클로저로 hospital 객체 전달)
+      const detailBtn = contentWrapper.querySelector('.info-detail-btn');
+      if (detailBtn) {
+        detailBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          console.log('상세보기 버튼 클릭:', hospital.hospitalName);
+          handleDetailButtonClick(hospital, e);
+        });
+      } else {
+        console.error('상세보기 버튼을 찾을 수 없습니다');
+      }
+    }, 0);
   };
 
   // 사이드바에서 병원 카드 스크롤 (하이라이트 제거)
@@ -1670,11 +1753,19 @@ function HospitalMap() {
                           </div>
                         )}
                       </div>
-                      {hospital.hospitalType && (
-                        <div className="hospital-tags">
-                          <span className="tag">{hospital.hospitalType}</span>
-                        </div>
-                      )}
+                      <div className="hospital-card-footer">
+                        {hospital.hospitalType && (
+                          <div className="hospital-tags">
+                            <span className="tag">{hospital.hospitalType}</span>
+                          </div>
+                        )}
+                        <button
+                          className="card-detail-btn"
+                          onClick={(e) => handleDetailButtonClick(hospital, e)}
+                        >
+                          상세보기
+                        </button>
+                      </div>
                     </div>
                   ))}
 
@@ -1745,6 +1836,105 @@ function HospitalMap() {
             </div>
           </div>
         </div>
+
+        {/* 병원 상세 정보 모달 */}
+        {isDetailModalOpen && selectedHospital && (
+          <div className="map-modal-overlay" onClick={() => setIsDetailModalOpen(false)}>
+            <div className="map-modal-content" onClick={(e) => e.stopPropagation()}>
+              <div className="map-modal-header">
+                <h3>병원 상세 정보</h3>
+                <button className="map-modal-close" onClick={() => setIsDetailModalOpen(false)}>
+                  ✕
+                </button>
+              </div>
+
+              <div className="map-detail-content">
+                <div className="map-detail-section">
+                  <h4>기본 정보</h4>
+                  <div className="map-detail-grid">
+                    <div className="map-detail-item">
+                      <span className="map-detail-label">병원명:</span>
+                      <span className="map-detail-value">{selectedHospital.hospitalName}</span>
+                    </div>
+                    <div className="map-detail-item map-full-width">
+                      <span className="map-detail-label">정보:</span>
+                      <span className="map-detail-value">{selectedHospital.details}</span>
+                    </div>
+                    <div className="map-detail-item">
+                      <span className="map-detail-label">병원 유형:</span>
+                      <span className="map-detail-value">{selectedHospital.hospitalType || '-'}</span>
+                    </div>
+                    <div className="map-detail-item">
+                      <span className="map-detail-label">전화번호:</span>
+                      <span className="map-detail-value">{selectedHospital.phone || '-'}</span>
+                    </div>
+                    <div className="map-detail-item">
+                      <span className="map-detail-label">응급실 전화:</span>
+                      <span className="map-detail-value">{selectedHospital.erPhone || '-'}</span>
+                    </div>
+                    <div className="map-detail-item">
+                      <span className="map-detail-label">응급실:</span>
+                      <span className="map-detail-value">{selectedHospital.emergencyYn === 'Y' ? '있음' : '없음'}</span>
+                    </div>
+                    <div className="map-detail-item">
+                      <span className="map-detail-label">운영시간:</span>
+                      <span className="map-detail-value">
+                        {selectedHospital.operatingHours
+                          ? selectedHospital.operatingHours
+                              .split('|')
+                              .map((time, idx) => <div key={idx}>{time.trim()}</div>)
+                          : '-'}
+                      </span>
+                    </div>
+                    <div className="map-detail-item">
+                      <span className="map-detail-label">점심시간:</span>
+                      <span className="map-detail-value">{selectedHospital.lunchTime || '-'}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="map-detail-section">
+                  <h4>진료과 목록</h4>
+                  <div className="map-departments-list">
+                    {modalDepartments.length > 0 ? (
+                      modalDepartments.map((dept, index) => (
+                        <span key={index} className="map-department-tag">
+                          {dept}
+                        </span>
+                      ))
+                    ) : (
+                      <p className="map-no-data">등록된 진료과가 없습니다.</p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="map-detail-section">
+                  <h4>병원 위치</h4>
+                  <div className="map-detail-info">
+                    {selectedHospital.latitude && selectedHospital.longitude && (
+                      <div className="map-hospital-map-box">
+                        <div
+                          id="detail-kakao-map"
+                          style={{
+                            width: '100%',
+                            height: '250px',
+                            borderRadius: '8px',
+                            border: '2px solid #dee2e6',
+                            marginBottom: '8px'
+                          }}
+                        ></div>
+                        <div className="map-detail-item-single">
+                          <span className="map-detail-label">주소:</span>
+                          <span className="map-detail-value">{selectedHospital.address || '-'}</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
