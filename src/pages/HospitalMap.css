@@ -1107,7 +1107,7 @@
   flex: 1;
   font-size: 14px;
   color: #333;
-  word-wrap: break-word;
+  word-break: break-word;
 }
 
 /* 두 번째 섹션 (진료과) - 오른쪽 상단 */
@@ -1271,4 +1271,27 @@
   .hospital-card {
     padding: 14px;
   }
+}
+
+/* 카카오맵 길찾기 버튼 */
+.kakao-map-navigate-btn {
+  width: 100%;
+  margin-top: 12px;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, #FEE500 0%, #FFEB3B 100%);
+  color: #3c1e1e;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(254, 229, 0, 0.3);
+}
+
+.kakao-map-navigate-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 4px rgba(254, 229, 0, 0.3);
 }
