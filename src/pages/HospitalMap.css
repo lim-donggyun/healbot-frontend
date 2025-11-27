@@ -368,9 +368,9 @@
   border: 2px solid #e5e7eb;
   border-radius: 8px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-  max-height: 320px;
+  max-height: 205px;
   overflow-y: auto;
-  z-index: 1001;
+  z-index: 100;
   animation: dropdownSlide 0.2s ease-out;
 }
 
