@@ -122,15 +122,23 @@ export const getHospitalDepartments = async (hospitalId) => {
   }
 };
 
-// 병원 검색 (진료과, 위치 기반)
+// 병원 검색 (진료과 기반)
 export const searchHospitals = async (searchRequest) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/hospital`, {
-      method: 'POST',
+    const params = new URLSearchParams();
+
+    // departments 배열을 쿼리 파라미터로 변환
+    if (searchRequest.departments && searchRequest.departments.length > 0) {
+      searchRequest.departments.forEach(dept => {
+        params.append('departments', dept);
+      });
+    }
+
+    const response = await fetch(`${API_BASE_URL}/hospital?${params.toString()}`, {
+      method: 'GET',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(searchRequest),
     });
 
     if (!response.ok) {
