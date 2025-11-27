@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import Header from '../components/layout/Header';
 import { getAllHospitals, searchHospitals, getEmergencyHospitals, getHospitalsByBounds, getHospitalDepartments } from '../utils/hospitalApi';
 import { getProfile } from '../utils/memberApi';
 import './HospitalMap.css';
 
 function HospitalMap() {
+  const [searchParams] = useSearchParams();
   const [hospitals, setHospitals] = useState([]); // 사이드바에 표시할 병원 리스트
   const [mapMarkers, setMapMarkers] = useState([]); // 지도에 표시할 마커용 병원 데이터
   const [selectedHospital, setSelectedHospital] = useState(null);
@@ -71,6 +73,31 @@ function HospitalMap() {
     '한방신경정신과',
     '한방재활의학과',
   ];
+
+  // URL 파라미터로부터 진료과 자동 선택
+  useEffect(() => {
+    const deptParam = searchParams.get('dept');
+    if (deptParam && departmentList.includes(deptParam)) {
+      console.log('🔍 URL 파라미터로부터 진료과 선택:', deptParam);
+      setSelectedDepartments([deptParam]);
+      selectedDepartmentsRef.current = [deptParam];
+      // 검색 모드 활성화하여 해당 진료과로 검색
+      setIsSearchMode(true);
+      isSearchModeRef.current = true;
+    }
+  }, [searchParams]);
+
+  // 지도 초기화 후 진료과 필터 적용
+  useEffect(() => {
+    const deptParam = searchParams.get('dept');
+    if (isMapInitialized && deptParam && departmentList.includes(deptParam)) {
+      console.log('🏥 지도 초기화 완료 - 진료과 필터 적용:', deptParam);
+      // 약간의 지연을 두고 현재 지도 영역 내 필터링 실행
+      setTimeout(() => {
+        loadHospitalsAndMarkers();
+      }, 500);
+    }
+  }, [isMapInitialized]);
 
   useEffect(() => {
     // 이미 지도가 초기화되어 있으면 리턴
@@ -462,17 +489,11 @@ function HospitalMap() {
         return;
       }
 
-      // 케이스 2: 검색어 없음 + 진료과 있음 = 진료과 검색만
+      // 케이스 2: 검색어 없음 + 진료과 있음 = 현재 지도 영역 내에서 진료과 필터링
       if (!hasKeyword && hasDepartmentFilter) {
-        console.log('✅ [검색] 케이스 2: 진료과만 검색');
-        const departmentResults = await searchHospitals({
-          departments: selectedDepartments,
-        });
-
-        console.log('📝 [검색] 진료과 검색 결과:', departmentResults.length, '개');
-        setHospitals(departmentResults);
-        setMapMarkers(departmentResults);
-        setDisplayCount(10);
+        console.log('✅ [검색] 케이스 2: 진료과만 필터링 (지도 영역 내)');
+        setIsSearchMode(false);
+        loadHospitalsAndMarkers();
         setLoading(false);
         return;
       }

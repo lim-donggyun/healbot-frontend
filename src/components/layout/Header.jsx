@@ -192,31 +192,30 @@ function Header() {
                       <div className="dropdown-column-title">의료기관 찾기</div>
                       <a href="/hospitals">병원 찾기</a>
                       <a href="/emergency">응급실 찾기</a>
-                      <a href="/hospitals?open=night">야간 진료</a>
-                      <a href="/hospitals?open=weekend">주말 진료</a>
                     </div>
                     <div className="dropdown-column">
-                      <div className="dropdown-column-title">내과 계열</div>
-                      <a href="/hospitals?dept=internal">내과</a>
-                      <a href="/hospitals?dept=gastro">소화기내과</a>
-                      <a href="/hospitals?dept=cardio">심장내과</a>
-                      <a href="/hospitals?dept=neuro">신경과</a>
+                      <div className="dropdown-column-title">주요 진료과</div>
+                      <a href="/hospitals?dept=내과">내과</a>
+                      <a href="/hospitals?dept=외과">외과</a>
+                      <a href="/hospitals?dept=정형외과">정형외과</a>
+                      <a href="/hospitals?dept=소아청소년과">소아청소년과</a>
+                      <a href="/hospitals?dept=산부인과">산부인과</a>
                     </div>
                     <div className="dropdown-column">
-                      <div className="dropdown-column-title">외과 계열</div>
-                      <a href="/hospitals?dept=surgery">외과</a>
-                      <a href="/hospitals?dept=ortho">정형외과</a>
-                      <a href="/hospitals?dept=neuro-surg">신경외과</a>
-                      <a href="/hospitals?dept=plastic">성형외과</a>
+                      <div className="dropdown-column-title">전문 진료과</div>
+                      <a href="/hospitals?dept=신경과">신경과</a>
+                      <a href="/hospitals?dept=신경외과">신경외과</a>
+                      <a href="/hospitals?dept=정신건강의학과">정신건강의학과</a>
+                      <a href="/hospitals?dept=재활의학과">재활의학과</a>
+                      <a href="/hospitals?dept=성형외과">성형외과</a>
                     </div>
                     <div className="dropdown-column">
                       <div className="dropdown-column-title">기타 진료과</div>
-                      <a href="/hospitals?dept=pediatrics">소아청소년과</a>
-                      <a href="/hospitals?dept=obgyn">산부인과</a>
-                      <a href="/hospitals?dept=derma">피부과</a>
-                      <a href="/hospitals?dept=more" className="highlight-link">
-                        전체 진료과 보기
-                      </a>
+                      <a href="/hospitals?dept=안과">안과</a>
+                      <a href="/hospitals?dept=이비인후과">이비인후과</a>
+                      <a href="/hospitals?dept=피부과">피부과</a>
+                      <a href="/hospitals?dept=치과">치과</a>
+                      <a href="/hospitals?dept=비뇨의학과">비뇨의학과</a>
                     </div>
                   </div>
                 </div>
