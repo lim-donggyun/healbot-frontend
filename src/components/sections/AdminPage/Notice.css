@@ -137,10 +137,6 @@
   width: 15%;
 }
 
-.notice-table th:nth-child(5) {
-  width: 15%;
-}
-
 .notice-table td {
   padding: 12px;
   border-bottom: 1px solid #dee2e6;
@@ -151,6 +147,12 @@
   text-overflow: ellipsis;
   text-align: center !important;
   vertical-align: middle;
+}
+
+/* Prevent ellipsis in the first column (Category) */
+.notice-table td:first-child {
+  white-space: normal;
+  overflow: visible;
 }
 
 .notice-table tbody tr {

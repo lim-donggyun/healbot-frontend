@@ -1274,17 +1274,35 @@ body:has(.main-page)::-webkit-scrollbar {
 }
 
 .health-card {
-  padding: 25px;
   background: #f8f9fa;
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.3s;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+
+.health-card-image {
+  height: 120px;
+  margin-bottom: 0;
+  background-size: cover;
+  background-position: center;
+  transition: all 0.3s;
+}
+
+.health-card-content {
+  padding: 20px;
 }
 
 .health-card:hover {
-  background: #3fc1ec;
-  color: white;
-  transform: scale(1.03);
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+.health-card:hover .health-card-image {
+  transform: scale(1.05);
 }
 
 .health-card h4 {
