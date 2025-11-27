@@ -432,6 +432,9 @@ function HospitalMap() {
   };
 
   const handleSearch = async () => {
+    // 연관검색어 닫기
+    setShowAutocomplete(false);
+
     // 검색 모드 활성화
     setIsSearchMode(true);
 
@@ -488,27 +491,131 @@ function HospitalMap() {
         console.log('📝 [검색] 진료과 필터링된 병원:', departmentFilteredHospitals.length, '개');
       }
 
-      // 병원명으로 검색
+      // 병원명으로 검색 (정확히 일치하는 경우만)
       let hospitalNameResults = [];
       if (hasDepartmentFilter) {
         // 진료과 조건이 있으면 진료과 병원 목록에서 병원명 필터링
         hospitalNameResults = departmentFilteredHospitals.filter(hospital =>
-          hospital.hospitalName && hospital.hospitalName.toLowerCase().includes(keywordLower)
+          hospital.hospitalName && hospital.hospitalName.toLowerCase() === keywordLower
         );
         console.log('📝 [검색] 진료과 + 병원명 필터링 후:', hospitalNameResults.length, '개');
       } else {
         // 진료과 조건이 없으면 캐시에서 병원명만 필터링
         if (allHospitalsCache.length > 0) {
           hospitalNameResults = allHospitalsCache.filter(hospital =>
-            hospital.hospitalName && hospital.hospitalName.toLowerCase().includes(keywordLower)
+            hospital.hospitalName && hospital.hospitalName.toLowerCase() === keywordLower
           );
           console.log('📝 [검색] 병원명 필터링 후:', hospitalNameResults.length, '개');
         }
       }
 
-      // 병원명 검색 결과가 있으면 바로 사용 (주소 검색 건너뛰기)
+      // 병원 유형 및 진료과 키워드 (긴 것부터 먼저 체크)
+      const hospitalTypeKeywords = [
+        // 병원 유형
+        '요양병원', '한의원', '병원', '의원', '치과', '약국', '보건소', '클리닉',
+        // 진료과 (긴 것부터)
+        '마취통증의학과', '방사선종양학과', '진단검사의학과', '정신건강의학과', '한방신경정신과', '한방재활의학과',
+        '가정의학과', '비뇨의학과', '소아청소년과', '영상의학과', '예방의학과', '응급의학과', '이비인후과', '재활의학과',
+        '한방내과', '한방부인과', '한방소아과',
+        '내과', '병리과', '산부인과', '성형외과', '신경과', '신경외과', '안과', '외과', '정형외과', '피부과', '핵의학과', '흉부외과'
+      ];
+      const isHospitalTypeKeyword = hospitalTypeKeywords.includes(keyword);
+
+      // 병원 유형 또는 진료과 키워드로 검색한 경우 (예: "한의원", "안과")
+      if (isHospitalTypeKeyword) {
+        console.log('✅ [검색] 병원 유형/진료과 키워드 검색:', keyword);
+
+        // 진료과 목록에 있는 경우 진료과로 검색
+        const isDepartment = departmentList.includes(keyword);
+
+        let nearbyHospitals = [];
+
+        if (isDepartment) {
+          console.log('🏥 [검색] 진료과로 검색:', keyword);
+          // 진료과로 백엔드에서 검색
+          nearbyHospitals = await searchHospitals({
+            departments: [keyword],
+          });
+
+          // 현재 지도 영역으로 필터링
+          const bounds = kakaoMapRef.current.getBounds();
+          const swLatLng = bounds.getSouthWest();
+          const neLatLng = bounds.getNorthEast();
+
+          nearbyHospitals = nearbyHospitals.filter(hospital => {
+            if (!hospital.latitude || !hospital.longitude) return false;
+            const lat = parseFloat(hospital.latitude);
+            const lng = parseFloat(hospital.longitude);
+            return lat >= swLatLng.getLat() && lat <= neLatLng.getLat() &&
+                   lng >= swLatLng.getLng() && lng <= neLatLng.getLng();
+          });
+        } else {
+          // 병원 유형으로 검색 (병원명에서 검색)
+          console.log('🏥 [검색] 병원 유형으로 검색:', keyword);
+          const bounds = kakaoMapRef.current.getBounds();
+          const swLatLng = bounds.getSouthWest();
+          const neLatLng = bounds.getNorthEast();
+
+          nearbyHospitals = await getHospitalsByBounds(
+            swLatLng.getLat(),
+            swLatLng.getLng(),
+            neLatLng.getLat(),
+            neLatLng.getLng(),
+            filterTypeRef.current === 'emergency'
+          );
+
+          // 병원 유형으로 필터링
+          nearbyHospitals = nearbyHospitals.filter(hospital => {
+            return hospital.hospitalName && hospital.hospitalName.includes(keyword);
+          });
+        }
+
+        // 진료과 조건이 추가로 있으면 필터링
+        if (hasDepartmentFilter) {
+          const departmentResults = await searchHospitals({
+            departments: selectedDepartments,
+          });
+
+          const departmentIds = new Set(departmentResults.map(h => h.hospitalId));
+          nearbyHospitals = nearbyHospitals.filter(h => departmentIds.has(h.hospitalId));
+        }
+
+        // 거리 계산 및 정렬
+        const mapCenter = kakaoMapRef.current.getCenter();
+        const centerLat = mapCenter.getLat();
+        const centerLng = mapCenter.getLng();
+
+        nearbyHospitals.forEach(hospital => {
+          if (hospital.latitude && hospital.longitude) {
+            hospital.distance = calculateDistance(
+              centerLat,
+              centerLng,
+              parseFloat(hospital.latitude),
+              parseFloat(hospital.longitude)
+            );
+          } else {
+            hospital.distance = Infinity;
+          }
+        });
+
+        nearbyHospitals.sort((a, b) => a.distance - b.distance);
+
+        // 결과 설정
+        setHospitals(nearbyHospitals);
+        setMapMarkers(nearbyHospitals);
+        setDisplayCount(10);
+
+        if (nearbyHospitals.length === 0) {
+          alert('검색 결과가 없습니다.');
+        }
+
+        setLoading(false);
+        return;
+      }
+
+      // 병원명이 정확히 일치하는 경우에만 바로 사용 (주소 검색 건너뛰기)
       if (hospitalNameResults.length > 0) {
-        console.log('✨ [검색] 병원명 검색 결과 사용:', hospitalNameResults.length, '개');
+        console.log('✨ [검색] 병원명 정확히 일치, 검색 결과 사용:', hospitalNameResults.length, '개');
 
         // 거리 계산 및 정렬
         const mapCenter = kakaoMapRef.current.getCenter();
@@ -541,9 +648,31 @@ function HospitalMap() {
       }
 
       // 병원명 검색 결과가 없으면 주소 검색 시도
+      // 검색어에서 위치와 병원 유형 분리 (예: "종각역 한의원" -> 위치: "종각역", 유형: "한의원")
+      let locationPart = keyword;
+      let hospitalTypePart = null;
+
+      for (const type of hospitalTypeKeywords) {
+        if (keyword.includes(type)) {
+          hospitalTypePart = type;
+          locationPart = keyword.replace(type, '').trim();
+          break;
+        }
+      }
+
+      console.log('🔍 [검색 분석] 원본:', keyword, '| 위치:', locationPart, '| 유형:', hospitalTypePart);
+
+      // 위치 부분이 없으면 (병원 유형만 있으면) 이미 위에서 처리했으므로 여기까지 오면 안됨
+      // 하지만 안전을 위해 체크
+      if (!locationPart && hospitalTypePart) {
+        console.log('⚠️ [검색] 위치 없음, 이미 처리되었어야 함');
+        setLoading(false);
+        return;
+      }
+
       const geocoder = new window.kakao.maps.services.Geocoder();
 
-      geocoder.addressSearch(keyword, async (addressResult, addressStatus) => {
+      geocoder.addressSearch(locationPart, async (addressResult, addressStatus) => {
         try {
           let searchLocation = null;
 
@@ -558,7 +687,7 @@ function HospitalMap() {
             const places = new window.kakao.maps.services.Places();
 
             await new Promise((resolve) => {
-              places.keywordSearch(keyword, (placeResult, placeStatus) => {
+              places.keywordSearch(locationPart, (placeResult, placeStatus) => {
                 if (placeStatus === window.kakao.maps.services.Status.OK && placeResult.length > 0) {
                   // 첫 번째 검색 결과 사용
                   searchLocation = {
@@ -603,6 +732,30 @@ function HospitalMap() {
 
               const departmentIds = new Set(departmentResults.map(h => h.hospitalId));
               nearbyHospitals = nearbyHospitals.filter(h => departmentIds.has(h.hospitalId));
+            }
+
+            // 병원 유형/진료과 필터가 있으면 필터링 (예: "종각역 한의원" -> "한의원"만 필터링, "강남역 안과" -> 안과 진료과만)
+            if (hospitalTypePart) {
+              const isDepartment = departmentList.includes(hospitalTypePart);
+
+              if (isDepartment) {
+                console.log('🏥 [검색] 진료과 필터링:', hospitalTypePart);
+                // 진료과로 필터링
+                const departmentResults = await searchHospitals({
+                  departments: [hospitalTypePart],
+                });
+
+                const departmentIds = new Set(departmentResults.map(h => h.hospitalId));
+                nearbyHospitals = nearbyHospitals.filter(h => departmentIds.has(h.hospitalId));
+                console.log('📝 [검색] 진료과 필터링 후:', nearbyHospitals.length, '개');
+              } else {
+                console.log('🏥 [검색] 병원 유형 필터링:', hospitalTypePart);
+                // 병원 유형으로 필터링 (병원명 기준)
+                nearbyHospitals = nearbyHospitals.filter(hospital => {
+                  return hospital.hospitalName && hospital.hospitalName.includes(hospitalTypePart);
+                });
+                console.log('📝 [검색] 병원 유형 필터링 후:', nearbyHospitals.length, '개');
+              }
             }
 
             combinedResults = nearbyHospitals;
