@@ -128,7 +128,7 @@ const Community = () => {
   // 상세보기 모달 열기
   const handleDetailClick = async (postId) => {
     try {
-      const response = await fetch(`/react/api/community/posts/${postId}`, {
+      const response = await fetch(`/react/api/community/posts/${postId}?admin=true`, {
         method: 'GET',
       });
 
@@ -170,7 +170,7 @@ const Community = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch(`/react/api/community/posts/${selectedPost.postId}`, {
+      const response = await fetch(`/react/api/community/posts/${selectedPost.postId}?admin=true`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -205,7 +205,7 @@ const Community = () => {
     if (!confirmed) return;
 
     try {
-      const response = await fetch(`/react/api/community/posts/${selectedPost.postId}`, {
+      const response = await fetch(`/react/api/community/posts/${selectedPost.postId}?admin=true`, {
         method: 'DELETE',
       });
 
@@ -370,9 +370,9 @@ const Community = () => {
                       >
                         <td>{getCategoryPill(post.category)}</td>
                         <td>{post.title}</td>
-                        <td>{post.userId}</td>
+                        <td>{post.memberId}</td>
                         <td>{formatDate(post.createdAt)}</td>
-                        <td className="text-center">{post.viewCount || 0}</td>
+                        <td className="text-center">{post.views || 0}</td>
                         <td className="text-center">{post.commentCount || 0}</td>
                       </tr>
                     ))
@@ -473,7 +473,7 @@ const Community = () => {
                       </div>
                       <div className="detail-item">
                         <div className="detail-label">작성자</div>
-                        <div className="detail-value">{selectedPost.userId}</div>
+                        <div className="detail-value">{selectedPost.memberId}</div>
                       </div>
                       <div className="detail-item">
                         <div className="detail-label">작성일</div>
@@ -481,7 +481,7 @@ const Community = () => {
                       </div>
                       <div className="detail-item">
                         <div className="detail-label">조회수</div>
-                        <div className="detail-value">{selectedPost.viewCount || 0}</div>
+                        <div className="detail-value">{selectedPost.views || 0}</div>
                       </div>
                       <div className="detail-item">
                         <div className="detail-label">댓글수</div>
