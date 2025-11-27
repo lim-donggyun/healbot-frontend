@@ -12,12 +12,14 @@ const [loading, setLoading] = useState(true);
 
 // 🔹 내가 작성한 글 개수
 const [postCount, setPostCount] = useState(0);
+// 🔹 제재 내역 개수
+const [sanctionCount, setSanctionCount] = useState(0);
 
 const navigate = useNavigate();
 
-// 🔹 프로필 조회 + 내가 쓴 글 개수 조회
+// 🔹 프로필 조회 + 내가 쓴 글 개수 + 제재 내역 개수 조회
 useEffect(() => {
-    const fetchProfileAndCount = async () => {
+    const fetchProfileAndCounts = async () => {
     try {
         // 1) 프로필
         const res = await fetch("/react/api/member/profile", {
@@ -46,7 +48,6 @@ useEffect(() => {
         });
 
         if (res2.status === 401) {
-            // 세션 만료 등
             alert("로그인이 필요합니다.");
             navigate("/login");
             return;
@@ -54,13 +55,45 @@ useEffect(() => {
 
         if (res2.ok) {
             const data2 = await res2.json();
-            const count = typeof data2.count === "number" ? data2.count : 0;
+            const count =
+            typeof data2.count === "number" ? data2.count : 0;
             setPostCount(count);
         } else {
             console.error("내 글 개수 조회 실패:", res2.status);
         }
         } catch (e) {
         console.error("내 글 개수 조회 오류:", e);
+        }
+
+        // 3) 제재 내역 개수
+        try {
+        // 🔥 여기 엔드포인트는 실제 백엔드에 맞게 수정해서 사용
+        const res3 = await fetch(
+            "/react/api/community/my-sanction-count",
+            {
+            method: "GET",
+            }
+        );
+
+        if (res3.status === 401) {
+            alert("로그인이 필요합니다.");
+            navigate("/login");
+            return;
+        }
+
+        if (res3.ok) {
+            const data3 = await res3.json();
+            const count =
+            typeof data3.count === "number" ? data3.count : 0;
+            setSanctionCount(count);
+        } else {
+            console.error(
+            "제재 내역 개수 조회 실패:",
+            res3.status
+            );
+        }
+        } catch (e) {
+        console.error("제재 내역 개수 조회 오류:", e);
         }
     } catch (err) {
         console.error("프로필 조회 오류:", err);
@@ -70,7 +103,7 @@ useEffect(() => {
     }
     };
 
-    fetchProfileAndCount();
+    fetchProfileAndCounts();
 }, [navigate]);
 
 // 프로필 정보 페이지로 이동
@@ -80,11 +113,18 @@ const handleProfileClick = (e) => {
     navigate("/mypage/profile");
 };
 
-// 내가 쓴 리뷰 페이지로 이동
+// 내가 쓴 글 페이지로 이동
 const handleReviewClick = (e) => {
     e.preventDefault();
     setIsModalOpen(false);
     navigate("/mypage/reviews");
+};
+
+// 제재 내역 페이지로 이동 (추후 라우팅에 맞게 경로만 변경)
+const handleSanctionClick = (e) => {
+    e.preventDefault();
+    setIsModalOpen(false);
+    navigate("/mypage/sanctions");
 };
 
 // 회원 탈퇴 모달 열기
@@ -133,7 +173,9 @@ return (
         <div className="mypage-top-row">
             <div>
             <h1 className="mypage-title">마이페이지</h1>
-            <p className="mypage-subtitle">계정 정보와 활동을 관리하세요</p>
+            <p className="mypage-subtitle">
+                계정 정보와 활동을 관리하세요
+            </p>
             </div>
             <div className="mypage-user-info"></div>
         </div>
@@ -219,6 +261,7 @@ return (
 
         {/* 메뉴 섹션 */}
         <section className="menu-section">
+            {/* 프로필 정보 */}
             <button className="menu-item" onClick={handleProfileClick}>
             <div className="menu-icon blue">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -245,6 +288,7 @@ return (
             </div>
             </button>
 
+            {/* 내가 작성한 글 */}
             <button className="menu-item" onClick={handleReviewClick}>
             <div className="menu-icon green">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -257,8 +301,9 @@ return (
             </div>
             <div className="menu-content">
                 <div className="menu-title">내가 작성한 글</div>
-                {/* 🔥 여기 하드코딩 제거 */}
-                <div className="menu-description">작성 {postCount}개</div>
+                <div className="menu-description">
+                작성 {postCount}개
+                </div>
             </div>
             <div className="menu-arrow">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -272,6 +317,39 @@ return (
             </div>
             </button>
 
+            {/* 🔥 제재 내역 */}
+            <button className="menu-item" onClick={handleSanctionClick}>
+            <div className="menu-icon orange">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M12 9v2m0 4h.01M4.293 6.293l7-3.5a1 1 0 01.894 0l7 3.5A1 1 0 0120 7.236V13a8 8 0 11-16 0V7.236a1 1 0 01.293-.943z"
+                />
+                </svg>
+            </div>
+            <div className="menu-content">
+                <div className="menu-title">제재 내역</div>
+                <div className="menu-description">
+                {sanctionCount > 0
+                    ? `총 ${sanctionCount}건`
+                    : "현재 제재 내역이 없습니다"}
+                </div>
+            </div>
+            <div className="menu-arrow">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M9 5l7 7-7 7"
+                />
+                </svg>
+            </div>
+            </button>
+
+            {/* 회원 탈퇴 */}
             <button className="menu-item" onClick={handleDeleteClick}>
             <div className="menu-icon red">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -302,10 +380,17 @@ return (
 
         {/* 모달 */}
         {isModalOpen && (
-        <div className="modal active" onClick={handleModalBackgroundClick}>
+        <div
+            className="modal active"
+            onClick={handleModalBackgroundClick}
+        >
             <div className="modal-content">
             <div className="modal-icon">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                >
                 <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -320,10 +405,16 @@ return (
                 탈퇴 시 모든 데이터가 삭제되며 복구할 수 없습니다.
             </p>
             <div className="modal-buttons">
-                <button className="btn btn-secondary" onClick={closeModal}>
+                <button
+                className="btn btn-secondary"
+                onClick={closeModal}
+                >
                 취소
                 </button>
-                <button className="btn btn-danger" onClick={confirmDelete}>
+                <button
+                className="btn btn-danger"
+                onClick={confirmDelete}
+                >
                 탈퇴하기
                 </button>
             </div>

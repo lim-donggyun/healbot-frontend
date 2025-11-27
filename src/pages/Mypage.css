@@ -386,3 +386,8 @@ background: #b91c1c;
     padding: 12px 14px;
 }
 }
+
+.menu-icon.orange {
+    background: #fff7ed;
+    color: #f97316;
+}
