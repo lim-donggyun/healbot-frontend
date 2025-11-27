@@ -49,6 +49,298 @@
   background: white;
   border-bottom: 2px solid #f3f4f6;
   flex-shrink: 0;
+  position: relative;
+}
+
+.search-with-filter {
+  display: flex;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.department-filter-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 8px 12px;
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.3s;
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+}
+
+.department-filter-btn svg {
+  color: #6b7280;
+  transition: all 0.3s;
+}
+
+.department-filter-btn:hover {
+  border-color: #3fc1ec;
+  background: #f0f9ff;
+  color: #3fc1ec;
+}
+
+.department-filter-btn:hover svg {
+  color: #3fc1ec;
+}
+
+.department-filter-btn.active {
+  background: linear-gradient(135deg, #3fc1ec 0%, #3284b1 100%);
+  color: white;
+  border-color: transparent;
+}
+
+.department-filter-btn.active svg {
+  color: white;
+}
+
+.selected-count {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: #ef4444;
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.department-filter-btn {
+  position: relative;
+}
+
+/* 진료과 드롭다운 */
+.department-dropdown {
+  position: absolute;
+  top: calc(100% - 20px);
+  left: 0;
+  right: 0;
+  margin-top: 8px;
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  z-index: 1000;
+  animation: dropdownSlide 0.2s ease-out;
+  max-width: 100%;
+}
+
+@keyframes dropdownSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.department-dropdown-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 2px solid #f3f4f6;
+}
+
+.department-dropdown-header h4 {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0;
+}
+
+.max-count {
+  font-size: 12px;
+  font-weight: 500;
+  color: #9ca3af;
+  margin-left: 4px;
+}
+
+.dropdown-close-btn {
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: #f3f4f6;
+  color: #6b7280;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.dropdown-close-btn:hover {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.department-list {
+  max-height: 280px;
+  overflow-y: auto;
+  padding: 12px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.department-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 13px;
+  color: #374151;
+  position: relative;
+}
+
+.department-item:hover {
+  background: #f9fafb;
+  border-color: #3fc1ec;
+}
+
+.department-item.all-option {
+  background: #f0f9ff;
+  border: 2px solid #3fc1ec;
+  font-weight: 600;
+  grid-column: 1 / -1;
+}
+
+.department-item.all-option:hover {
+  background: #e0f2fe;
+}
+
+.department-item input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.checkbox-custom {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #d1d5db;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.department-item input[type="checkbox"]:checked ~ .checkbox-custom {
+  background: linear-gradient(135deg, #3fc1ec 0%, #3284b1 100%);
+  border-color: transparent;
+}
+
+.department-item input[type="checkbox"]:checked ~ .checkbox-custom::after {
+  content: "✓";
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.department-item input[type="checkbox"]:checked ~ .department-name {
+  color: #3fc1ec;
+  font-weight: 600;
+}
+
+.department-name {
+  flex: 1;
+  user-select: none;
+}
+
+.department-dropdown-footer {
+  display: flex;
+  gap: 8px;
+  padding: 12px 20px;
+  border-top: 2px solid #f3f4f6;
+}
+
+.clear-btn,
+.apply-btn {
+  flex: 1;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+}
+
+.clear-btn {
+  background: white;
+  border: 1px solid #e5e7eb;
+  color: #6b7280;
+}
+
+.clear-btn:hover:not(:disabled) {
+  background: #f9fafb;
+  border-color: #d1d5db;
+  color: #374151;
+}
+
+.clear-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.apply-btn {
+  background: linear-gradient(135deg, #3fc1ec 0%, #3284b1 100%);
+  color: white;
+}
+
+.apply-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(63, 193, 236, 0.4);
+}
+
+/* 드롭다운 스크롤바 */
+.department-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.department-list::-webkit-scrollbar-track {
+  background: #f3f4f6;
+  border-radius: 3px;
+}
+
+.department-list::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+}
+
+.department-list::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+.sidebar-search-box-wrapper {
+  position: relative;
+  flex: 1;
 }
 
 .sidebar-search-box {
@@ -64,6 +356,78 @@
 .sidebar-search-box:focus-within {
   border-color: #3fc1ec;
   box-shadow: 0 0 0 3px rgba(63, 193, 236, 0.1);
+}
+
+/* 자동완성 드롭다운 */
+.autocomplete-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  max-height: 320px;
+  overflow-y: auto;
+  z-index: 1001;
+  animation: dropdownSlide 0.2s ease-out;
+}
+
+.autocomplete-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.autocomplete-item:last-child {
+  border-bottom: none;
+}
+
+.autocomplete-item:hover {
+  background: #f0f9ff;
+}
+
+.autocomplete-item svg {
+  color: #3fc1ec;
+  flex-shrink: 0;
+}
+
+.autocomplete-item .hospital-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1f2937;
+  flex: 1;
+}
+
+.autocomplete-item .hospital-district {
+  font-size: 12px;
+  color: #9ca3af;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+/* 자동완성 스크롤바 */
+.autocomplete-dropdown::-webkit-scrollbar {
+  width: 6px;
+}
+
+.autocomplete-dropdown::-webkit-scrollbar-track {
+  background: #f3f4f6;
+  border-radius: 3px;
+}
+
+.autocomplete-dropdown::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+}
+
+.autocomplete-dropdown::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
 }
 
 .sidebar-search-box .search-icon {
