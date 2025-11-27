@@ -943,7 +943,6 @@ function HospitalMap() {
 
     // 마커 클릭 이벤트 추가
     markerContent.addEventListener('click', async () => {
-      console.log('🏠 [마커 클릭] 내 주소 마커 클릭됨');
       kakaoMapRef.current.setCenter(position);
       kakaoMapRef.current.setLevel(3);
       await new Promise(resolve => setTimeout(resolve, 100));
@@ -1007,7 +1006,6 @@ function HospitalMap() {
 
     // 마커 클릭 이벤트 추가
     markerContent.addEventListener('click', async () => {
-      console.log('📡 [마커 클릭] 현재 위치 마커 클릭됨');
       kakaoMapRef.current.setCenter(position);
       kakaoMapRef.current.setLevel(3);
       await new Promise(resolve => setTimeout(resolve, 100));
@@ -1145,6 +1143,7 @@ function HospitalMap() {
 
     // InfoWindow 내용 생성
     const contentWrapper = document.createElement('div');
+    contentWrapper.setAttribute('data-info-window', 'true'); // InfoWindow 식별자 추가
     contentWrapper.innerHTML = `
       <div style="
         position: relative;
@@ -1290,7 +1289,8 @@ function HospitalMap() {
       position: position,
       content: contentWrapper,
       yAnchor: 1.05, // 말풍선 꼬리가 마커를 가리키도록 조정
-      zIndex: 1000
+      zIndex: 1000,
+      clickable: true // 클릭 가능하도록 설정 - 지도 클릭 이벤트 차단
     });
 
     customOverlay.setMap(kakaoMapRef.current);
@@ -1310,13 +1310,22 @@ function HospitalMap() {
       // 상세보기 버튼 이벤트 (클로저로 hospital 객체 전달)
       const detailBtn = contentWrapper.querySelector('.info-detail-btn');
       if (detailBtn) {
-        detailBtn.addEventListener('click', (e) => {
+        detailBtn.addEventListener('click', async (e) => {
           e.stopPropagation();
-          console.log('상세보기 버튼 클릭:', hospital.hospitalName);
-          handleDetailButtonClick(hospital, e);
+
+          // 모달 열기
+          setSelectedHospital(hospital);
+          setIsDetailModalOpen(true);
+
+          // 진료과 목록 조회
+          try {
+            const depts = await getHospitalDepartments(hospital.hospitalId);
+            setModalDepartments(depts || []);
+          } catch (error) {
+            console.error('진료과 목록 조회 실패:', error);
+            setModalDepartments([]);
+          }
         });
-      } else {
-        console.error('상세보기 버튼을 찾을 수 없습니다');
       }
     }, 0);
   };
@@ -1927,6 +1936,21 @@ function HospitalMap() {
                           <span className="map-detail-label">주소:</span>
                           <span className="map-detail-value">{selectedHospital.address || '-'}</span>
                         </div>
+                        <button
+                          className="kakao-map-navigate-btn"
+                          onClick={() => {
+                            const lat = selectedHospital.latitude;
+                            const lng = selectedHospital.longitude;
+                            const name = selectedHospital.hospitalName;
+                            // 카카오맵 앱 또는 웹으로 길찾기
+                            window.open(`https://map.kakao.com/link/to/${encodeURIComponent(name)},${lat},${lng}`, '_blank');
+                          }}
+                        >
+                          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" style={{ marginRight: '6px' }}>
+                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                          </svg>
+                          카카오맵에서 길찾기
+                        </button>
                       </div>
                     )}
                   </div>
