@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Header from '../../components/layout/Header';
 import Footer from '../../components/layout/Footer';
 import ScrollToTop from '../../components/common/ScrollToTop';
 import { getAllNotices, incrementNoticeView } from '../../utils/noticeApi';
 import { checkSession } from '../../utils/memberApi';
+import NoticeDetailModal from '../../components/common/NoticeDetailModal';
 import './Notice.css';
 
 function Notice() {
-  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const [notices, setNotices] = useState([]);
   const [filteredNotices, setFilteredNotices] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -25,40 +26,36 @@ function Notice() {
   useEffect(() => {
     const checkLoginAndFetchNotices = async () => {
       try {
-        // 로그인 체크
         const sessionData = await checkSession();
         if (!sessionData.loggedIn) {
           alert('로그인되어 있지 않을 경우 로그인 해야 이용 가능합니다.');
           navigate('/login');
           return;
         }
-
-        // 관리자 여부 저장
         setIsAdmin(sessionData.admin_YN === 'Y');
 
-        // 공지사항 데이터 가져오기
         setLoading(true);
         const data = await getAllNotices();
         setNotices(data);
         setFilteredNotices(data);
         setError(null);
 
-        // URL 파라미터에서 noticeId 가져오기
-        const noticeIdFromUrl = searchParams.get('id');
-        if (noticeIdFromUrl) {
-          const noticeId = parseInt(noticeIdFromUrl);
-          const notice = data.find(n => n.noticeId === noticeId);
-          if (notice) {
-            setSelectedNotice(notice);
+        // 네비게이션 state에 모달을 열 ID가 있는지 확인
+        const noticeIdToOpen = location.state?.openModalForId;
+        if (noticeIdToOpen) {
+          const noticeToOpen = data.find(n => n.noticeId === noticeIdToOpen);
+          if (noticeToOpen) {
+            // 모달을 직접 엽니다.
+            setSelectedNotice(noticeToOpen);
             setIsDetailModalOpen(true);
-
-            // 관리자가 아닐 때만 조회수 증가
+            
+            // 조회수 증가 로직
             if (sessionData.admin_YN !== 'Y') {
-              await incrementNoticeView(notice.noticeId);
-              // 로컬 상태에서도 조회수 증가
+              await incrementNoticeView(noticeToOpen.noticeId);
+              // 로컬 상태 업데이트
               setNotices(prevNotices =>
                 prevNotices.map(n =>
-                  n.noticeId === notice.noticeId
+                  n.noticeId === noticeIdToOpen
                     ? { ...n, viewCount: (n.viewCount || 0) + 1 }
                     : n
                 )
@@ -69,6 +66,8 @@ function Notice() {
               }));
             }
           }
+          // 새로고침 시 모달이 다시 뜨지 않도록 state를 초기화합니다.
+          navigate(location.pathname, { replace: true, state: {} });
         }
       } catch (err) {
         console.error('공지사항 로딩 실패:', err);
@@ -84,7 +83,7 @@ function Notice() {
     };
 
     checkLoginAndFetchNotices();
-  }, [searchParams, navigate]);
+  }, [navigate, location.state]);
 
   // 카테고리 필터 적용
   useEffect(() => {
@@ -101,28 +100,16 @@ function Notice() {
     setSelectedNotice(notice);
     setIsDetailModalOpen(true);
 
-    // 관리자가 아닐 때만 조회수 증가
     if (!isAdmin) {
       try {
         await incrementNoticeView(notice.noticeId);
-
-        // 로컬 상태에서도 조회수 증가
-        setNotices(prevNotices =>
-          prevNotices.map(n =>
-            n.noticeId === notice.noticeId
-              ? { ...n, viewCount: (n.viewCount || 0) + 1 }
-              : n
-          )
+        const updatedNotices = notices.map(n =>
+          n.noticeId === notice.noticeId ? { ...n, viewCount: (n.viewCount || 0) + 1 } : n
         );
-
-        // 선택된 공지사항도 업데이트
-        setSelectedNotice(prev => ({
-          ...prev,
-          viewCount: (prev.viewCount || 0) + 1
-        }));
+        setNotices(updatedNotices);
+        setSelectedNotice(prev => ({ ...prev, viewCount: (prev.viewCount || 0) + 1 }));
       } catch (error) {
         console.error('조회수 증가 중 오류:', error);
-        // 에러가 발생해도 모달은 정상적으로 표시
       }
     }
   };
@@ -317,50 +304,11 @@ function Notice() {
         </div>
       </div>
 
-      {/* 상세 모달 */}
-      {isDetailModalOpen && selectedNotice && (
-        <div className="modal-overlay" onClick={() => setIsDetailModalOpen(false)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h3>공지사항 상세</h3>
-              <button className="modal-close" onClick={() => setIsDetailModalOpen(false)}>
-                ✕
-              </button>
-            </div>
-
-            <div className="modal-body">
-              <div className="detail-section">
-                <div className="detail-grid">
-                  <div className="detail-item">
-                    <div className="detail-label">카테고리</div>
-                    <div className="detail-value">{getCategoryPill(selectedNotice.category)}</div>
-                  </div>
-                  <div className="detail-item">
-                    <div className="detail-label">등록일</div>
-                    <div className="detail-value">{formatDate(selectedNotice.createdAt)}</div>
-                  </div>
-                  <div className="detail-item full-width">
-                    <div className="detail-label">제목</div>
-                    <div className="detail-value">{selectedNotice.title}</div>
-                  </div>
-                  <div className="detail-item full-width">
-                    <div className="detail-label">내용</div>
-                    <div className="detail-value" style={{ whiteSpace: 'pre-wrap' }}>
-                      {selectedNotice.content}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="modal-footer">
-              <button className="btn-close" onClick={() => setIsDetailModalOpen(false)}>
-                닫기
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <NoticeDetailModal
+        isOpen={isDetailModalOpen}
+        onClose={() => setIsDetailModalOpen(false)}
+        notice={selectedNotice}
+      />
 
       <Footer />
       <ScrollToTop />
