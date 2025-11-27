@@ -16,7 +16,8 @@ function HospitalMap() {
   const [filterType, setFilterType] = useState('all'); // all, emergency, night, weekend
   const [userAddress, setUserAddress] = useState(null); // 사용자 등록 주소
   const [loading, setLoading] = useState(false);
-  const [displayCount, setDisplayCount] = useState(10); // 표시할 병원 개수
+  const [currentPage, setCurrentPage] = useState(1); // 현재 페이지
+  const ITEMS_PER_PAGE = 10; // 페이지당 항목 수
   const [isSearchMode, setIsSearchMode] = useState(false); // 검색 모드 여부
   const [isDepartmentDropdownOpen, setIsDepartmentDropdownOpen] = useState(false); // 진료과 드롭다운 열림 상태
   const [selectedDepartments, setSelectedDepartments] = useState(['전체']); // 선택된 진료과 목록 (초기값: 전체)
@@ -27,9 +28,11 @@ function HospitalMap() {
   const mapRef = useRef(null);
   const kakaoMapRef = useRef(null);
   const markersRef = useRef([]);
+  const alphabetMarkersRef = useRef([]); // 알파벳 마커 (항상 표시)
   const currentZoomLevel = useRef(5);
   const myAddressMarkerRef = useRef(null); // 내 주소 마커 (집 모양)
   const currentLocationMarkerRef = useRef(null); // 현재 위치 마커 (원형)
+  const currentLocationRef = useRef(null); // 현재 위치 좌표 저장 {lat, lng}
   const currentInfoWindowRef = useRef(null); // 현재 열린 InfoWindow
   const sidebarRef = useRef(null); // 사이드바 참조
   const filterTypeRef = useRef(filterType); // 최신 filterType 값 참조
@@ -74,9 +77,11 @@ function HospitalMap() {
     '한방재활의학과',
   ];
 
-  // URL 파라미터로부터 진료과 자동 선택
+  // URL 파라미터로부터 진료과 자동 선택 또는 응급실 필터 적용
   useEffect(() => {
     const deptParam = searchParams.get('dept');
+    const emergencyParam = searchParams.get('emergency');
+
     if (deptParam && departmentList.includes(deptParam)) {
       console.log('🔍 URL 파라미터로부터 진료과 선택:', deptParam);
       setSelectedDepartments([deptParam]);
@@ -85,14 +90,34 @@ function HospitalMap() {
       setIsSearchMode(true);
       isSearchModeRef.current = true;
     }
+
+    if (emergencyParam === 'true') {
+      console.log('🚨 URL 파라미터로부터 응급실 필터 활성화');
+      setFilterType('emergency');
+      filterTypeRef.current = 'emergency';
+    }
   }, [searchParams]);
 
-  // 지도 초기화 후 진료과 필터 적용
+  // 지도 초기화 후 진료과 필터 또는 응급실 필터 적용
   useEffect(() => {
+    if (!isMapInitialized) return;
+
     const deptParam = searchParams.get('dept');
-    if (isMapInitialized && deptParam && departmentList.includes(deptParam)) {
+    const emergencyParam = searchParams.get('emergency');
+
+    // 응급실 파라미터가 있으면 우선 처리
+    if (emergencyParam === 'true') {
+      console.log('🚨 지도 초기화 완료 - 응급실 필터 적용 및 가장 가까운 병원 선택');
+      // 약간의 지연을 두고 응급실 병원 로드 및 가장 가까운 병원 선택
+      setTimeout(() => {
+        loadHospitalsAndMarkers(true); // true: 가장 가까운 응급실 자동 선택
+      }, 800); // 현재 위치 가져오기를 기다리기 위해 800ms로 증가
+      return;
+    }
+
+    // 진료과 파라미터 처리
+    if (deptParam && departmentList.includes(deptParam)) {
       console.log('🏥 지도 초기화 완료 - 진료과 필터 적용:', deptParam);
-      // 약간의 지연을 두고 현재 지도 영역 내 필터링 실행
       setTimeout(() => {
         loadHospitalsAndMarkers();
       }, 500);
@@ -139,14 +164,14 @@ function HospitalMap() {
         // 단, 진료과 필터만 적용된 경우는 자동 로드 필요
         if (isSearchModeRef.current) return;
 
+        // 응급실 필터일 때는 지도 이동 시 마커 업데이트 하지 않음 (전국 응급실 유지)
+        if (filterTypeRef.current === 'emergency') return;
+
         try {
           // 지도 영역 가져오기
           const bounds = kakaoMapRef.current.getBounds();
           const swLatLng = bounds.getSouthWest();
           const neLatLng = bounds.getNorthEast();
-
-          // ref를 통해 최신 filterType 값 참조
-          const emergencyOnly = filterTypeRef.current === 'emergency';
 
           // 지도 영역 기반 병원 조회
           let hospitalData = await getHospitalsByBounds(
@@ -154,7 +179,7 @@ function HospitalMap() {
             swLatLng.getLng(),
             neLatLng.getLat(),
             neLatLng.getLng(),
-            emergencyOnly
+            false
           );
 
           // 진료과 필터 적용 (ref를 통해 최신 값 참조)
@@ -174,18 +199,15 @@ function HospitalMap() {
         }
       });
 
-      // 초기 로딩 - 사이드바와 마커 모두 로드
-      loadHospitalsAndMarkers();
-
       // 지도 초기화 완료 상태 업데이트
       console.log('🗺️ [지도 초기화] 지도 초기화 완료');
       setIsMapInitialized(true);
 
-      // 지도 초기화 후 현재 위치 마커 표시
+      // 지도 초기화 후 현재 위치로 이동 후 병원 로드
       setTimeout(() => {
         console.log('⏰ [마커 타이머] 500ms 대기 완료');
 
-        // 현재 위치 마커 표시
+        // 현재 위치 마커 표시 및 지도 이동
         if (navigator.geolocation) {
           console.log('📡 [현재 위치 마커] Geolocation 시작');
           navigator.geolocation.getCurrentPosition(
@@ -193,10 +215,41 @@ function HospitalMap() {
               const lat = position.coords.latitude;
               const lng = position.coords.longitude;
               console.log('✅ [현재 위치 마커] 위치 가져오기 성공:', lat, lng);
+
+              // 현재 위치 저장
+              currentLocationRef.current = { lat, lng };
+
+              // 현재 위치로 지도 이동 및 줌 레벨 3으로 설정
+              const currentPosition = new window.kakao.maps.LatLng(lat, lng);
+              map.setCenter(currentPosition);
+              map.setLevel(3);
+              console.log('🗺️ [지도 이동] 현재 위치로 이동 및 줌 레벨 3 설정');
+
               showCurrentLocationMarker(lat, lng);
+
+              // 지도 이동 완료 후 병원 로드
+              // 응급실 파라미터가 있으면 useEffect에서 처리하므로 여기서는 건너뜀
+              const urlParams = new URLSearchParams(window.location.search);
+              const hasEmergencyParam = urlParams.get('emergency') === 'true';
+              const hasDeptParam = urlParams.get('dept');
+
+              if (!hasEmergencyParam && !hasDeptParam) {
+                setTimeout(() => {
+                  loadHospitalsAndMarkers();
+                }, 300);
+              }
             },
             (error) => {
               console.log('❌ [현재 위치 마커] 위치 가져오기 실패:', error);
+              // 위치 가져오기 실패 시에도 기본 위치에서 병원 로드
+              // 응급실/진료과 파라미터가 있으면 useEffect에서 처리하므로 여기서는 건너뜀
+              const urlParams = new URLSearchParams(window.location.search);
+              const hasEmergencyParam = urlParams.get('emergency') === 'true';
+              const hasDeptParam = urlParams.get('dept');
+
+              if (!hasEmergencyParam && !hasDeptParam) {
+                loadHospitalsAndMarkers();
+              }
             },
             {
               enableHighAccuracy: true,
@@ -206,6 +259,15 @@ function HospitalMap() {
           );
         } else {
           console.log('❌ [현재 위치 마커] Geolocation 미지원');
+          // Geolocation 미지원 시에도 기본 위치에서 병원 로드
+          // 응급실/진료과 파라미터가 있으면 useEffect에서 처리하므로 여기서는 건너뜀
+          const urlParams = new URLSearchParams(window.location.search);
+          const hasEmergencyParam = urlParams.get('emergency') === 'true';
+          const hasDeptParam = urlParams.get('dept');
+
+          if (!hasEmergencyParam && !hasDeptParam) {
+            loadHospitalsAndMarkers();
+          }
         }
       }, 500);
     };
@@ -464,6 +526,9 @@ function HospitalMap() {
 
     // 검색 모드 활성화
     setIsSearchMode(true);
+
+    // 페이지 초기화
+    setCurrentPage(1);
 
     try {
       setLoading(true);
@@ -846,14 +911,93 @@ function HospitalMap() {
     }
   };
 
-  const handleFilterChange = (type) => {
-    setFilterType(type);
-    setDisplayCount(10); // 필터 변경 시 표시 개수 초기화
+  const handleFilterChange = async (type) => {
+    setCurrentPage(1); // 필터 변경 시 페이지 초기화
+
+    // 응급실 필터로 변경 시, 현재 위치가 없으면 가져오기
+    if (type === 'emergency' && !currentLocationRef.current && navigator.geolocation) {
+      console.log('🚨 응급실 필터 변경 - 현재 위치 가져오기 시도');
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+          currentLocationRef.current = { lat, lng };
+          console.log('✅ 현재 위치 저장 완료:', lat, lng);
+
+          // 위치를 가져온 후 필터 타입 변경 및 병원 로드
+          setFilterType(type);
+        },
+        (error) => {
+          console.log('⚠️ 현재 위치 가져오기 실패, 지도 중심 기준으로 정렬:', error);
+          // 실패해도 필터는 변경
+          setFilterType(type);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 5000,
+          maximumAge: 0
+        }
+      );
+    } else {
+      // 응급실이 아니거나 이미 현재 위치가 있으면 바로 필터 변경
+      setFilterType(type);
+    }
   };
 
-  // 더보기 버튼 클릭
-  const handleLoadMore = () => {
-    setDisplayCount(prev => prev + 10);
+  // 페이지 이동 함수들
+  const handleNextPage = () => {
+    const totalPages = Math.ceil(hospitals.length / ITEMS_PER_PAGE);
+    const maxPagesToShow = 5;
+    const currentGroup = Math.ceil(currentPage / maxPagesToShow);
+    const nextGroupFirstPage = currentGroup * maxPagesToShow + 1;
+
+    if (nextGroupFirstPage <= totalPages) {
+      setCurrentPage(nextGroupFirstPage);
+      // 페이지 변경 시 사이드바 최상단으로 스크롤
+      if (sidebarRef.current) {
+        sidebarRef.current.scrollTop = 0;
+      }
+    }
+  };
+
+  const handlePrevPage = () => {
+    const maxPagesToShow = 5;
+    const currentGroup = Math.ceil(currentPage / maxPagesToShow);
+    const prevGroupFirstPage = (currentGroup - 2) * maxPagesToShow + 1;
+
+    if (prevGroupFirstPage >= 1) {
+      setCurrentPage(prevGroupFirstPage);
+      // 페이지 변경 시 사이드바 최상단으로 스크롤
+      if (sidebarRef.current) {
+        sidebarRef.current.scrollTop = 0;
+      }
+    }
+  };
+
+  const handlePageClick = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    // 페이지 변경 시 사이드바 최상단으로 스크롤
+    if (sidebarRef.current) {
+      sidebarRef.current.scrollTop = 0;
+    }
+  };
+
+  // 페이지 번호 배열 생성 (최대 5개씩 표시)
+  const getPageNumbers = () => {
+    const totalPages = Math.ceil(hospitals.length / ITEMS_PER_PAGE);
+    const pageNumbers = [];
+    const maxPagesToShow = 5;
+
+    // 현재 페이지 그룹 계산 (1-5, 6-10, 11-15 등)
+    const currentGroup = Math.ceil(currentPage / maxPagesToShow);
+    const startPage = (currentGroup - 1) * maxPagesToShow + 1;
+    const endPage = Math.min(startPage + maxPagesToShow - 1, totalPages);
+
+    for (let i = startPage; i <= endPage; i++) {
+      pageNumbers.push(i);
+    }
+
+    return pageNumbers;
   };
 
   // filterType 변경 시 ref 업데이트 및 병원 목록과 마커 다시 로드
@@ -983,7 +1127,7 @@ function HospitalMap() {
   };
 
   // 사이드바와 마커 모두 로드 (초기 로딩, 검색, 필터 변경 시)
-  const loadHospitalsAndMarkers = async () => {
+  const loadHospitalsAndMarkers = async (autoSelectNearest = false) => {
     if (!kakaoMapRef.current) return;
 
     // 검색 모드 해제
@@ -992,21 +1136,27 @@ function HospitalMap() {
     try {
       setLoading(true);
 
-      // 지도 영역 가져오기
-      const bounds = kakaoMapRef.current.getBounds();
-      const swLatLng = bounds.getSouthWest();
-      const neLatLng = bounds.getNorthEast();
-
       const emergencyOnly = filterType === 'emergency';
+      let hospitalData;
 
-      // 지도 영역 기반 병원 조회
-      let hospitalData = await getHospitalsByBounds(
-        swLatLng.getLat(),
-        swLatLng.getLng(),
-        neLatLng.getLat(),
-        neLatLng.getLng(),
-        emergencyOnly
-      );
+      // 응급실 필터가 활성화되면 전국의 모든 응급실 병원 조회
+      if (emergencyOnly) {
+        console.log('🚨 전국 응급실 병원 조회');
+        hospitalData = await getEmergencyHospitals();
+      } else {
+        // 일반 필터는 지도 영역 기반 병원 조회
+        const bounds = kakaoMapRef.current.getBounds();
+        const swLatLng = bounds.getSouthWest();
+        const neLatLng = bounds.getNorthEast();
+
+        hospitalData = await getHospitalsByBounds(
+          swLatLng.getLat(),
+          swLatLng.getLng(),
+          neLatLng.getLat(),
+          neLatLng.getLng(),
+          false
+        );
+      }
 
       // 진료과 필터 적용
       if (!selectedDepartments.includes('전체') && selectedDepartments.length > 0) {
@@ -1018,10 +1168,23 @@ function HospitalMap() {
         hospitalData = hospitalData.filter(h => departmentIds.has(h.hospitalId));
       }
 
-      // 지도 중심 좌표 기준으로 거리 계산 후 정렬
-      const mapCenter = kakaoMapRef.current.getCenter();
-      const centerLat = mapCenter.getLat();
-      const centerLng = mapCenter.getLng();
+      // 거리 계산 기준 좌표 결정
+      // 1순위: 현재 위치 (저장되어 있으면)
+      // 2순위: 지도 중심 좌표
+      let centerLat, centerLng;
+
+      if (currentLocationRef.current) {
+        // 현재 위치가 있으면 우선 사용
+        centerLat = currentLocationRef.current.lat;
+        centerLng = currentLocationRef.current.lng;
+        console.log('📍 거리 계산 기준: 현재 위치', centerLat, centerLng);
+      } else {
+        // 현재 위치가 없으면 지도 중심 사용
+        const mapCenter = kakaoMapRef.current.getCenter();
+        centerLat = mapCenter.getLat();
+        centerLng = mapCenter.getLng();
+        console.log('📍 거리 계산 기준: 지도 중심', centerLat, centerLng);
+      }
 
       hospitalData.forEach(hospital => {
         if (hospital.latitude && hospital.longitude) {
@@ -1038,10 +1201,33 @@ function HospitalMap() {
 
       // 거리순 정렬 (가까운 순)
       hospitalData.sort((a, b) => a.distance - b.distance);
+      console.log('✅ 병원 거리순 정렬 완료, 총', hospitalData.length, '개');
 
       setHospitals(hospitalData); // 사이드바 업데이트
       setMapMarkers(hospitalData); // 마커도 업데이트
       setDisplayCount(10); // 표시 개수 초기화
+
+      // 가장 가까운 병원 자동 선택 (응급실 필터 시)
+      if (autoSelectNearest && hospitalData.length > 0) {
+        const nearestHospital = hospitalData[0];
+        console.log('🏥 가장 가까운 응급실 자동 선택:', nearestHospital.hospitalName);
+        setSelectedHospital(nearestHospital);
+        setCurrentPage(1); // 첫 페이지로 이동
+
+        // 선택된 병원 위치로 지도 이동
+        if (nearestHospital.latitude && nearestHospital.longitude) {
+          const position = new window.kakao.maps.LatLng(
+            parseFloat(nearestHospital.latitude),
+            parseFloat(nearestHospital.longitude)
+          );
+          kakaoMapRef.current.panTo(position);
+        }
+
+        // 사이드바 맨 위로 스크롤
+        if (sidebarRef.current) {
+          sidebarRef.current.scrollTop = 0;
+        }
+      }
     } catch (error) {
       console.error('병원 로드 실패:', error);
     } finally {
@@ -1259,6 +1445,9 @@ function HospitalMap() {
         const lat = position.coords.latitude;
         const lng = position.coords.longitude;
         const coords = new window.kakao.maps.LatLng(lat, lng);
+
+        // 현재 위치 저장
+        currentLocationRef.current = { lat, lng };
 
         kakaoMapRef.current.setCenter(coords);
         kakaoMapRef.current.setLevel(3); // 줌 레벨 3으로 설정
@@ -1600,7 +1789,7 @@ function HospitalMap() {
       const dotContent = document.createElement('div');
       dotContent.className = 'hospital-dot';
       dotContent.style.cursor = 'pointer';
-      dotContent.style.transition = 'background-color 0.2s';
+      dotContent.style.transition = 'all 0.2s';
 
       if (isEmergency) {
         // 응급실: 빨간 동그라미 + 흰색 십자가 (14px)
@@ -1629,32 +1818,31 @@ function HospitalMap() {
             background: white;
           "></div>
         `;
+
+        // 호버 효과 - 색깔만 진하게
+        dotContent.addEventListener('mouseenter', () => {
+          dotContent.style.backgroundColor = dotColorHover;
+        });
+
+        dotContent.addEventListener('mouseleave', () => {
+          dotContent.style.backgroundColor = dotColor;
+        });
       } else {
         // 일반: 파란 동그라미 (10px)
         dotContent.style.width = dotSize;
         dotContent.style.height = dotSize;
         dotContent.style.backgroundColor = dotColor;
         dotContent.style.borderRadius = '50%';
+
+        // 호버 효과 - 색깔만 진하게
+        dotContent.addEventListener('mouseenter', () => {
+          dotContent.style.backgroundColor = dotColorHover;
+        });
+
+        dotContent.addEventListener('mouseleave', () => {
+          dotContent.style.backgroundColor = dotColor;
+        });
       }
-
-      // 호버 효과 - 색깔만 진하게
-      dotContent.addEventListener('mouseenter', () => {
-        if (isEmergency) {
-          // 배경 동그라미 색상 변경 (십자가는 흰색 유지)
-          dotContent.style.backgroundColor = dotColorHover;
-        } else {
-          dotContent.style.backgroundColor = dotColorHover;
-        }
-      });
-
-      dotContent.addEventListener('mouseleave', () => {
-        if (isEmergency) {
-          // 배경 동그라미 색상 복원
-          dotContent.style.backgroundColor = dotColor;
-        } else {
-          dotContent.style.backgroundColor = dotColor;
-        }
-      });
 
       // 클릭 이벤트
       dotContent.addEventListener('click', async (e) => {
@@ -1664,8 +1852,41 @@ function HospitalMap() {
         // InfoWindow 표시 (꼬리가 마커를 가리킴)
         await showInfoWindow(hospital, parseFloat(hospital.latitude), parseFloat(hospital.longitude));
 
-        // 사이드바 스크롤 (hospital 객체 전체 전달)
-        scrollToHospitalCard(hospital);
+        // 병원이 현재 hospitals 리스트에 있는지 확인
+        const hospitalIndex = hospitals.findIndex(h => h.hospitalId === hospital.hospitalId);
+
+        if (hospitalIndex !== -1) {
+          // 병원이 리스트에 있으면 해당 페이지로 이동
+          const targetPage = Math.floor(hospitalIndex / ITEMS_PER_PAGE) + 1;
+
+          if (currentPage !== targetPage) {
+            setCurrentPage(targetPage);
+            // 페이지 변경 후 스크롤 (약간의 지연)
+            setTimeout(() => {
+              scrollToHospitalCard(hospital);
+            }, 100);
+          } else {
+            // 같은 페이지면 바로 스크롤
+            scrollToHospitalCard(hospital);
+          }
+        } else {
+          // 리스트에 없으면 해당 위치로 지도 이동하고 주변 병원 검색
+          const position = new window.kakao.maps.LatLng(
+            parseFloat(hospital.latitude),
+            parseFloat(hospital.longitude)
+          );
+          kakaoMapRef.current.setCenter(position);
+
+          // 검색 모드 해제하고 해당 위치 기준으로 병원 목록 다시 로드
+          setIsSearchMode(false);
+          setSearchKeyword('');
+          setCurrentPage(1);
+
+          // 병원 목록 다시 로드
+          setTimeout(() => {
+            loadHospitalsAndMarkers();
+          }, 100);
+        }
       });
 
       const customOverlay = new window.kakao.maps.CustomOverlay({
@@ -1684,6 +1905,85 @@ function HospitalMap() {
     });
   }, [mapMarkers, isSearchMode]);
 
+  // 알파벳 마커 별도 관리 (항상 표시)
+  useEffect(() => {
+    if (!kakaoMapRef.current || !window.kakao || hospitals.length === 0) return;
+
+    // 기존 알파벳 마커 제거
+    alphabetMarkersRef.current.forEach(({ customOverlay }) => {
+      if (customOverlay) {
+        customOverlay.setMap(null);
+      }
+    });
+    alphabetMarkersRef.current = [];
+
+    // 현재 페이지에 표시된 병원 목록
+    const currentPageHospitals = hospitals.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+
+    // 알파벳 마커 생성
+    currentPageHospitals.forEach((hospital, index) => {
+      if (!hospital.latitude || !hospital.longitude) return;
+
+      const position = new window.kakao.maps.LatLng(
+        parseFloat(hospital.latitude),
+        parseFloat(hospital.longitude)
+      );
+
+      const alphabet = String.fromCharCode(65 + index); // A, B, C, ...
+
+      // 커스텀 오버레이 컨텐츠 생성
+      const dotContent = document.createElement('div');
+      dotContent.className = 'hospital-alphabet-marker';
+      dotContent.style.cursor = 'pointer';
+      dotContent.style.transition = 'all 0.2s';
+      dotContent.style.width = '30px';
+      dotContent.style.height = '42px';
+      dotContent.style.position = 'relative';
+      dotContent.innerHTML = `
+        <svg width="30" height="42" viewBox="0 0 30 42" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));">
+          <path d="M15 0C8.5 0 3 5.5 3 12c0 1.5 0.5 3 1 4.5C6 22 15 42 15 42s9-20 11-25.5c0.5-1.5 1-3 1-4.5C27 5.5 21.5 0 15 0z" fill="white" stroke="#3fc1ec" stroke-width="1.5"/>
+          <text x="15" y="16.5" text-anchor="middle" font-size="12" font-weight="700" font-family="Malgun Gothic, Arial, sans-serif" fill="#3fc1ec">${alphabet}</text>
+        </svg>
+      `;
+
+      // 호버 효과
+      dotContent.addEventListener('mouseenter', () => {
+        dotContent.style.transform = 'scale(1.1)';
+        dotContent.querySelector('path').setAttribute('stroke', '#3284b1');
+        dotContent.querySelector('text').setAttribute('fill', '#3284b1');
+      });
+
+      dotContent.addEventListener('mouseleave', () => {
+        dotContent.style.transform = 'scale(1)';
+        dotContent.querySelector('path').setAttribute('stroke', '#3fc1ec');
+        dotContent.querySelector('text').setAttribute('fill', '#3fc1ec');
+      });
+
+      // 클릭 이벤트
+      dotContent.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        setSelectedHospital(hospital);
+        kakaoMapRef.current.setCenter(position);
+        await showInfoWindow(hospital, parseFloat(hospital.latitude), parseFloat(hospital.longitude));
+        scrollToHospitalCard(hospital);
+      });
+
+      const customOverlay = new window.kakao.maps.CustomOverlay({
+        position: position,
+        content: dotContent,
+        zIndex: 100
+      });
+
+      customOverlay.setMap(kakaoMapRef.current);
+
+      alphabetMarkersRef.current.push({
+        hospital,
+        customOverlay,
+        position
+      });
+    });
+  }, [currentPage, hospitals]);
+
   return (
     <div className="hospital-map-page">
       <Header />
@@ -1691,7 +1991,7 @@ function HospitalMap() {
       <div className="hospital-map-main">
         <div className="map-content-wrapper">
           {/* 병원 리스트 사이드바 */}
-          <div className="hospital-list-sidebar" ref={sidebarRef}>
+          <div className="hospital-list-sidebar">
             {/* 검색창 (사이드바 최상단) */}
             <div className="sidebar-search-container" ref={departmentDropdownRef}>
               <div className="search-with-filter">
@@ -1841,7 +2141,7 @@ function HospitalMap() {
               </button>
             </div>
 
-            <div className="hospital-cards">
+            <div className="hospital-cards" ref={sidebarRef}>
               {loading ? (
                 // 로딩 중 스켈레톤
                 [1, 2, 3, 4, 5].map((item) => (
@@ -1887,27 +2187,33 @@ function HospitalMap() {
               ) : (
                 <>
                   {/* 병원 카드 표시 (페이지네이션) */}
-                  {hospitals.slice(0, displayCount).map((hospital) => (
-                    <div
-                      key={hospital.hospitalId}
-                      className="hospital-card"
-                      data-hospital-id={hospital.hospitalId}
-                      onClick={async () => {
-                        setSelectedHospital(hospital);
-                        if (hospital.latitude && hospital.longitude) {
-                          const position = new window.kakao.maps.LatLng(
-                            parseFloat(hospital.latitude),
-                            parseFloat(hospital.longitude)
-                          );
-                          kakaoMapRef.current.setCenter(position);
+                  {hospitals.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE).map((hospital, index) => {
+                    const alphabet = String.fromCharCode(65 + index); // A, B, C, ...
+                    const isSelected = selectedHospital?.hospitalId === hospital.hospitalId;
+                    return (
+                      <div
+                        key={hospital.hospitalId}
+                        className={`hospital-card ${isSelected ? 'selected' : ''}`}
+                        data-hospital-id={hospital.hospitalId}
+                        onClick={async () => {
+                          setSelectedHospital(hospital);
+                          if (hospital.latitude && hospital.longitude) {
+                            const position = new window.kakao.maps.LatLng(
+                              parseFloat(hospital.latitude),
+                              parseFloat(hospital.longitude)
+                            );
+                            kakaoMapRef.current.setCenter(position);
 
-                          // InfoWindow 표시 (꼬리가 마커를 가리킴)
-                          await showInfoWindow(hospital, parseFloat(hospital.latitude), parseFloat(hospital.longitude));
-                        }
-                      }}
-                    >
-                      <div className="hospital-card-header">
-                        <h4 className="hospital-name">{hospital.hospitalName}</h4>
+                            // InfoWindow 표시 (꼬리가 마커를 가리킴)
+                            await showInfoWindow(hospital, parseFloat(hospital.latitude), parseFloat(hospital.longitude));
+                          }
+                        }}
+                      >
+                        <div className="hospital-card-header">
+                          <h4 className="hospital-name">
+                            <span className="hospital-alphabet">{alphabet}</span>
+                            {hospital.hospitalName}
+                          </h4>
                         {hospital.emergencyYn === 'Y' && (
                           <span className="hospital-type-badge emergency">응급실</span>
                         )}
@@ -1950,19 +2256,54 @@ function HospitalMap() {
                         </button>
                       </div>
                     </div>
-                  ))}
+                    );
+                  })}
 
-                  {/* 더보기 버튼 */}
-                  {displayCount < hospitals.length && (
-                    <div className="load-more-container">
-                      <button className="load-more-btn" onClick={handleLoadMore}>
-                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
-                          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/>
-                        </svg>
-                        장소 더보기 ({displayCount}/{hospitals.length})
-                      </button>
-                    </div>
-                  )}
+                  {/* 페이징 컨트롤 */}
+                  {hospitals.length > ITEMS_PER_PAGE && (() => {
+                    const totalPages = Math.ceil(hospitals.length / ITEMS_PER_PAGE);
+                    const maxPagesToShow = 5;
+                    const currentGroup = Math.ceil(currentPage / maxPagesToShow);
+                    const isFirstGroup = currentGroup === 1;
+                    const lastGroup = Math.ceil(totalPages / maxPagesToShow);
+                    const isLastGroup = currentGroup === lastGroup;
+
+                    return (
+                      <div className="pagination-container">
+                        <button
+                          className="pagination-btn pagination-arrow"
+                          onClick={handlePrevPage}
+                          disabled={isFirstGroup}
+                        >
+                          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                          </svg>
+                        </button>
+
+                        <div className="pagination-numbers">
+                          {getPageNumbers().map((pageNum) => (
+                            <button
+                              key={pageNum}
+                              className={`pagination-btn pagination-number ${currentPage === pageNum ? 'active' : ''}`}
+                              onClick={() => handlePageClick(pageNum)}
+                            >
+                              {pageNum}
+                            </button>
+                          ))}
+                        </div>
+
+                        <button
+                          className="pagination-btn pagination-arrow"
+                          onClick={handleNextPage}
+                          disabled={isLastGroup}
+                        >
+                          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                          </svg>
+                        </button>
+                      </div>
+                    );
+                  })()}
                 </>
               )}
             </div>
