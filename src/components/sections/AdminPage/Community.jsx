@@ -347,17 +347,16 @@ const Community = () => {
                 <thead>
                   <tr>
                     <th style={{ width: '10%' }}>카테고리</th>
-                    <th style={{ width: '40%' }}>제목</th>
+                    <th style={{ width: '50%' }}>제목</th>
                     <th style={{ width: '15%' }}>작성자</th>
                     <th style={{ width: '15%' }}>작성일</th>
                     <th className="text-center" style={{ width: '10%' }}>조회수</th>
-                    <th className="text-center" style={{ width: '10%' }}>댓글수</th>
                   </tr>
                 </thead>
                 <tbody>
                   {pageItems.length === 0 ? (
                     <tr>
-                      <td colSpan="6" style={{ textAlign: 'center', padding: '40px' }}>
+                      <td colSpan="5" style={{ textAlign: 'center', padding: '40px' }}>
                         등록된 게시글이 없습니다.
                       </td>
                     </tr>
@@ -373,7 +372,6 @@ const Community = () => {
                         <td>{post.memberId}</td>
                         <td>{formatDate(post.createdAt)}</td>
                         <td className="text-center">{post.views || 0}</td>
-                        <td className="text-center">{post.commentCount || 0}</td>
                       </tr>
                     ))
                   )}
@@ -482,10 +480,6 @@ const Community = () => {
                       <div className="detail-item">
                         <div className="detail-label">조회수</div>
                         <div className="detail-value">{selectedPost.views || 0}</div>
-                      </div>
-                      <div className="detail-item">
-                        <div className="detail-label">댓글수</div>
-                        <div className="detail-value">{selectedPost.commentCount || 0}</div>
                       </div>
                       <div className="detail-item full-width">
                         <div className="detail-label">제목</div>
