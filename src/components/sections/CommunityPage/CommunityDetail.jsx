@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import "./CommunityDetail.css";
 import Header from "../../layout/Header";
 import Footer from "../../layout/Footer";
+import ReportModal from "./ReportModal";
 
 const getCategoryLabel = (category) => {
 switch (category) {
@@ -36,12 +37,16 @@ const [commentError, setCommentError] = useState(null);
 const [commentText, setCommentText] = useState("");
 const [submitLoading, setSubmitLoading] = useState(false);
 
-// 🔥 React StrictMode에서 useEffect가 두 번 도는 것 방지용
+// 🔥 신고 모달 상태
+const [isReportOpen, setIsReportOpen] = useState(false);
+const [reportTarget, setReportTarget] = useState(null);
+// reportTarget: { type: 'POST' | 'COMMENT', id: number }
+
+// React StrictMode 방지용
 const fetchedPostRef = useRef(false);
 
-// ===== 게시글 상세 조회 (조회수 +1은 백엔드에서 처리) =====
+// ===== 게시글 상세 조회 =====
 useEffect(() => {
-    // 이미 한 번 불렀으면 두 번째 호출은 무시
     if (fetchedPostRef.current) return;
     fetchedPostRef.current = true;
 
@@ -84,15 +89,18 @@ const loadComments = async () => {
     setCommentLoading(true);
     setCommentError(null);
 
-    const res = await fetch(`/react/api/community/posts/${postId}/comments`, {
+    const res = await fetch(
+        `/react/api/community/posts/${postId}/comments`,
+        {
         method: "GET",
-    });
+        }
+    );
 
     if (!res.ok) {
         throw new Error("댓글을 불러오지 못했습니다.");
     }
 
-    const data = await res.json(); // CommunityCommentDto[]
+    const data = await res.json();
     setComments(Array.isArray(data) ? data : []);
     } catch (err) {
     console.error("댓글 목록 조회 오류:", err);
@@ -122,13 +130,16 @@ const handleCommentSubmit = async (e) => {
     try {
     setSubmitLoading(true);
 
-    const res = await fetch(`/react/api/community/posts/${postId}/comments`, {
+    const res = await fetch(
+        `/react/api/community/posts/${postId}/comments`,
+        {
         method: "POST",
         headers: {
-        "Content-Type": "application/json",
+            "Content-Type": "application/json",
         },
         body: JSON.stringify({ content: trimmed }),
-    });
+        }
+    );
 
     if (res.status === 401) {
         alert("로그인이 필요한 기능입니다.");
@@ -140,7 +151,6 @@ const handleCommentSubmit = async (e) => {
     }
 
     setCommentText("");
-    // 다시 조회
     await loadComments();
     } catch (err) {
     console.error("댓글 등록 오류:", err);
@@ -150,9 +160,58 @@ const handleCommentSubmit = async (e) => {
     }
 };
 
+// ===== 신고 모달 열기 (게시글/댓글 공용) =====
+const openPostReport = () => {
+    setReportTarget({ type: "POST", id: postId });
+    setIsReportOpen(true);
+};
+
+const openCommentReport = (commentId) => {
+    setReportTarget({ type: "COMMENT", id: commentId });
+    setIsReportOpen(true);
+};
+
+// ===== 신고 실제 요청 =====
+const handleReportSubmit = async ({ reasonType, detail }) => {
+    if (!reportTarget) return;
+
+    try {
+    let url = "";
+    if (reportTarget.type === "POST") {
+        url = `/react/api/community/posts/${reportTarget.id}/report`;
+    } else if (reportTarget.type === "COMMENT") {
+        url = `/react/api/community/comments/${reportTarget.id}/report`;
+    } else {
+        throw new Error("잘못된 신고 대상입니다.");
+    }
+
+    const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reasonType, detail }),
+    });
+
+    if (res.status === 401) {
+        alert("로그인이 필요한 기능입니다.");
+        return;
+    }
+
+    const data = await res.json().catch(() => ({}));
+
+    if (!res.ok || data.success === false) {
+        throw new Error(data.message || "신고 처리에 실패했습니다.");
+    }
+
+    alert("신고가 접수되었습니다. 감사합니다.");
+    setIsReportOpen(false);
+    } catch (e) {
+    console.error("신고 오류:", e);
+    alert(e.message || "신고 중 오류가 발생했습니다.");
+    }
+};
+
 // ---- 렌더링 ----
 
-// 게시글 없거나 NOT_FOUND 처리
 if (postError === "NOT_FOUND") {
     return (
     <>
@@ -275,6 +334,15 @@ return (
                     <span className="cd-comment-date">
                         {(c.createdAt || "").replace(/-/g, ".")}
                     </span>
+
+                    {/* 🔥 댓글 신고 버튼 */}
+                    <button
+                        type="button"
+                        className="cd-comment-report-btn"
+                        onClick={() => openCommentReport(c.commentId)}
+                    >
+                        신고
+                    </button>
                     </div>
                     <p className="cd-comment-content">{c.content}</p>
                 </li>
@@ -292,11 +360,23 @@ return (
                 목록으로
             </button>
             <div className="cd-footer-spacer" />
-            <button type="button" className="cd-btn cd-btn-outline">
+            <button
+                type="button"
+                className="cd-btn cd-btn-outline"
+                onClick={openPostReport}
+            >
                 신고
             </button>
             </section>
         </article>
+
+        {/* 신고 모달 (게시글 / 댓글 공용) */}
+        <ReportModal
+            open={isReportOpen}
+            targetType={reportTarget?.type || "POST"}
+            onClose={() => setIsReportOpen(false)}
+            onSubmit={handleReportSubmit}
+        />
         </div>
     </main>
     <Footer />
