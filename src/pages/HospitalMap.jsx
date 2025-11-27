@@ -19,11 +19,13 @@ function HospitalMap() {
   const [autocompleteSuggestions, setAutocompleteSuggestions] = useState([]); // 자동완성 제안 목록
   const [showAutocomplete, setShowAutocomplete] = useState(false); // 자동완성 표시 여부
   const [allHospitalsCache, setAllHospitalsCache] = useState([]); // 전체 병원 목록 캐시
+  const [isMapInitialized, setIsMapInitialized] = useState(false); // 지도 초기화 완료 여부
   const mapRef = useRef(null);
   const kakaoMapRef = useRef(null);
   const markersRef = useRef([]);
   const currentZoomLevel = useRef(5);
-  const myLocationMarkerRef = useRef(null); // 내 위치 마커
+  const myAddressMarkerRef = useRef(null); // 내 주소 마커 (집 모양)
+  const currentLocationMarkerRef = useRef(null); // 현재 위치 마커 (원형)
   const currentInfoWindowRef = useRef(null); // 현재 열린 InfoWindow
   const sidebarRef = useRef(null); // 사이드바 참조
   const filterTypeRef = useRef(filterType); // 최신 filterType 값 참조
@@ -145,6 +147,38 @@ function HospitalMap() {
 
       // 초기 로딩 - 사이드바와 마커 모두 로드
       loadHospitalsAndMarkers();
+
+      // 지도 초기화 완료 상태 업데이트
+      console.log('🗺️ [지도 초기화] 지도 초기화 완료');
+      setIsMapInitialized(true);
+
+      // 지도 초기화 후 현재 위치 마커 표시
+      setTimeout(() => {
+        console.log('⏰ [마커 타이머] 500ms 대기 완료');
+
+        // 현재 위치 마커 표시
+        if (navigator.geolocation) {
+          console.log('📡 [현재 위치 마커] Geolocation 시작');
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              const lat = position.coords.latitude;
+              const lng = position.coords.longitude;
+              console.log('✅ [현재 위치 마커] 위치 가져오기 성공:', lat, lng);
+              showCurrentLocationMarker(lat, lng);
+            },
+            (error) => {
+              console.log('❌ [현재 위치 마커] 위치 가져오기 실패:', error);
+            },
+            {
+              enableHighAccuracy: true,
+              timeout: 10000,
+              maximumAge: 0
+            }
+          );
+        } else {
+          console.log('❌ [현재 위치 마커] Geolocation 미지원');
+        }
+      }, 500);
     };
 
     // 카카오맵 스크립트 로드
@@ -296,13 +330,20 @@ function HospitalMap() {
   const extractDistrict = (address) => {
     if (!address) return '';
 
-    // 정규식으로 구/시 추출
-    const districtMatch = address.match(/(.*?[시구])(?:\s|$)/);
-    if (districtMatch) {
-      const district = districtMatch[1];
-      // "서울특별시", "경기도" 등 광역시/도 제거
-      return district.replace(/^.*?(특별시|광역시|특별자치시|도|특별자치도)\s*/, '');
+    // 광역시/도 다음에 오는 구/시 추출
+    // 예: "서울특별시 강남구" -> "강남구", "경기도 수원시" -> "수원시"
+    const districtMatch = address.match(/(특별시|광역시|특별자치시|도|특별자치도)\s+([^\s]+[시군구])/);
+
+    if (districtMatch && districtMatch[2]) {
+      return districtMatch[2];
     }
+
+    // 매칭 실패 시 단순하게 두 번째 단어(공백 기준) 추출 시도
+    const parts = address.split(' ');
+    if (parts.length >= 2 && (parts[1].endsWith('구') || parts[1].endsWith('시') || parts[1].endsWith('군'))) {
+      return parts[1];
+    }
+
     return '';
   };
 
@@ -373,6 +414,13 @@ function HospitalMap() {
         setHospitals(nearbyHospitals);
         setMapMarkers(nearbyHospitals);
         setDisplayCount(10);
+        setSelectedHospital(hospital);
+
+        // InfoWindow 자동 표시
+        await showInfoWindow(hospital, parseFloat(hospital.latitude), parseFloat(hospital.longitude));
+
+        // 사이드바 스크롤
+        scrollToHospitalCard(hospital);
       }
     } catch (error) {
       console.error('병원 이동 실패:', error);
@@ -650,6 +698,35 @@ function HospitalMap() {
     selectedDepartmentsRef.current = selectedDepartments;
   }, [selectedDepartments]);
 
+  // userAddress 또는 지도 초기화 상태 변경 시 마커 표시
+  useEffect(() => {
+    console.log('🔄 [useEffect] 트리거됨');
+    console.log('  - userAddress:', userAddress);
+    console.log('  - isMapInitialized:', isMapInitialized);
+    console.log('  - kakaoMapRef.current:', kakaoMapRef.current);
+
+    if (userAddress && isMapInitialized && kakaoMapRef.current && window.kakao && window.kakao.maps) {
+      console.log('✅ [useEffect] 모든 조건 충족, 마커 표시 시작:', userAddress);
+      const geocoder = new window.kakao.maps.services.Geocoder();
+      geocoder.addressSearch(userAddress, (result, status) => {
+        console.log('🔍 [useEffect] Geocoder 상태:', status);
+        console.log('🔍 [useEffect] Geocoder 결과:', result);
+        if (status === window.kakao.maps.services.Status.OK) {
+          console.log('✅ [useEffect] 좌표 변환 성공, 마커 표시');
+          showMyAddressMarker(result[0].y, result[0].x);
+        } else {
+          console.log('❌ [useEffect] 좌표 변환 실패');
+        }
+      });
+    } else {
+      console.log('❌ [useEffect] 조건 불충족, 마커 표시 건너뜀');
+      if (!userAddress) console.log('  - userAddress 없음');
+      if (!isMapInitialized) console.log('  - 지도 초기화 안됨');
+      if (!kakaoMapRef.current) console.log('  - kakaoMapRef.current 없음');
+      if (!window.kakao?.maps) console.log('  - window.kakao.maps 없음');
+    }
+  }, [userAddress, isMapInitialized]);
+
   // 사용자 주소 가져오기 및 전체 병원 캐시 로드
   useEffect(() => {
     const fetchUserAddress = async () => {
@@ -794,44 +871,51 @@ function HospitalMap() {
 
   // 내 주소 마커 표시 (집 모양)
   const showMyAddressMarker = (lat, lng) => {
-    if (!kakaoMapRef.current) return;
+    console.log('🏠 [showMyAddressMarker] 호출됨, 좌표:', lat, lng);
+    console.log('🗺️ [showMyAddressMarker] kakaoMapRef.current:', kakaoMapRef.current);
 
-    // 기존 내 위치 마커 제거
-    if (myLocationMarkerRef.current) {
-      myLocationMarkerRef.current.setMap(null);
+    if (!kakaoMapRef.current) {
+      console.log('❌ [showMyAddressMarker] 지도 없음, 마커 표시 중단');
+      return;
+    }
+
+    // 기존 내 주소 마커 제거
+    if (myAddressMarkerRef.current) {
+      console.log('🗑️ [showMyAddressMarker] 기존 마커 제거');
+      myAddressMarkerRef.current.setMap(null);
     }
 
     const position = new window.kakao.maps.LatLng(lat, lng);
+    console.log('📍 [showMyAddressMarker] 위치 객체 생성:', position);
 
     // 내 주소 마커 생성 (집 모양)
     const markerContent = document.createElement('div');
     markerContent.style.position = 'relative';
+    markerContent.style.cursor = 'pointer';
     markerContent.innerHTML = `
       <div style="
         position: relative;
-        width: 40px;
-        height: 40px;
+        width: 28px;
+        height: 28px;
         display: flex;
         align-items: center;
         justify-content: center;
       ">
-        <!-- 펄스 애니메이션 배경 -->
-        <div style="
-          position: absolute;
-          width: 40px;
-          height: 40px;
-          background: rgba(5, 150, 105, 0.3);
-          border-radius: 50%;
-          animation: homePulse 2s infinite;
-        "></div>
-
         <!-- 집 아이콘 -->
-        <svg viewBox="0 0 24 24" width="28" height="28" style="position: relative; z-index: 1; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));">
-          <!-- 집 배경 -->
+        <svg viewBox="0 0 24 24" width="28" height="28" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));">
           <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" fill="#059669" stroke="white" stroke-width="1"/>
         </svg>
       </div>
     `;
+
+    // 마커 클릭 이벤트 추가
+    markerContent.addEventListener('click', async () => {
+      console.log('🏠 [마커 클릭] 내 주소 마커 클릭됨');
+      kakaoMapRef.current.setCenter(position);
+      kakaoMapRef.current.setLevel(3);
+      await new Promise(resolve => setTimeout(resolve, 100));
+      loadHospitalsAndMarkers();
+    });
 
     const customOverlay = new window.kakao.maps.CustomOverlay({
       position: position,
@@ -839,43 +923,35 @@ function HospitalMap() {
       zIndex: 200
     });
 
+    console.log('🎨 [showMyAddressMarker] CustomOverlay 생성:', customOverlay);
     customOverlay.setMap(kakaoMapRef.current);
-    myLocationMarkerRef.current = customOverlay;
-
-    // CSS 애니메이션 추가
-    if (!document.getElementById('home-pulse-style')) {
-      const style = document.createElement('style');
-      style.id = 'home-pulse-style';
-      style.textContent = `
-        @keyframes homePulse {
-          0%, 100% {
-            opacity: 0.6;
-            transform: scale(1);
-          }
-          50% {
-            opacity: 0.3;
-            transform: scale(1.4);
-          }
-        }
-      `;
-      document.head.appendChild(style);
-    }
+    myAddressMarkerRef.current = customOverlay;
+    console.log('✅ [showMyAddressMarker] 마커 지도에 추가 완료');
   };
 
   // 현재 위치 마커 표시 (원형)
   const showCurrentLocationMarker = (lat, lng) => {
-    if (!kakaoMapRef.current) return;
+    console.log('📡 [showCurrentLocationMarker] 호출됨, 좌표:', lat, lng);
+    console.log('🗺️ [showCurrentLocationMarker] kakaoMapRef.current:', kakaoMapRef.current);
 
-    // 기존 내 위치 마커 제거
-    if (myLocationMarkerRef.current) {
-      myLocationMarkerRef.current.setMap(null);
+    if (!kakaoMapRef.current) {
+      console.log('❌ [showCurrentLocationMarker] 지도 없음, 마커 표시 중단');
+      return;
+    }
+
+    // 기존 현재 위치 마커 제거
+    if (currentLocationMarkerRef.current) {
+      console.log('🗑️ [showCurrentLocationMarker] 기존 마커 제거');
+      currentLocationMarkerRef.current.setMap(null);
     }
 
     const position = new window.kakao.maps.LatLng(lat, lng);
+    console.log('📍 [showCurrentLocationMarker] 위치 객체 생성:', position);
 
     // 현재 위치 마커 생성 (원형)
     const markerContent = document.createElement('div');
     markerContent.style.position = 'relative';
+    markerContent.style.cursor = 'pointer';
     markerContent.innerHTML = `
       <div style="
         width: 20px;
@@ -896,14 +972,25 @@ function HospitalMap() {
       </div>
     `;
 
+    // 마커 클릭 이벤트 추가
+    markerContent.addEventListener('click', async () => {
+      console.log('📡 [마커 클릭] 현재 위치 마커 클릭됨');
+      kakaoMapRef.current.setCenter(position);
+      kakaoMapRef.current.setLevel(3);
+      await new Promise(resolve => setTimeout(resolve, 100));
+      loadHospitalsAndMarkers();
+    });
+
     const customOverlay = new window.kakao.maps.CustomOverlay({
       position: position,
       content: markerContent,
       zIndex: 200
     });
 
+    console.log('🎨 [showCurrentLocationMarker] CustomOverlay 생성:', customOverlay);
     customOverlay.setMap(kakaoMapRef.current);
-    myLocationMarkerRef.current = customOverlay;
+    currentLocationMarkerRef.current = customOverlay;
+    console.log('✅ [showCurrentLocationMarker] 마커 지도에 추가 완료');
 
     // CSS 애니메이션 추가
     if (!document.getElementById('location-pulse-style')) {
@@ -926,7 +1013,7 @@ function HospitalMap() {
   };
 
   // 내 주소로 이동
-  const moveToMyAddress = () => {
+  const moveToMyAddress = async () => {
     if (!kakaoMapRef.current || !userAddress) {
       alert('등록된 주소가 없습니다.');
       return;
@@ -934,14 +1021,18 @@ function HospitalMap() {
 
     const geocoder = new window.kakao.maps.services.Geocoder();
 
-    geocoder.addressSearch(userAddress, (result, status) => {
+    geocoder.addressSearch(userAddress, async (result, status) => {
       if (status === window.kakao.maps.services.Status.OK) {
         const coords = new window.kakao.maps.LatLng(result[0].y, result[0].x);
         kakaoMapRef.current.setCenter(coords);
-        kakaoMapRef.current.setLevel(3); // 줄 레벨 3으로 설정
+        kakaoMapRef.current.setLevel(3); // 줌 레벨 3으로 설정
 
         // 내 주소 마커 표시 (집 모양)
         showMyAddressMarker(result[0].y, result[0].x);
+
+        // 이동 후 해당 지역 병원 검색
+        await new Promise(resolve => setTimeout(resolve, 100));
+        loadHospitalsAndMarkers();
       } else {
         alert('주소를 찾을 수 없습니다.');
       }
@@ -959,7 +1050,7 @@ function HospitalMap() {
 
     // 위치 정보 가져오기
     navigator.geolocation.getCurrentPosition(
-      (position) => {
+      async (position) => {
         const lat = position.coords.latitude;
         const lng = position.coords.longitude;
         const coords = new window.kakao.maps.LatLng(lat, lng);
@@ -969,6 +1060,10 @@ function HospitalMap() {
 
         // 현재 위치 마커 표시 (원형)
         showCurrentLocationMarker(lat, lng);
+
+        // 이동 후 해당 지역 병원 검색
+        await new Promise(resolve => setTimeout(resolve, 100));
+        loadHospitalsAndMarkers();
       },
       () => {
         // 에러 발생 시 아무것도 하지 않음 (에러 메시지 표시 안 함)
