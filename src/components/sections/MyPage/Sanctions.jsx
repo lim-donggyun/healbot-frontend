@@ -1,52 +1,8 @@
 // components/sections/CommunityPage/Sanctions.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Header from "../../layout/Header";
 import Footer from "../../layout/Footer";
 import "./Sanction.css";
-
-const MOCK_RECEIVED = [
-{
-    sanctionId: 1,
-    targetType: "POST",
-    targetSummary: "병원 욕설이 포함된 게시글",
-    reasonType: "INSULT",
-    status: "COMPLETED",
-    createdAt: "2025-11-20 13:24",
-    processedAt: "2025-11-21 09:10",
-    action: "게시글 숨김 처리",
-},
-{
-    sanctionId: 2,
-    targetType: "COMMENT",
-    targetSummary: "과한 비속어 사용 댓글",
-    reasonType: "ABUSE",
-    status: "WARNING",
-    createdAt: "2025-11-22 18:03",
-    processedAt: "2025-11-22 18:05",
-    action: "1회 경고",
-},
-];
-
-const MOCK_REPORTED = [
-{
-    reportId: 10,
-    targetType: "POST",
-    targetSummary: "허위 진료 후기 의심 글",
-    reasonType: "FALSE_INFO",
-    result: "조치 완료",
-    createdAt: "2025-11-19 11:02",
-    processedAt: "2025-11-20 15:20",
-},
-{
-    reportId: 11,
-    targetType: "COMMENT",
-    targetSummary: "개인정보 노출 댓글",
-    reasonType: "PRIVACY",
-    result: "삭제 처리",
-    createdAt: "2025-11-21 08:15",
-    processedAt: "2025-11-21 09:30",
-},
-];
 
 const getTargetLabel = (type) => {
 if (type === "POST") return "게시글";
@@ -65,7 +21,7 @@ switch (reason) {
     case "PRIVACY":
     return "개인정보 노출";
     default:
-    return "기타";
+    return reason || "기타";
 }
 };
 
@@ -84,10 +40,76 @@ switch (status) {
 
 function Sanctions() {
 const [activeTab, setActiveTab] = useState("received"); // received | reported
+const [receivedList, setReceivedList] = useState([]);
+const [reportedList, setReportedList] = useState([]);
+const [loading, setLoading] = useState(false);
+const [errorMsg, setErrorMsg] = useState("");
 
-// 그냥 목 데이터 사용
-const receivedList = MOCK_RECEIVED;
-const reportedList = MOCK_REPORTED;
+useEffect(() => {
+    const fetchAll = async () => {
+    try {
+        setLoading(true);
+        setErrorMsg("");
+
+        // 내가 제재받은 내역
+        const res1 = await fetch(
+        "/react/api/community/my-sanctions/received",
+        { method: "GET" }
+        );
+        if (res1.status === 401) {
+        alert("로그인이 필요합니다.");
+        return;
+        }
+        if (!res1.ok) throw new Error("내가 받은 제재 내역을 불러오지 못했습니다.");
+        const data1 = await res1.json();
+
+        // 내가 신고한 내역
+        const res2 = await fetch(
+        "/react/api/community/my-sanctions/reported",
+        { method: "GET" }
+        );
+        if (res2.status === 401) {
+        alert("로그인이 필요합니다.");
+        return;
+        }
+        if (!res2.ok)
+        throw new Error("내가 신고한 내역을 불러오지 못했습니다.");
+        const data2 = await res2.json();
+
+        // 백엔드 DTO -> 화면용 필드 맞추기
+        setReceivedList(
+        (Array.isArray(data1) ? data1 : []).map((r) => ({
+            sanctionId: r.reportId,
+            targetType: r.targetType,
+            targetSummary: r.targetSummary,
+            reasonType: r.reasonType,
+            status: r.status,
+            createdAt: r.createdAt,
+            action: r.penaltyReason, // PENALTY_REASON → 조치 내용
+        }))
+        );
+
+        setReportedList(
+        (Array.isArray(data2) ? data2 : []).map((r) => ({
+            reportId: r.reportId,
+            targetType: r.targetType,
+            targetSummary: r.targetSummary,
+            reasonType: r.reasonType,
+            createdAt: r.createdAt,
+            processedAt: r.createdAt, // 별도 처리일 컬럼 없으면 일단 신고일과 동일
+            result: r.penaltyReason || r.status, // 결과 표시
+        }))
+        );
+    } catch (e) {
+        console.error("제재/신고 내역 조회 오류:", e);
+        setErrorMsg(e.message || "제재 내역을 불러오는 중 오류가 발생했습니다.");
+    } finally {
+        setLoading(false);
+    }
+    };
+
+    fetchAll();
+}, []);
 
 return (
     <>
@@ -101,9 +123,6 @@ return (
             <h1 className="sanction-title">제재 내역</h1>
             <p className="sanction-subtitle">
                 내가 받은 제재와 내가 신고해서 처리된 내역을 확인할 수 있습니다.
-            </p>
-            <p className="sanction-mock-notice">
-                (현재는 예시 데이터로만 표시되는 화면입니다.)
             </p>
             </div>
         </section>
@@ -130,9 +149,15 @@ return (
             </button>
         </section>
 
-        {/* 내용 카드 */}
         <section className="sanction-card">
-            {activeTab === "received" && (
+            {loading && (
+            <div className="sanction-empty">내역을 불러오는 중입니다…</div>
+            )}
+            {errorMsg && !loading && (
+            <div className="sanction-empty">{errorMsg}</div>
+            )}
+
+            {!loading && !errorMsg && activeTab === "received" && (
             <>
                 {receivedList.length === 0 ? (
                 <div className="sanction-empty">
@@ -170,9 +195,7 @@ return (
                                 {badge.text}
                                 </span>
                             </td>
-                            <td>
-                                {s.createdAt || s.created_at || "-"}
-                            </td>
+                            <td>{s.createdAt || "-"}</td>
                             <td>{s.action || "-"}</td>
                             </tr>
                         );
@@ -184,7 +207,7 @@ return (
             </>
             )}
 
-            {activeTab === "reported" && (
+            {!loading && !errorMsg && activeTab === "reported" && (
             <>
                 {reportedList.length === 0 ? (
                 <div className="sanction-empty">
@@ -220,8 +243,8 @@ return (
                                 {r.result || "조치 완료"}
                             </span>
                             </td>
-                            <td>{r.createdAt || r.created_at || "-"}</td>
-                            <td>{r.processedAt || r.processed_at || "-"}</td>
+                            <td>{r.createdAt || "-"}</td>
+                            <td>{r.processedAt || "-"}</td>
                         </tr>
                         ))}
                     </tbody>

@@ -36,7 +36,7 @@ import Community from "./pages/Community";
 import CommunityDetail from "./components/sections/CommunityPage/CommunityDetail";
 import CommunityWrite from "./components/sections/CommunityPage/CommunityWrite";
 import HospitalMap from "./pages/HospitalMap";
-import Sanctions from "./components/sections/CommunityPage/Sanctions";
+import Sanctions from "./components/sections/MyPage/Sanctions";
 
 // 페이지 전환 시 스크롤을 맨 위로 리셋하는 컴포넌트
 function ScrollToTop() {
