@@ -23,3 +23,24 @@ This ensures that rules for columns 4 through 7 don't apply here.
 .disease-info-section .hospital-table th:nth-child(n+4) {
     width: auto;
 }
+
+/* Styles for the featured diseases section - reverted box styling */
+.featured-diseases-section .hospital-header {
+  margin-bottom: 15px; /* Keep reduced header bottom margin */
+}
+
+/* Ensure table container shadow is reset if it was removed */
+.featured-diseases-section .hospital-table-container {
+  box-shadow: none;
+}
+
+/* Remove spinner arrows from number input */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}

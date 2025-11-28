@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from './Sidebar';
+import DepartmentsModal from './DepartmentsModal';
+import SymptomsModal from './SymptomsModal';
 import {
   getAllDiseases,
   getFeaturedDiseases,
@@ -8,6 +10,7 @@ import {
   updateFeaturedDiseasesOrder,
   getDiseaseByName
 } from '../../../utils/diseasesApi';
+import { symptomsByBodyPart } from '../../../data/symptomsData';
 import './HospitalManagement.css';
 import './FeaturedDiseases.css';
 
@@ -20,8 +23,22 @@ const FeaturedDiseases = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [selectedDisease, setSelectedDisease] = useState(null);
+  const [draggedIndex, setDraggedIndex] = useState(null);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isDepartmentModalOpen, setIsDepartmentModalOpen] = useState(false);
+  const [isSymptomsModalOpen, setIsSymptomsModalOpen] = useState(false);
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState('');
+  const [newDisease, setNewDisease] = useState({
+    질환명: '',
+    진료과: '',
+    설명: '',
+    이미지: '',
+    전체증상목록: '',
+    환자수: ''
+  });
 
-  const itemsPerPage = 10;
+  const itemsPerPage = 5;
 
   useEffect(() => {
     fetchData();
@@ -136,15 +153,22 @@ const FeaturedDiseases = () => {
     if (index === 0) return;
 
     const newList = [...featuredDiseases];
-    [newList[index - 1], newList[index]] = [newList[index], newList[index - 1]];
+    [newList[index], newList[index - 1]] = [newList[index - 1], newList[index]];
 
+    // displayOrder 업데이트
     const updatedList = newList.map((item, idx) => ({
       ...item,
       displayOrder: idx + 1
     }));
 
+    // API에는 필요한 필드만 전송
+    const orderUpdateData = updatedList.map(item => ({
+      featuredDiseasesNo: item.featuredDiseasesNo,
+      displayOrder: item.displayOrder
+    }));
+
     try {
-      await updateFeaturedDiseasesOrder(updatedList);
+      await updateFeaturedDiseasesOrder(orderUpdateData);
       setFeaturedDiseases(updatedList);
     } catch (error) {
       console.error('순서 변경 실패:', error);
@@ -158,18 +182,155 @@ const FeaturedDiseases = () => {
     const newList = [...featuredDiseases];
     [newList[index], newList[index + 1]] = [newList[index + 1], newList[index]];
 
+    // displayOrder 업데이트
     const updatedList = newList.map((item, idx) => ({
       ...item,
       displayOrder: idx + 1
     }));
 
+    // API에는 필요한 필드만 전송
+    const orderUpdateData = updatedList.map(item => ({
+      featuredDiseasesNo: item.featuredDiseasesNo,
+      displayOrder: item.displayOrder
+    }));
+
     try {
-      await updateFeaturedDiseasesOrder(updatedList);
+      await updateFeaturedDiseasesOrder(orderUpdateData);
       setFeaturedDiseases(updatedList);
     } catch (error) {
       console.error('순서 변경 실패:', error);
       alert('순서 변경에 실패했습니다.');
     }
+  };
+
+  // 드래그 앤 드롭 핸들러
+  const handleDragStart = (e, index) => {
+    setDraggedIndex(index);
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const handleDragOver = (e, index) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  };
+
+  const handleDrop = async (e, dropIndex) => {
+    e.preventDefault();
+
+    if (draggedIndex === null || draggedIndex === dropIndex) {
+      setDraggedIndex(null);
+      return;
+    }
+
+    const newList = [...featuredDiseases];
+    const draggedItem = newList[draggedIndex];
+
+    // 드래그한 항목 제거
+    newList.splice(draggedIndex, 1);
+    // 드롭 위치에 삽입
+    newList.splice(dropIndex, 0, draggedItem);
+
+    // displayOrder 업데이트
+    const updatedList = newList.map((item, idx) => ({
+      ...item,
+      displayOrder: idx + 1
+    }));
+
+    // API에는 필요한 필드만 전송
+    const orderUpdateData = updatedList.map(item => ({
+      featuredDiseasesNo: item.featuredDiseasesNo,
+      displayOrder: item.displayOrder
+    }));
+
+    try {
+      await updateFeaturedDiseasesOrder(orderUpdateData);
+      setFeaturedDiseases(updatedList);
+    } catch (error) {
+      console.error('순서 변경 실패:', error);
+      alert('순서 변경에 실패했습니다.');
+    } finally {
+      setDraggedIndex(null);
+    }
+  };
+
+  const handleDragEnd = () => {
+    setDraggedIndex(null);
+  };
+
+  // 질환 추가 모달 관련
+  const handleAddDiseaseClick = () => {
+    setNewDisease({
+      질환명: '',
+      진료과: '',
+      설명: '',
+      이미지: '',
+      전체증상목록: '',
+      환자수: ''
+    });
+    setImageFile(null);
+    setImagePreview('');
+    setIsAddModalOpen(true);
+  };
+
+  const handleAddDiseaseSubmit = async () => {
+    if (!newDisease.질환명 || !newDisease.진료과) {
+      alert('질환명과 진료과는 필수 입력 항목입니다.');
+      return;
+    }
+
+    try {
+      // TODO: API 연동 (이미지 업로드 포함)
+      const formData = new FormData();
+      formData.append('질환명', newDisease.질환명);
+      formData.append('진료과', newDisease.진료과);
+      formData.append('설명', newDisease.설명);
+      formData.append('전체증상목록', newDisease.전체증상목록);
+      formData.append('환자수', newDisease.환자수);
+      if (imageFile) {
+        formData.append('이미지', imageFile);
+      }
+
+      alert('질환 추가 기능은 추후 구현 예정입니다.');
+      setIsAddModalOpen(false);
+      // await fetchData(); // 데이터 새로고침
+    } catch (error) {
+      console.error('질환 추가 실패:', error);
+      alert('질환 추가에 실패했습니다.');
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewDisease(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImageFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleDepartmentChange = (value) => {
+    setNewDisease(prev => ({
+      ...prev,
+      진료과: value
+    }));
+  };
+
+  const handleSymptomsChange = (value) => {
+    setNewDisease(prev => ({
+      ...prev,
+      전체증상목록: value
+    }));
   };
 
   // 페이징 계산
@@ -218,7 +379,7 @@ const FeaturedDiseases = () => {
       <section className="admin-main">
         <div className="hospital-management">
           {/* 유행하는 질병 관리 섹션 */}
-          <div className="featured-diseases-section" style={{ marginBottom: '30px' }}>
+          <div className="featured-diseases-section" style={{ marginBottom: '15px' }}>
             <div className="hospital-header">
               <h2>
                 유행하는 질병 <span className="hospital-count">{featuredDiseases.length}/4</span>
@@ -234,33 +395,32 @@ const FeaturedDiseases = () => {
                 <table className="hospital-table">
                   <thead>
                     <tr>
-                      <th style={{ width: '80px' }}>순서</th>
+                      <th style={{ width: '30px', padding: '8px 4px' }}></th>
+                      <th style={{ width: '40px', padding: '8px 2px', textAlign: 'center' }}>순서</th>
                       <th>질병명</th>
-                      <th style={{ width: '200px' }}>관리</th>
+                      <th style={{ width: '120px' }}>관리</th>
                     </tr>
                   </thead>
                   <tbody>
                     {featuredDiseases.map((disease, index) => (
-                      <tr key={disease.featuredDiseasesNo}>
-                        <td style={{ textAlign: 'center' }}>{index + 1}</td>
+                      <tr
+                        key={disease.featuredDiseasesNo}
+                        draggable
+                        onDragStart={(e) => handleDragStart(e, index)}
+                        onDragOver={(e) => handleDragOver(e, index)}
+                        onDrop={(e) => handleDrop(e, index)}
+                        onDragEnd={handleDragEnd}
+                        style={{
+                          opacity: draggedIndex === index ? 0.5 : 1,
+                          backgroundColor: draggedIndex === index ? '#f0f0f0' : 'transparent'
+                        }}
+                      >
+                        <td style={{ textAlign: 'center', cursor: 'move', fontSize: '16px', color: '#999', padding: '8px 4px' }}>
+                          ⋮⋮
+                        </td>
+                        <td style={{ textAlign: 'center', padding: '8px 2px' }}>{index + 1}</td>
                         <td>{disease.diseaseName}</td>
                         <td style={{ textAlign: 'center' }}>
-                          <button
-                            className="admin-btn admin-btn-sm"
-                            onClick={() => handleMoveUp(index)}
-                            disabled={index === 0}
-                            style={{ marginRight: '5px', padding: '4px 8px', fontSize: '12px' }}
-                          >
-                            ↑
-                          </button>
-                          <button
-                            className="admin-btn admin-btn-sm"
-                            onClick={() => handleMoveDown(index)}
-                            disabled={index === featuredDiseases.length - 1}
-                            style={{ marginRight: '10px', padding: '4px 8px', fontSize: '12px' }}
-                          >
-                            ↓
-                          </button>
                           <button
                             className="admin-btn admin-btn-danger admin-btn-sm"
                             onClick={() => handleRemoveFromFeatured(disease.featuredDiseasesNo)}
@@ -282,6 +442,12 @@ const FeaturedDiseases = () => {
               <h2>
                 질환 정보 <span className="hospital-count">{filteredDiseases.length}</span>개
               </h2>
+              <button
+                className="add-hospital-btn"
+                onClick={handleAddDiseaseClick}
+              >
+                질환 추가
+              </button>
             </div>
 
             <div className="hospital-search-filters">
@@ -409,24 +575,26 @@ const FeaturedDiseases = () => {
                           ? '유행 질병에서 제거'
                           : '유행 질병에 추가'}
                       </button>
-                      <button
-                        className="find-department-btn"
-                        onClick={() => {
-                          alert('수정 기능은 추후 구현 예정입니다.');
-                        }}
-                      >
-                        수정
-                      </button>
-                      <button
-                        className="find-department-btn delete-btn"
-                        onClick={() => {
-                          if (window.confirm(`${selectedDisease.질환명}을(를) 삭제하시겠습니까?`)) {
-                            alert('삭제 기능은 추후 구현 예정입니다.');
-                          }
-                        }}
-                      >
-                        삭제
-                      </button>
+                      <div className="detail-actions-row">
+                        <button
+                          className="find-department-btn secondary"
+                          onClick={() => {
+                            alert('수정 기능은 추후 구현 예정입니다.');
+                          }}
+                        >
+                          수정
+                        </button>
+                        <button
+                          className="find-department-btn danger"
+                          onClick={() => {
+                            if (window.confirm(`${selectedDisease.질환명}을(를) 삭제하시겠습니까?`)) {
+                              alert('삭제 기능은 추후 구현 예정입니다.');
+                            }
+                          }}
+                        >
+                          삭제
+                        </button>
+                      </div>
                     </div>
                   </div>
 
@@ -475,6 +643,129 @@ const FeaturedDiseases = () => {
             </div>
           </div>
         )}
+
+        {/* 질환 추가 모달 */}
+        {isAddModalOpen && (
+          <div className="modal-overlay" onClick={() => setIsAddModalOpen(false)}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-header">
+                <h3>질환 추가</h3>
+                <button className="modal-close" onClick={() => setIsAddModalOpen(false)}>
+                  ✕
+                </button>
+              </div>
+              <form className="hospital-form" onSubmit={(e) => { e.preventDefault(); handleAddDiseaseSubmit(); }}>
+                <div className="form-two-column">
+                  {/* 좌측: 질환명, 진료과, 설명 */}
+                  <div className="form-column">
+                    <div className="form-row">
+                      <label>질환명 *</label>
+                      <input
+                        type="text"
+                        name="질환명"
+                        value={newDisease.질환명}
+                        onChange={handleInputChange}
+                        placeholder="질환명을 입력하세요"
+                        required
+                      />
+                    </div>
+                    <div className="form-row">
+                      <label>진료과 *</label>
+                      <input
+                        type="text"
+                        name="진료과"
+                        value={newDisease.진료과}
+                        onClick={() => setIsDepartmentModalOpen(true)}
+                        placeholder="진료과 선택"
+                        readOnly
+                        required
+                        style={{ cursor: 'pointer' }}
+                      />
+                    </div>
+                    <div className="form-row">
+                      <label>설명</label>
+                      <textarea
+                        name="설명"
+                        value={newDisease.설명}
+                        onChange={handleInputChange}
+                        placeholder="질환 설명을 입력하세요"
+                        style={{ minHeight: '200px' }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* 우측: 증상 목록, 환자수, 이미지, 미리보기 */}
+                  <div className="form-column">
+                    <div className="form-row">
+                      <label>증상 목록</label>
+                      <input
+                        type="text"
+                        name="전체증상목록"
+                        value={newDisease.전체증상목록}
+                        onClick={() => setIsSymptomsModalOpen(true)}
+                        placeholder="증상 선택"
+                        readOnly
+                        style={{ cursor: 'pointer' }}
+                      />
+                    </div>
+                    <div className="form-row">
+                      <label>환자수</label>
+                      <input
+                        type="number"
+                        name="환자수"
+                        value={newDisease.환자수}
+                        onChange={handleInputChange}
+                        placeholder="환자수를 입력하세요"
+                        min="0"
+                      />
+                    </div>
+                    <div className="form-row">
+                      <label>이미지</label>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                        style={{ cursor: 'pointer' }}
+                      />
+                    </div>
+                    {imagePreview && (
+                      <div className="form-row">
+                        <label>미리보기</label>
+                        <img src={imagePreview} alt="미리보기" style={{ maxWidth: '200px', maxHeight: '200px', objectFit: 'contain' }} />
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="form-actions">
+                  <button type="button" className="cancel-btn" onClick={() => setIsAddModalOpen(false)}>
+                    취소
+                  </button>
+                  <button type="submit" className="submit-btn">
+                    추가
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* 진료과 선택 모달 */}
+        <DepartmentsModal
+          isOpen={isDepartmentModalOpen}
+          onClose={() => setIsDepartmentModalOpen(false)}
+          value={newDisease.진료과}
+          onChange={handleDepartmentChange}
+        />
+
+        {/* 증상 선택 모달 */}
+        <SymptomsModal
+          isOpen={isSymptomsModalOpen}
+          onClose={() => setIsSymptomsModalOpen(false)}
+          value={newDisease.전체증상목록}
+          onChange={handleSymptomsChange}
+          symptomsByBodyPart={symptomsByBodyPart}
+        />
       </section>
     </main>
   );
