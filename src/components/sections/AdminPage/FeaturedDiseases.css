@@ -1,0 +1,25 @@
+/*
+Specific styles for tables within FeaturedDiseases.jsx to override
+the general styles from HospitalManagement.css that are intended for a different table structure.
+*/
+
+/* For the "질환 정보" table (3 columns) */
+.disease-info-section .hospital-table th:nth-child(1) {
+  width: 50%; /* 질병명 */
+}
+
+.disease-info-section .hospital-table th:nth-child(2) {
+  width: 30%; /* 진료과 */
+}
+
+.disease-info-section .hospital-table th:nth-child(3) {
+  width: 20%; /* 환자수 */
+}
+
+/*
+Reset any other nth-child selectors from HospitalManagement.css that might interfere.
+This ensures that rules for columns 4 through 7 don't apply here.
+*/
+.disease-info-section .hospital-table th:nth-child(n+4) {
+    width: auto;
+}
