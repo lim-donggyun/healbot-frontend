@@ -296,9 +296,9 @@ function Header() {
                 </>
               )}
               <div className="utility-divider"></div>
-              <button
+              <a
+                href="/hospitals?emergency=true"
                 className="utility-btn emergency-btn"
-                onClick={() => navigate('/hospitals?emergency=true')}
               >
                 <svg viewBox="0 0 24 24" width="18" height="18" style={{ marginRight: 4, verticalAlign: "middle" }}>
                   <path d="M12 2L2 7l10 5 10-5-10-5z" fill="currentColor" />
@@ -306,7 +306,7 @@ function Header() {
                   <path d="M2 12l10 5 10-5" stroke="currentColor" strokeWidth="2" fill="none" />
                 </svg>
                 응급
-              </button>
+              </a>
               <div className="utility-divider"></div>
               <div id="nav-icon2" className={isMenuOpen ? "open" : ""} onClick={toggleMenu}>
                 <span></span>
