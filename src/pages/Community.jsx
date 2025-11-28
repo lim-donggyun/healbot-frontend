@@ -9,7 +9,6 @@ const CATEGORY_TABS = [
 { key: "all", label: "전체" },
 { key: "free", label: "자유게시판" },
 { key: "question", label: "질문게시판" },
-{ key: "review", label: "후기게시판" },
 ];
 
 // 한 페이지에 몇 개씩 보여줄지
@@ -286,9 +285,6 @@ return (
                         )}
                         {post.category === "question" && (
                             <span className="badge badge-question">질문</span>
-                        )}
-                        {post.category === "review" && (
-                            <span className="badge badge-review">후기</span>
                         )}
                         {post.category === "free" && (
                             <span className="badge badge-free">자유</span>

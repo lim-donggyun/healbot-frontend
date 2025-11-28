@@ -37,6 +37,9 @@ import CommunityDetail from "./components/sections/CommunityPage/CommunityDetail
 import CommunityWrite from "./components/sections/CommunityPage/CommunityWrite";
 import HospitalMap from "./pages/HospitalMap";
 import Sanctions from "./components/sections/MyPage/Sanctions";
+import Review from "./pages/Review";
+import WriteReview from "./components/sections/Review/ReviewWriteModal";
+import OCR from "./pages/OCR";
 
 // 페이지 전환 시 스크롤을 맨 위로 리셋하는 컴포넌트
 function ScrollToTop() {
@@ -104,6 +107,9 @@ function App() {
         <Route path="/community/write" element={<CommunityWrite />} />
         <Route path="/mypage/sanctions" element={<Sanctions />} />
         <Route path="/hospitals" element={<HospitalMap />} />
+        <Route path="/review/ocr" element={<OCR />} />
+        <Route path="/review" element={<Review />} />
+        <Route path="/reviews/write" element={<WriteReview />} />
       </Routes>
     </Router>
   );

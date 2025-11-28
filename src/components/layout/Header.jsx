@@ -257,6 +257,12 @@ function Header() {
                   커뮤니티
                 </a>
               </div>
+
+              <div className="nav-item">
+                <a href="/review/ocr" className="nav-link">
+                  리뷰
+                </a>
+              </div>
             </nav>
             <div className="utility-menu">
               <div className="header-search-container">
