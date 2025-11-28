@@ -17,6 +17,10 @@ export default defineConfig(({ mode }) => {
           changeOrigin: true, // CORS 문제 해결
           rewrite: (path) => path.replace(/^\/react/, ""),
         },
+        "/api": {
+          target: env.VITE_BACKEND_URL || "http://localhost:8080",
+          changeOrigin: true, // CORS 문제 해결
+        },
       },
     },
   };
