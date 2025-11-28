@@ -40,10 +40,16 @@ const Report = () => {
 
   // 신고 사유 라벨 변환
   const getReasonLabel = (reason) => {
-    switch (reason) {
-      case "SPAM": return "스팸";
+    if (!reason) return "-";
+    const upperReason = reason.toUpperCase();
+    switch (upperReason) {
+      case "SPAM": return "스팸/광고";
       case "ABUSE": return "욕설/비방";
       case "INAPPROPRIATE": return "부적절한 내용";
+      case "PORNOGRAPHY": return "음란물";
+      case "COPYRIGHT": return "저작권 침해";
+      case "PERSONAL_INFO": return "개인정보 노출";
+      case "ILLEGAL": return "불법 정보";
       case "ETC": return "기타";
       default: return reason;
     }
@@ -146,7 +152,8 @@ const Report = () => {
 
   // 제재사유 입력 모달 열기
   const handleOpenPenaltyModal = () => {
-    setPenaltyReason('');
+    // 기존 제재사유가 있으면 그것을 초기값으로 설정
+    setPenaltyReason(selectedReport?.penaltyReason || '');
     setIsPenaltyModalOpen(true);
   };
 
@@ -172,7 +179,8 @@ const Report = () => {
         throw new Error('제재사유 등록에 실패했습니다.');
       }
 
-      alert('제재사유가 등록되었습니다.');
+      const isUpdate = selectedReport?.penaltyReason ? true : false;
+      alert(isUpdate ? '제재사유가 수정되었습니다.' : '제재사유가 등록되었습니다.');
 
       // 목록 새로고침
       const params = new URLSearchParams();
@@ -304,12 +312,11 @@ const Report = () => {
                 <option value="">전체</option>
                 <option value="PENDING">대기중</option>
                 <option value="RESOLVED">처리완료</option>
-                <option value="REJECTED">반려</option>
               </select>
             </div>
 
             <div className="form-group">
-              <label className="form-label">대상 유형</label>
+              <label className="form-label">유형</label>
               <select
                 className="select"
                 value={targetTypeFilter}
@@ -335,10 +342,10 @@ const Report = () => {
                 <thead>
                   <tr>
                     <th style={{ width: '10%' }}>상태</th>
-                    <th style={{ width: '10%' }}>대상</th>
+                    <th style={{ width: '10%' }}>유형</th>
+                    <th style={{ width: '15%' }}>신고자</th>
                     <th style={{ width: '15%' }}>신고 사유</th>
                     <th style={{ width: '35%' }}>신고 내용</th>
-                    <th style={{ width: '15%' }}>신고자</th>
                     <th style={{ width: '15%' }}>신고일</th>
                   </tr>
                 </thead>
@@ -358,6 +365,7 @@ const Report = () => {
                       >
                         <td>{getStatusPill(report.status)}</td>
                         <td>{getTargetTypeLabel(report.targetType)}</td>
+                        <td>{report.reporterName || report.reporterId}</td>
                         <td>{getReasonLabel(report.reasonType)}</td>
                         <td style={{
                           maxWidth: '300px',
@@ -367,7 +375,6 @@ const Report = () => {
                         }}>
                           {report.detail || '-'}
                         </td>
-                        <td>{report.reporterName || report.reporterId}</td>
                         <td>{formatDate(report.createdAt)}</td>
                       </tr>
                     ))
@@ -458,7 +465,7 @@ const Report = () => {
                     <div className="detail-value">{getStatusPill(selectedReport.status)}</div>
                   </div>
                   <div className="detail-item">
-                    <div className="detail-label">대상 유형</div>
+                    <div className="detail-label">유형</div>
                     <div className="detail-value">{getTargetTypeLabel(selectedReport.targetType)}</div>
                   </div>
                   <div className="detail-item">
@@ -537,6 +544,11 @@ const Report = () => {
                   제재사유 입력
                 </button>
               )}
+              {selectedReport.status === 'RESOLVED' && selectedReport.penaltyReason && (
+                <button className="btn" onClick={handleOpenPenaltyModal}>
+                  제재사유 수정
+                </button>
+              )}
               <button className="btn btn-danger" onClick={handleDeleteReport}>
                 삭제
               </button>
@@ -550,7 +562,7 @@ const Report = () => {
         <div className="modal-overlay" onClick={() => setIsPenaltyModalOpen(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '500px' }}>
             <div className="modal-header">
-              <h3>제재사유 입력</h3>
+              <h3>{selectedReport?.penaltyReason ? '제재사유 수정' : '제재사유 입력'}</h3>
               <button
                 className="modal-close"
                 onClick={() => setIsPenaltyModalOpen(false)}
@@ -581,7 +593,7 @@ const Report = () => {
                 취소
               </button>
               <button className="btn" onClick={handleSubmitPenalty}>
-                등록
+                {selectedReport?.penaltyReason ? '수정' : '등록'}
               </button>
             </div>
           </div>

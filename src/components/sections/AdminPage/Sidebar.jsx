@@ -47,6 +47,12 @@ const Sidebar = () => {
         role: '신고 관리',
         description: '사용자가 신고한 게시글과 댓글을 조회하고 관리할 수 있습니다.'
       };
+    } else if (location.pathname === '/admin/ocr') {
+      return {
+        title: '시스템 관리자',
+        role: 'OCR 영수증 인식',
+        description: '영수증 이미지를 업로드하거나 촬영하여 텍스트를 추출할 수 있습니다.'
+      };
     }
     return {
       title: '시스템 관리자',
@@ -111,6 +117,13 @@ const Sidebar = () => {
         >
           <span className="icon">🚨</span>
           <span>신고 관리</span>
+        </div>
+        <div
+          className={`admin-nav-item ${isActive('/admin/ocr') ? 'active' : ''}`}
+          onClick={() => navigate('/admin/ocr')}
+        >
+          <span className="icon">📄</span>
+          <span>OCR 영수증 인식</span>
         </div>
       </nav>
     </aside>
