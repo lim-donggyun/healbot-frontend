@@ -1,0 +1,213 @@
+/* src/components/ocr/OCR.css */
+
+/* 전체 레이아웃: 헤더 fixed 고려해서 위 여백 */
+.ocr-page {
+  min-height: 100vh;
+  padding: 90px 0 40px;
+  box-sizing: border-box;
+  background-color: #f5f6f8;
+}
+
+/* 중앙 정렬 컨테이너 */
+.ocr-container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 16px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+}
+
+/* 카드 */
+.ocr-card {
+  width: 100%;
+  max-width: 720px;
+  background-color: #fff;
+  border-radius: 16px;
+  padding: 24px 22px 22px;
+  box-sizing: border-box;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e3e5ee;
+}
+
+/* 제목 / 서브텍스트 */
+.ocr-title {
+  margin: 0 0 6px;
+  font-size: 22px;
+  font-weight: 700;
+  color: #222;
+}
+
+.ocr-sub {
+  margin: 0 0 18px;
+  font-size: 13px;
+  color: #666;
+  line-height: 1.5;
+}
+
+/* 버튼 영역 */
+.ocr-actions {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.ocr-btn {
+  border: none;
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.ocr-btn-upload {
+  background-color: #2f7de1;
+  color: #fff;
+}
+
+.ocr-btn-upload:hover {
+  background-color: #2564b5;
+}
+
+.ocr-btn-reset {
+  background-color: #f1f2f5;
+  color: #555;
+}
+
+.ocr-btn-reset:hover {
+  background-color: #e0e3ea;
+}
+
+/* 섹션 제목 */
+.ocr-section-title {
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* 이미지 미리보기 */
+.ocr-preview-section {
+  margin-top: 10px;
+  margin-bottom: 18px;
+}
+
+.ocr-preview {
+  width: 100%;
+  max-height: 360px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #d0d4dd;
+  background-color: #f5f6f8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ocr-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* OCR 실행 버튼 */
+.ocr-btn-process {
+  margin-top: 10px;
+  background-color: #3baf5d;
+  color: #fff;
+}
+
+.ocr-btn-process:hover {
+  background-color: #30944e;
+}
+
+/* 안내 메시지 */
+.ocr-guide {
+  margin-top: 12px;
+  padding: 14px 12px;
+  border-radius: 10px;
+  background-color: #f8fafc;
+  border: 1px dashed #c3d0e8;
+  font-size: 13px;
+  color: #555;
+}
+
+/* 에러 메시지 */
+.ocr-error {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background-color: #fff5f3;
+  border: 1px solid #f2c0ba;
+  font-size: 12px;
+  color: #c0392b;
+}
+
+/* 추출 결과 영역 */
+.ocr-result-section {
+  margin-top: 18px;
+}
+
+.ocr-result {
+  width: 100%;
+  max-height: 260px;
+  border-radius: 10px;
+  border: 1px solid #d0d4dd;
+  background-color: #f9fafb;
+  padding: 10px 12px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.ocr-result pre {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+/* 결과 하단 버튼들 */
+.ocr-result-actions {
+  margin-top: 10px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.ocr-btn-copy {
+  background-color: #f1f2f5;
+  color: #555;
+}
+
+.ocr-btn-copy:hover {
+  background-color: #e0e3ea;
+}
+
+.ocr-btn-confirm {
+  background-color: #2f7de1;
+  color: #fff;
+}
+
+.ocr-btn-confirm:hover {
+  background-color: #2564b5;
+}
+
+/* 반응형 */
+@media (max-width: 600px) {
+  .ocr-card {
+    padding: 18px 16px 18px;
+  }
+
+  .ocr-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .ocr-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

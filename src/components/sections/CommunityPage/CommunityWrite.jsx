@@ -9,7 +9,6 @@ import Footer from "../../layout/Footer";
 const CATEGORY_OPTIONS = [
 { key: "free", label: "자유게시판" },
 { key: "question", label: "질문게시판" },
-{ key: "review", label: "후기게시판" },
 ];
 
 function CommunityWrite() {

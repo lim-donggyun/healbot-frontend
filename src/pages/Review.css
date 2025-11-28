@@ -1,0 +1,207 @@
+/* src/components/review/Review.css */
+
+/* 헤더 fixed 고려해서 위 여백 */
+.rv-page {
+min-height: 100vh;
+padding: 90px 0 40px;
+box-sizing: border-box;
+background-color: #f5f6f8;
+}
+
+.rv-container {
+max-width: 960px;
+margin: 0 auto;
+padding: 0 16px;
+box-sizing: border-box;
+}
+
+/* 상단 */
+.rv-header-row {
+display: flex;
+justify-content: space-between;
+align-items: center;
+gap: 12px;
+margin-bottom: 20px;
+}
+
+.rv-hinfo {
+display: flex;
+flex-direction: column;
+gap: 6px;
+}
+
+.rv-hname {
+margin: 0;
+font-size: 24px;
+font-weight: 700;
+color: #222;
+}
+
+.rv-hmeta {
+display: flex;
+align-items: center;
+gap: 8px;
+font-size: 13px;
+color: #666;
+}
+
+.rv-avg-score {
+font-size: 18px;
+font-weight: 700;
+}
+
+.rv-avg-stars {
+font-size: 16px;
+color: #ffb400;
+}
+
+.rv-total {
+color: #999;
+}
+
+/* 작성 버튼 */
+.rv-write-btn {
+border: none;
+background-color: #2f7de1;
+color: #fff;
+border-radius: 999px;
+padding: 8px 18px;
+font-size: 14px;
+font-weight: 600;
+cursor: pointer;
+white-space: nowrap;
+}
+
+.rv-write-btn:hover {
+background-color: #2564b5;
+}
+
+/* 필터/정렬 */
+.rv-filter-row {
+display: flex;
+justify-content: space-between;
+align-items: center;
+gap: 10px;
+margin-bottom: 16px;
+flex-wrap: wrap;
+}
+
+.rv-rating-filter {
+display: flex;
+flex-wrap: wrap;
+gap: 6px;
+}
+
+.rv-chip {
+border-radius: 999px;
+border: 1px solid #d0d4dd;
+background-color: #fff;
+padding: 4px 10px;
+font-size: 12px;
+color: #555;
+cursor: pointer;
+}
+
+.rv-chip.active {
+border-color: #2f7de1;
+background-color: #e6f0ff;
+color: #1f5598;
+}
+
+.rv-sort-select {
+border-radius: 6px;
+border: 1px solid #d0d4dd;
+padding: 6px 10px;
+font-size: 13px;
+background-color: #fff;
+}
+
+/* 리스트 */
+.rv-list {
+display: flex;
+flex-direction: column;
+gap: 10px;
+}
+
+.rv-state {
+background-color: #fff;
+border-radius: 10px;
+padding: 16px;
+text-align: center;
+font-size: 13px;
+color: #666;
+border: 1px solid #e2e4ea;
+}
+
+.rv-state.rv-error {
+color: #c0392b;
+background-color: #fff5f3;
+border-color: #f2c0ba;
+}
+
+/* 카드 */
+.rv-card {
+background-color: #fff;
+border-radius: 12px;
+padding: 12px 14px;
+border: 1px solid #e2e4ea;
+box-sizing: border-box;
+}
+
+.rv-card-top {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 8px;
+}
+
+.rv-card-score {
+display: flex;
+align-items: center;
+gap: 4px;
+}
+
+.rv-stars {
+font-size: 14px;
+}
+
+.rv-card-score-text {
+font-size: 13px;
+font-weight: 600;
+}
+
+.rv-card-writer {
+font-size: 12px;
+color: #777;
+}
+
+.rv-card-content {
+margin: 0 0 8px;
+font-size: 14px;
+line-height: 1.5;
+color: #333;
+white-space: pre-wrap;
+}
+
+.rv-card-bottom {
+display: flex;
+justify-content: flex-end;
+}
+
+.rv-card-date {
+font-size: 11px;
+color: #999;
+}
+
+/* 반응형 */
+@media (max-width: 600px) {
+.rv-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.rv-write-btn {
+    align-self: stretch;
+    text-align: center;
+}
+}

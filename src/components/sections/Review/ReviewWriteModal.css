@@ -1,0 +1,249 @@
+/* src/components/review/ReviewWriteModal.css */
+
+/* === 모달 백드롭 === */
+.rwm-backdrop {
+position: fixed;
+inset: 0;
+background-color: rgba(0, 0, 0, 0.45);
+display: flex;
+align-items: center;
+justify-content: center;
+z-index: 999;
+}
+
+/* === 모달 박스 === */
+.rwm-modal {
+width: 100%;
+max-width: 520px;
+background-color: #fff;
+border-radius: 12px;
+padding: 16px 18px 18px;
+box-sizing: border-box;
+box-shadow: 0 10px 28px rgba(0, 0, 0, 0.2);
+}
+
+/* 헤더 영역 */
+.rwm-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 10px;
+}
+
+.rwm-title {
+margin: 0;
+font-size: 18px;
+font-weight: 700;
+color: #222;
+}
+
+.rwm-close {
+border: none;
+background: none;
+font-size: 22px;
+line-height: 1;
+cursor: pointer;
+color: #888;
+padding: 0 4px;
+}
+
+.rwm-close:disabled {
+opacity: 0.5;
+cursor: default;
+}
+
+/* === 폼 공통 === */
+.rwm-form {
+margin-top: 4px;
+}
+
+.rwm-field {
+margin-bottom: 14px;
+}
+
+.rwm-label {
+display: block;
+margin-bottom: 6px;
+font-size: 13px;
+font-weight: 600;
+color: #333;
+}
+
+/* === 별점 === */
+.rwm-star-row {
+display: flex;
+align-items: center;
+gap: 4px;
+}
+
+.rwm-star {
+border: none;
+background: none;
+font-size: 24px;
+cursor: pointer;
+padding: 0 2px;
+color: #d0d4dd;
+}
+
+.rwm-star-active {
+color: #ffb400;
+}
+
+.rwm-star-label {
+margin-left: 8px;
+font-size: 12px;
+color: #666;
+}
+
+/* === 파일 선택 영역 === */
+.rwm-file-row {
+display: flex;
+flex-direction: column;
+gap: 4px;
+}
+
+.rwm-file-label {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+gap: 6px;
+padding: 6px 12px;
+font-size: 12px;
+font-weight: 600;
+color: #2f7de1;
+background-color: #e6f0ff;
+border-radius: 999px;
+cursor: pointer;
+width: fit-content;
+}
+
+.rwm-file-label input {
+display: none;
+}
+
+.rwm-file-hint {
+font-size: 11px;
+color: #888;
+}
+
+/* === 사진 미리보기 영역 (보기 제일 좋게 세팅) === */
+.rwm-preview-wrap {
+margin-top: 10px;
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+gap: 12px;
+}
+
+/* 정사각형 비율 유지 + 반응형 */
+.rwm-preview-item {
+position: relative;
+width: 100%;
+padding-top: 100%; /* 1:1 비율 */
+border-radius: 12px;
+overflow: hidden;
+border: 1px solid #d0d4dd;
+background-color: #f5f6f8;
+}
+
+.rwm-preview-img {
+position: absolute;
+inset: 0;
+width: 100%;
+height: 100%;
+object-fit: cover; /* 꽉 차게 */
+}
+
+/* 사진 삭제 버튼 */
+.rwm-preview-remove {
+position: absolute;
+top: 6px;
+right: 6px;
+width: 22px;
+height: 22px;
+padding: 0;
+border-radius: 50%;
+border: none;
+background-color: rgba(0, 0, 0, 0.55);
+color: #fff;
+font-size: 14px;
+line-height: 1;
+cursor: pointer;
+}
+
+/* === 텍스트 영역 === */
+.rwm-textarea {
+width: 100%;
+min-height: 120px;
+resize: vertical;
+padding: 8px 10px;
+border-radius: 8px;
+border: 1px solid #d0d4dd;
+font-size: 13px;
+line-height: 1.5;
+box-sizing: border-box;
+}
+
+.rwm-textarea:focus {
+outline: none;
+border-color: #2f7de1;
+box-shadow: 0 0 0 1px #2f7de120;
+}
+
+/* === 에러 메시지 === */
+.rwm-error {
+margin-bottom: 10px;
+padding: 8px 10px;
+font-size: 12px;
+color: #c0392b;
+background-color: #fff5f3;
+border-radius: 8px;
+border: 1px solid #f2c0ba;
+}
+
+/* === 버튼 영역 === */
+.rwm-btn-row {
+display: flex;
+justify-content: flex-end;
+gap: 8px;
+}
+
+.rwm-btn {
+min-width: 80px;
+padding: 7px 12px;
+font-size: 12px;
+font-weight: 600;
+border-radius: 999px;
+border: none;
+cursor: pointer;
+}
+
+.rwm-btn-primary {
+background-color: #2f7de1;
+color: #fff;
+}
+
+.rwm-btn-primary:hover {
+background-color: #2564b5;
+}
+
+.rwm-btn-secondary {
+background-color: #f1f2f5;
+color: #555;
+}
+
+.rwm-btn-secondary:hover {
+background-color: #e0e3ea;
+}
+
+.rwm-btn:disabled {
+opacity: 0.7;
+cursor: default;
+}
+
+/* === 모바일 === */
+@media (max-width: 480px) {
+.rwm-modal {
+    margin: 0 16px;
+    padding: 14px 14px 16px;
+}
+}

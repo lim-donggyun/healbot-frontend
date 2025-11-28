@@ -1,0 +1,205 @@
+// src/components/review/ReviewWriteModal.jsx
+import React, { useState } from "react";
+import "./ReviewWriteModal.css";
+
+const ReviewWriteModal = ({ hospitalId, onClose, onSuccess }) => {
+const [score, setScore] = useState(0);
+const [content, setContent] = useState("");
+const [images, setImages] = useState([]); // { file, previewUrl }[]
+const [loading, setLoading] = useState(false);
+const [error, setError] = useState("");
+
+const handleStarClick = (v) => setScore(v);
+
+const handleFileChange = (e) => {
+    const files = Array.from(e.target.files || []);
+
+    // 필요하면 개수/용량 제한 여기에서
+    const mapped = files.map((file) => ({
+    file,
+    previewUrl: URL.createObjectURL(file),
+    }));
+
+    // 기존 것 + 새 것
+    setImages((prev) => [...prev, ...mapped]);
+    // 같은 파일 다시 선택할 수 있게 input value 초기화
+    e.target.value = "";
+};
+
+const handleRemoveImage = (idx) => {
+    setImages((prev) => {
+    const copy = [...prev];
+    const target = copy[idx];
+    if (target) URL.revokeObjectURL(target.previewUrl);
+    copy.splice(idx, 1);
+    return copy;
+    });
+};
+
+const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!score) {
+    setError("별점을 선택해 주세요.");
+    return;
+    }
+    if (!content.trim()) {
+    setError("리뷰 내용을 입력해 주세요.");
+    return;
+    }
+
+    try {
+    setLoading(true);
+    setError("");
+
+    const formData = new FormData();
+    formData.append("hospitalId", hospitalId);
+    formData.append("score", String(score));
+    formData.append("content", content);
+
+    // 👉 백엔드에서 받을 필드명 맞게 수정 (여기선 files[] 가정)
+    images.forEach((img, idx) => {
+        formData.append("files", img.file);
+    });
+
+    const res = await fetch("/api/reviews", {
+        method: "POST",
+        body: formData, // Content-Type 자동 설정 (multipart/form-data)
+    });
+
+    if (!res.ok) throw new Error("리뷰 등록 실패");
+
+    if (onSuccess) onSuccess();
+    else onClose();
+    } catch (e2) {
+    setError(e2.message || "오류가 발생했습니다.");
+    } finally {
+    setLoading(false);
+    }
+};
+
+const renderStars = () => (
+    <div className="rwm-star-row">
+    {[1, 2, 3, 4, 5].map((v) => (
+        <button
+        key={v}
+        type="button"
+        className={v <= score ? "rwm-star rwm-star-active" : "rwm-star"}
+        onClick={() => handleStarClick(v)}
+        >
+        ★
+        </button>
+    ))}
+    <span className="rwm-star-label">
+        {score ? `${score}점` : "별점을 선택해 주세요"}
+    </span>
+    </div>
+);
+
+const handleBackdropClick = () => {
+    if (!loading) onClose();
+};
+
+const stop = (e) => e.stopPropagation();
+
+return (
+    <div className="rwm-backdrop" onClick={handleBackdropClick}>
+    <div className="rwm-modal" onClick={stop}>
+        <div className="rwm-header">
+        <h3 className="rwm-title">리뷰 작성</h3>
+        <button
+            type="button"
+            className="rwm-close"
+            onClick={onClose}
+            disabled={loading}
+        >
+            ×
+        </button>
+        </div>
+
+        <form className="rwm-form" onSubmit={handleSubmit}>
+        {/* 별점 */}
+        <div className="rwm-field">
+            <label className="rwm-label">별점</label>
+            {renderStars()}
+        </div>
+
+        {/* 사진 첨부 */}
+        <div className="rwm-field">
+            <label className="rwm-label">사진 첨부 (선택)</label>
+            <div className="rwm-file-row">
+            <label className="rwm-file-label">
+                사진 선택
+                <input
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleFileChange}
+                />
+            </label>
+            <span className="rwm-file-hint">
+                진료 영수증, 병실, 시설 사진 등을 올려주세요. (선택)
+            </span>
+            </div>
+
+            {/* 미리보기 */}
+            {images.length > 0 && (
+            <div className="rwm-preview-wrap">
+                {images.map((img, idx) => (
+                <div className="rwm-preview-item" key={idx}>
+                    <img
+                    src={img.previewUrl}
+                    alt={`preview-${idx}`}
+                    className="rwm-preview-img"
+                    />
+                    <button
+                    type="button"
+                    className="rwm-preview-remove"
+                    onClick={() => handleRemoveImage(idx)}
+                    >
+                    ×
+                    </button>
+                </div>
+                ))}
+            </div>
+            )}
+        </div>
+
+        {/* 내용 */}
+        <div className="rwm-field">
+            <label className="rwm-label">리뷰 내용</label>
+            <textarea
+            className="rwm-textarea"
+            rows={5}
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            placeholder="진료 과정, 의료진의 태도, 대기시간, 시설 상태 등 느낀 점을 자유롭게 작성해 주세요."
+            />
+        </div>
+
+        {error && <div className="rwm-error">{error}</div>}
+
+        <div className="rwm-btn-row">
+            <button
+            type="button"
+            className="rwm-btn rwm-btn-secondary"
+            onClick={onClose}
+            disabled={loading}
+            >
+            취소
+            </button>
+            <button
+            type="submit"
+            className="rwm-btn rwm-btn-primary"
+            disabled={loading}
+            >
+            {loading ? "등록 중..." : "등록하기"}
+            </button>
+        </div>
+        </form>
+    </div>
+    </div>
+);
+};
+
+export default ReviewWriteModal;
