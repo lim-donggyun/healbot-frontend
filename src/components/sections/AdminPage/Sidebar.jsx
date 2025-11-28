@@ -53,6 +53,12 @@ const Sidebar = () => {
         role: 'OCR 영수증 인식',
         description: '영수증 이미지를 업로드하거나 촬영하여 텍스트를 추출할 수 있습니다.'
       };
+    } else if (location.pathname === '/admin/featured-diseases') {
+      return {
+        title: '시스템 관리자',
+        role: '질환 관리',
+        description: '질환 정보를 조회하고 메인 페이지에 표시될 유행하는 질병을 선택할 수 있습니다.'
+      };
     }
     return {
       title: '시스템 관리자',
@@ -124,6 +130,13 @@ const Sidebar = () => {
         >
           <span className="icon">📄</span>
           <span>OCR 영수증 인식</span>
+        </div>
+        <div
+          className={`admin-nav-item ${isActive('/admin/featured-diseases') ? 'active' : ''}`}
+          onClick={() => navigate('/admin/featured-diseases')}
+        >
+          <span className="icon">🦠</span>
+          <span>질환 관리</span>
         </div>
       </nav>
     </aside>

@@ -261,7 +261,19 @@ function ChronicDiseasePage() {
                       />
                     </div>
                   )}
-                  <button className="find-department-btn">진료과 찾기</button>
+                  <button
+                    className="find-department-btn"
+                    onClick={() => {
+                      const department = selectedDisease.진료과;
+                      if (department) {
+                        navigate(`/hospitals?dept=${encodeURIComponent(department)}`);
+                      } else {
+                        alert('진료과 정보가 없습니다.');
+                      }
+                    }}
+                  >
+                    병원 찾기
+                  </button>
                 </div>
 
                 {/* 오른쪽: 정보 */}

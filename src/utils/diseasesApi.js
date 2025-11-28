@@ -71,6 +71,25 @@ export const getPopularDiseases = async () => {
   }
 };
 
+// 전체 질환 정보 가져오기
+export const getAllDiseases = async () => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/diseases/all`, {
+      method: "GET",
+    });
+
+    if (!response.ok) {
+      throw new Error("전체 질환 조회 실패");
+    }
+
+    const data = await response.json();
+    return data; // { success: true, data: [...] }
+  } catch (error) {
+    console.error("전체 질환 조회 에러:", error);
+    throw error;
+  }
+};
+
 // 증상 상세 정보 조회
 export const getSymptomDetails = async (symptomName) => {
   try {
@@ -105,6 +124,92 @@ export const getDiseaseByName = async (diseaseName) => {
     return data; // Map 형태로 반환 (질환명, 진료과, 전체증상목록, 이미지, 설명, 환자수)
   } catch (error) {
     console.error("질병 정보 조회 에러:", error);
+    throw error;
+  }
+};
+
+// 유행하는 질병 목록 조회
+export const getFeaturedDiseases = async () => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/diseases/featured`, {
+      method: "GET",
+    });
+
+    if (!response.ok) {
+      throw new Error("유행 질병 목록 조회 실패");
+    }
+
+    const data = await response.json();
+    return data; // List<FeaturedDiseases>
+  } catch (error) {
+    console.error("유행 질병 목록 조회 에러:", error);
+    throw error;
+  }
+};
+
+// 유행하는 질병 추가
+export const addFeaturedDisease = async (diseaseName) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/diseases/featured`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        diseaseName: diseaseName,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error("유행 질병 추가 실패");
+    }
+
+    const data = await response.json();
+    return data; // { success: true, message: "..." }
+  } catch (error) {
+    console.error("유행 질병 추가 에러:", error);
+    throw error;
+  }
+};
+
+// 유행하는 질병 삭제
+export const removeFeaturedDisease = async (featuredDiseasesNo) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/diseases/featured/${featuredDiseasesNo}`, {
+      method: "DELETE",
+    });
+
+    if (!response.ok) {
+      throw new Error("유행 질병 삭제 실패");
+    }
+
+    const data = await response.json();
+    return data; // { success: true, message: "..." }
+  } catch (error) {
+    console.error("유행 질병 삭제 에러:", error);
+    throw error;
+  }
+};
+
+// 유행하는 질병 순서 변경
+export const updateFeaturedDiseasesOrder = async (list) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/diseases/featured/order`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(list),
+    });
+
+    if (!response.ok) {
+      throw new Error("유행 질병 순서 변경 실패");
+    }
+
+    const data = await response.json();
+    return data; // { success: true, message: "..." }
+  } catch (error) {
+    console.error("유행 질병 순서 변경 에러:", error);
     throw error;
   }
 };
