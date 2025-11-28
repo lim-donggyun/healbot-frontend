@@ -82,6 +82,21 @@ const Report = () => {
     );
   };
 
+  // 게시글 상태 pill 스타일
+  const getPostStatusPill = (targetType, postStatus) => {
+    if (targetType !== 'POST') {
+      return <span style={{ color: 'var(--muted)' }}>-</span>;
+    }
+
+    const isHidden = postStatus === 'HIDDEN';
+    return (
+      <span className={`category-pill ${isHidden ? '' : 'event'}`}>
+        <span className="category-dot"></span>
+        {isHidden ? '숨김' : '공개'}
+      </span>
+    );
+  };
+
   // 컴포넌트 마운트 시 신고 데이터 로드
   useEffect(() => {
     const fetchReports = async () => {
@@ -237,6 +252,44 @@ const Report = () => {
     }
   };
 
+  // 게시글 숨김/해제 토글
+  const handleTogglePostVisibility = async () => {
+    if (!selectedReport || selectedReport.targetType !== 'POST') return;
+
+    const isHidden = selectedReport.postStatus === 'HIDDEN';
+    const action = isHidden ? '숨김 해제' : '숨김';
+    const confirmed = window.confirm(`이 게시글을 ${action} 처리하시겠습니까?`);
+    if (!confirmed) return;
+
+    try {
+      const response = await fetch(`/react/api/community/posts/${selectedReport.postId}/toggle-visibility`, {
+        method: 'PUT',
+      });
+
+      if (!response.ok) {
+        throw new Error(`게시글 ${action}에 실패했습니다.`);
+      }
+
+      alert(`게시글이 ${action} 처리되었습니다.`);
+
+      // 목록 새로고침
+      const params = new URLSearchParams();
+      if (statusFilter) params.append('status', statusFilter);
+      if (targetTypeFilter) params.append('targetType', targetTypeFilter);
+
+      const listResponse = await fetch(`/react/api/community/reports?${params.toString()}`, {
+        method: 'GET',
+      });
+      const data = await listResponse.json();
+      setReports(data);
+      setFilteredReports(data);
+      setIsDetailModalOpen(false);
+    } catch (error) {
+      console.error(`게시글 ${action} 실패:`, error);
+      alert(`게시글 ${action} 중 오류가 발생했습니다.`);
+    }
+  };
+
   // 페이징
   const total = filteredReports.length;
   const totalPages = Math.max(1, Math.ceil(total / rowsPerPage));
@@ -343,16 +396,17 @@ const Report = () => {
                   <tr>
                     <th style={{ width: '10%' }}>상태</th>
                     <th style={{ width: '10%' }}>유형</th>
-                    <th style={{ width: '15%' }}>신고자</th>
-                    <th style={{ width: '15%' }}>신고 사유</th>
-                    <th style={{ width: '35%' }}>신고 내용</th>
+                    <th style={{ width: '10%' }}>게시글 상태</th>
+                    <th style={{ width: '12%' }}>신고자</th>
+                    <th style={{ width: '13%' }}>신고 사유</th>
+                    <th style={{ width: '30%' }}>신고 내용</th>
                     <th style={{ width: '15%' }}>신고일</th>
                   </tr>
                 </thead>
                 <tbody>
                   {pageItems.length === 0 ? (
                     <tr>
-                      <td colSpan="6" style={{ textAlign: 'center', padding: '40px' }}>
+                      <td colSpan="7" style={{ textAlign: 'center', padding: '40px' }}>
                         등록된 신고가 없습니다.
                       </td>
                     </tr>
@@ -365,6 +419,7 @@ const Report = () => {
                       >
                         <td>{getStatusPill(report.status)}</td>
                         <td>{getTargetTypeLabel(report.targetType)}</td>
+                        <td>{getPostStatusPill(report.targetType, report.postStatus)}</td>
                         <td>{report.reporterName || report.reporterId}</td>
                         <td>{getReasonLabel(report.reasonType)}</td>
                         <td style={{
@@ -488,7 +543,7 @@ const Report = () => {
                   </div>
                   {selectedReport.penaltyReason && (
                     <div className="detail-item full-width">
-                      <div className="detail-label">제재사유</div>
+                      <div className="detail-label">관리자답변</div>
                       <div className="detail-value" style={{ whiteSpace: 'pre-wrap', color: '#e74c3c', fontWeight: 'bold' }}>
                         {selectedReport.penaltyReason}
                       </div>
@@ -541,12 +596,21 @@ const Report = () => {
             <div className="modal-footer">
               {selectedReport.status === 'PENDING' && (
                 <button className="btn" onClick={handleOpenPenaltyModal}>
-                  제재사유 입력
+                  답변 입력
                 </button>
               )}
               {selectedReport.status === 'RESOLVED' && selectedReport.penaltyReason && (
                 <button className="btn" onClick={handleOpenPenaltyModal}>
-                  제재사유 수정
+                  답변 수정
+                </button>
+              )}
+              {selectedReport.targetType === 'POST' && (
+                <button
+                  className="btn"
+                  style={{ backgroundColor: selectedReport.postStatus === 'HIDDEN' ? '#27ae60' : '#f39c12' }}
+                  onClick={handleTogglePostVisibility}
+                >
+                  {selectedReport.postStatus === 'HIDDEN' ? '게시글 숨김 해제' : '게시글 숨김'}
                 </button>
               )}
               <button className="btn btn-danger" onClick={handleDeleteReport}>
@@ -562,7 +626,7 @@ const Report = () => {
         <div className="modal-overlay" onClick={() => setIsPenaltyModalOpen(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '500px' }}>
             <div className="modal-header">
-              <h3>{selectedReport?.penaltyReason ? '제재사유 수정' : '제재사유 입력'}</h3>
+              <h3>{selectedReport?.penaltyReason ? '답변 수정' : '답변 입력'}</h3>
               <button
                 className="modal-close"
                 onClick={() => setIsPenaltyModalOpen(false)}
@@ -573,18 +637,18 @@ const Report = () => {
 
             <div className="modal-body">
               <div className="form-group">
-                <label className="form-label">제재사유를 입력하세요</label>
+                <label className="form-label">답변을 입력하세요</label>
                 <textarea
                   className="textarea"
                   value={penaltyReason}
                   onChange={(e) => setPenaltyReason(e.target.value)}
                   rows="6"
-                  placeholder="제재사유를 입력하세요..."
+                  placeholder="답변을 입력하세요..."
                   style={{ width: '100%', resize: 'vertical' }}
                 />
               </div>
               <div style={{ fontSize: '12px', color: 'var(--muted)', marginTop: '8px' }}>
-                * 제재사유를 입력하면 신고가 자동으로 처리완료 상태로 변경됩니다.
+                * 답변을 입력하면 신고가 자동으로 처리완료 상태로 변경됩니다.
               </div>
             </div>
 
