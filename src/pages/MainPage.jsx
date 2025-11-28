@@ -8,7 +8,7 @@ import Section2 from "../components/sections/MainPage/Section2";
 import Section3 from "../components/sections/MainPage/Section3";
 import Section4 from "../components/sections/MainPage/Section4";
 import { useScrollNavigation } from "../hooks/useScrollNavigation";
-import NoticeDetailModal from "../components/common/NoticeDetailModal";
+import DiseaseResultModal from "../components/common/DiseaseResultModal";
 
 function MainPage() {
   useScrollNavigation();
@@ -36,18 +36,11 @@ function MainPage() {
       <Section4 onHealthInfoClick={handleOpenHealthModal} />
       <Footer />
 
-      {selectedHealthInfo && (
-        <NoticeDetailModal
-          isOpen={isHealthModalOpen}
-          onClose={handleCloseHealthModal}
-          notice={{
-            title: selectedHealthInfo.name,
-            content: selectedHealthInfo.details,
-            category: selectedHealthInfo.category,
-            createdAt: null, // No date field available for health info
-          }}
-        />
-      )}
+      <DiseaseResultModal
+        isOpen={isHealthModalOpen}
+        onClose={handleCloseHealthModal}
+        disease={selectedHealthInfo}
+      />
     </div>
   );
 }
