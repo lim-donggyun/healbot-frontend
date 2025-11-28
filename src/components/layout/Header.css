@@ -344,10 +344,12 @@ header.scrolled .utility-btn:hover {
 .emergency-btn {
   color: #dc3545 !important;
   font-weight: 700;
+  text-decoration: none !important;
 }
 
 .emergency-btn:hover {
   color: #c82333 !important;
+  text-decoration: none !important;
 }
 
 .search-icon {
