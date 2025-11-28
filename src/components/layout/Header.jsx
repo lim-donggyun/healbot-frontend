@@ -191,7 +191,7 @@ function Header() {
                     <div className="dropdown-column">
                       <div className="dropdown-column-title">의료기관 찾기</div>
                       <a href="/hospitals">병원 찾기</a>
-                      <a href="/emergency">응급실 찾기</a>
+                      <a href="/hospitals?emergency=true">응급실 찾기</a>
                     </div>
                     <div className="dropdown-column">
                       <div className="dropdown-column-title">주요 진료과</div>
@@ -290,7 +290,10 @@ function Header() {
                 </>
               )}
               <div className="utility-divider"></div>
-              <button className="utility-btn emergency-btn">
+              <button
+                className="utility-btn emergency-btn"
+                onClick={() => navigate('/hospitals?emergency=true')}
+              >
                 <svg viewBox="0 0 24 24" width="18" height="18" style={{ marginRight: 4, verticalAlign: "middle" }}>
                   <path d="M12 2L2 7l10 5 10-5-10-5z" fill="currentColor" />
                   <path d="M2 17l10 5 10-5" stroke="currentColor" strokeWidth="2" fill="none" />

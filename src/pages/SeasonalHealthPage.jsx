@@ -6,7 +6,16 @@ import ScrollToTop from "../components/common/ScrollToTop";
 import { seasonalHealthList } from "../data/seasonalHealthData";
 
 function SeasonalHealthPage() {
-  const [selectedCategory, setSelectedCategory] = useState("봄");
+  // 현재 계절 자동 감지
+  const getCurrentSeason = () => {
+    const month = new Date().getMonth() + 1; // 1~12월
+    if (month >= 3 && month <= 5) return "봄";
+    if (month >= 6 && month <= 8) return "여름";
+    if (month >= 9 && month <= 11) return "가을";
+    return "겨울"; // 12, 1, 2월
+  };
+
+  const [selectedCategory, setSelectedCategory] = useState(getCurrentSeason());
 
   // 카테고리별 필터링
   const categories = ["봄", "여름", "가을", "겨울"];
