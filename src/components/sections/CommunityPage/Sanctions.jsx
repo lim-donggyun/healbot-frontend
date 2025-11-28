@@ -1,291 +1,242 @@
-// src/pages/Sanction.jsx
-import React from "react";
-import { useNavigate } from "react-router-dom";
+// components/sections/CommunityPage/Sanctions.jsx
+import React, { useState } from "react";
 import Header from "../../layout/Header";
 import Footer from "../../layout/Footer";
 import "./Sanction.css";
 
-const formatDate = (str) => {
-if (!str) return "-";
-const dateOnly = str.split("T")[0] || str;
-return dateOnly.replace(/-/g, ".");
-};
+const MOCK_RECEIVED = [
+{
+    sanctionId: 1,
+    targetType: "POST",
+    targetSummary: "병원 욕설이 포함된 게시글",
+    reasonType: "INSULT",
+    status: "COMPLETED",
+    createdAt: "2025-11-20 13:24",
+    processedAt: "2025-11-21 09:10",
+    action: "게시글 숨김 처리",
+},
+{
+    sanctionId: 2,
+    targetType: "COMMENT",
+    targetSummary: "과한 비속어 사용 댓글",
+    reasonType: "ABUSE",
+    status: "WARNING",
+    createdAt: "2025-11-22 18:03",
+    processedAt: "2025-11-22 18:05",
+    action: "1회 경고",
+},
+];
 
-const getTargetLabel = (targetType) => {
-if (targetType === "POST") return "게시글";
-if (targetType === "COMMENT") return "댓글";
+const MOCK_REPORTED = [
+{
+    reportId: 10,
+    targetType: "POST",
+    targetSummary: "허위 진료 후기 의심 글",
+    reasonType: "FALSE_INFO",
+    result: "조치 완료",
+    createdAt: "2025-11-19 11:02",
+    processedAt: "2025-11-20 15:20",
+},
+{
+    reportId: 11,
+    targetType: "COMMENT",
+    targetSummary: "개인정보 노출 댓글",
+    reasonType: "PRIVACY",
+    result: "삭제 처리",
+    createdAt: "2025-11-21 08:15",
+    processedAt: "2025-11-21 09:30",
+},
+];
+
+const getTargetLabel = (type) => {
+if (type === "POST") return "게시글";
+if (type === "COMMENT") return "댓글";
 return "기타";
 };
 
-const getActionLabel = (actionType) => {
-switch (actionType) {
-    case "DELETE":
-    return "삭제";
-    case "WARNING":
-    return "경고";
-    case "BLOCK":
-    return "이용 제한";
+const getReasonLabel = (reason) => {
+switch (reason) {
+    case "INSULT":
+    return "욕설 및 비방";
+    case "ABUSE":
+    return "과도한 비속어";
+    case "FALSE_INFO":
+    return "허위 정보";
+    case "PRIVACY":
+    return "개인정보 노출";
     default:
-    return actionType || "-";
+    return "기타";
 }
 };
 
-const getStatusLabel = (status) => {
+const getStatusBadge = (status) => {
 switch (status) {
-    case "PENDING":
-    return "처리 중";
-    case "DONE":
     case "COMPLETED":
-    return "처리 완료";
-    case "REJECTED":
-    return "반려";
+    return { text: "조치 완료", className: "status-badge done" };
+    case "WARNING":
+    return { text: "경고", className: "status-badge warning" };
+    case "PENDING":
+    return { text: "검토중", className: "status-badge pending" };
     default:
-    return status || "-";
+    return { text: status || "기타", className: "status-badge" };
 }
 };
 
-/** 🔹 화면 확인용 더미 데이터 */
-const REPORTED_SANCTIONS_DEMO = [
-{
-    reportId: 1,
-    targetType: "POST",
-    targetTitle: "병원 후기를 가장한 광고 글",
-    postId: 123,
-    commentId: null,
-    actionType: "DELETE",
-    status: "DONE",
-    processedAt: "2025-11-20T10:23:11",
-    reasonType: "광고/상업성",
-},
-{
-    reportId: 2,
-    targetType: "COMMENT",
-    targetTitle: "댓글 내용 일부 (욕설 포함)",
-    postId: 124,
-    commentId: 999,
-    actionType: "WARNING",
-    status: "DONE",
-    processedAt: "2025-11-18T09:01:00",
-    reasonType: "욕설/비방",
-},
-];
+function Sanctions() {
+const [activeTab, setActiveTab] = useState("received"); // received | reported
 
-const MY_SANCTIONS_DEMO = [
-{
-    sanctionId: 10,
-    targetType: "POST",
-    targetTitle: "중복 게시물 안내",
-    postId: 130,
-    commentId: null,
-    actionType: "WARNING",
-    status: "DONE",
-    createdAt: "2025-11-10T12:00:00",
-    releasedAt: "2025-11-10T12:00:00",
-},
-{
-    sanctionId: 11,
-    targetType: "COMMENT",
-    targetTitle: "부적절한 표현이 포함된 댓글",
-    postId: 140,
-    commentId: 2001,
-    actionType: "DELETE",
-    status: "DONE",
-    createdAt: "2025-11-05T15:30:00",
-    releasedAt: "2025-11-05T15:30:00",
-},
-];
-
-const Sanction = () => {
-const navigate = useNavigate();
-
-const handleBackMyPage = () => {
-    navigate("/mypage");
-};
-
-// 프론트 디자인만 보려고 하니까 바로 더미 데이터 사용
-const reportedSanctions = REPORTED_SANCTIONS_DEMO;
-const mySanctions = MY_SANCTIONS_DEMO;
+// 그냥 목 데이터 사용
+const receivedList = MOCK_RECEIVED;
+const reportedList = MOCK_REPORTED;
 
 return (
     <>
     <Header />
+
     <main className="sanction-main">
         <div className="sanction-container">
         {/* 상단 타이틀 */}
-        <div className="sanction-header-row">
+        <section className="sanction-header">
             <div>
             <h1 className="sanction-title">제재 내역</h1>
             <p className="sanction-subtitle">
-                내가 신고한 내용의 처리 결과와, 커뮤니티 이용 중 받은 제재 내역을 확인할 수 있습니다.
+                내가 받은 제재와 내가 신고해서 처리된 내역을 확인할 수 있습니다.
+            </p>
+            <p className="sanction-mock-notice">
+                (현재는 예시 데이터로만 표시되는 화면입니다.)
             </p>
             </div>
-            <button
-            type="button"
-            className="sanction-back-btn"
-            onClick={handleBackMyPage}
-            >
-            마이페이지로
-            </button>
-        </div>
-
-        {/* 내가 신고한 것 중 제재가 처리된 내역 */}
-        <section className="sanction-card">
-            <div className="sanction-card-header">
-            <div>
-                <h2 className="sanction-card-title">내가 신고한 내용의 처리 결과</h2>
-                <p className="sanction-card-desc">
-                내가 신고한 게시글·댓글 중 운영진이 제재를 결정한 내역만 표시됩니다.
-                </p>
-            </div>
-            <span className="sanction-count-pill">
-                총 {reportedSanctions.length}건
-            </span>
-            </div>
-
-            {reportedSanctions.length === 0 ? (
-            <div className="sanction-empty">
-                <p>제재로 이어진 신고 내역이 없습니다.</p>
-            </div>
-            ) : (
-            <div className="sanction-table-wrapper">
-                <table className="sanction-table">
-                <thead>
-                    <tr>
-                    <th style={{ width: "10%" }}>유형</th>
-                    <th style={{ width: "32%" }}>대상</th>
-                    <th style={{ width: "18%" }}>제재 조치</th>
-                    <th style={{ width: "18%" }}>처리 상태</th>
-                    <th style={{ width: "12%" }}>처리일</th>
-                    <th style={{ width: "10%" }}>신고 사유</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {reportedSanctions.map((item) => (
-                    <tr
-                        key={
-                        item.reportId ||
-                        `${item.targetType}-${item.targetId}-${item.processedAt}`
-                        }
-                    >
-                        <td>
-                        <span className="sanction-badge">
-                            {getTargetLabel(item.targetType)}
-                        </span>
-                        </td>
-                        <td className="sanction-title-cell">
-                        <div className="sanction-target-title">
-                            {item.targetTitle || "(제목 없음 / 삭제됨)"}
-                        </div>
-                        <div className="sanction-meta-line">
-                            ID:{" "}
-                            {item.targetType === "POST"
-                            ? item.postId
-                            : item.commentId}
-                        </div>
-                        </td>
-                        <td>
-                        <span className="sanction-chip action">
-                            {getActionLabel(item.actionType)}
-                        </span>
-                        </td>
-                        <td>
-                        <span className="sanction-chip status">
-                            {getStatusLabel(item.status)}
-                        </span>
-                        </td>
-                        <td>{formatDate(item.processedAt || item.createdAt)}</td>
-                        <td>
-                        <div className="sanction-reason">
-                            {item.reasonType || "-"}
-                        </div>
-                        </td>
-                    </tr>
-                    ))}
-                </tbody>
-                </table>
-            </div>
-            )}
         </section>
 
-        {/* 내가 제재를 받은 내역 */}
-        <section className="sanction-card">
-            <div className="sanction-card-header">
-            <div>
-                <h2 className="sanction-card-title">내가 받은 제재 내역</h2>
-                <p className="sanction-card-desc">
-                커뮤니티 이용 중 운영진으로부터 받은 경고, 삭제, 이용 제한 등의 내역입니다.
-                </p>
-            </div>
-            <span className="sanction-count-pill">
-                총 {mySanctions.length}건
-            </span>
-            </div>
+        {/* 탭 */}
+        <section className="sanction-tabs">
+            <button
+            type="button"
+            className={`sanction-tab-btn ${
+                activeTab === "received" ? "active" : ""
+            }`}
+            onClick={() => setActiveTab("received")}
+            >
+            내가 받은 제재
+            </button>
+            <button
+            type="button"
+            className={`sanction-tab-btn ${
+                activeTab === "reported" ? "active" : ""
+            }`}
+            onClick={() => setActiveTab("reported")}
+            >
+            내가 신고한 글과 댓글
+            </button>
+        </section>
 
-            {mySanctions.length === 0 ? (
-            <div className="sanction-empty">
-                <p>현재까지 받은 제재 내역이 없습니다.</p>
-            </div>
-            ) : (
-            <div className="sanction-table-wrapper">
-                <table className="sanction-table">
-                <thead>
-                    <tr>
-                    <th style={{ width: "10%" }}>유형</th>
-                    <th style={{ width: "32%" }}>대상</th>
-                    <th style={{ width: "15%" }}>제재 조치</th>
-                    <th style={{ width: "15%" }}>상태</th>
-                    <th style={{ width: "14%" }}>적용일</th>
-                    <th style={{ width: "14%" }}>해제일</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {mySanctions.map((item) => (
-                    <tr
-                        key={
-                        item.sanctionId ||
-                        `${item.targetType}-${item.targetId}-${item.createdAt}`
-                        }
-                    >
-                        <td>
-                        <span className="sanction-badge">
-                            {getTargetLabel(item.targetType)}
-                        </span>
-                        </td>
-                        <td className="sanction-title-cell">
-                        <div className="sanction-target-title">
-                            {item.targetTitle || "(제목 없음 / 삭제됨)"}
-                        </div>
-                        <div className="sanction-meta-line">
-                            ID:{" "}
-                            {item.targetType === "POST"
-                            ? item.postId
-                            : item.commentId}
-                        </div>
-                        </td>
-                        <td>
-                        <span className="sanction-chip action">
-                            {getActionLabel(item.actionType)}
-                        </span>
-                        </td>
-                        <td>
-                        <span className="sanction-chip status">
-                            {getStatusLabel(item.status)}
-                        </span>
-                        </td>
-                        <td>{formatDate(item.createdAt)}</td>
-                        <td>{formatDate(item.releasedAt)}</td>
-                    </tr>
-                    ))}
-                </tbody>
-                </table>
-            </div>
+        {/* 내용 카드 */}
+        <section className="sanction-card">
+            {activeTab === "received" && (
+            <>
+                {receivedList.length === 0 ? (
+                <div className="sanction-empty">
+                    아직 받은 제재 내역이 없습니다.
+                </div>
+                ) : (
+                <div className="sanction-table-wrapper">
+                    <table className="sanction-table">
+                    <thead>
+                        <tr>
+                        <th style={{ width: "12%" }}>구분</th>
+                        <th style={{ width: "28%" }}>대상 요약</th>
+                        <th style={{ width: "18%" }}>사유</th>
+                        <th style={{ width: "14%" }}>상태</th>
+                        <th style={{ width: "14%" }}>발생 일시</th>
+                        <th style={{ width: "14%" }}>조치 내용</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {receivedList.map((s) => {
+                        const badge = getStatusBadge(s.status);
+                        return (
+                            <tr key={s.sanctionId}>
+                            <td>
+                                <span className="target-pill">
+                                {getTargetLabel(s.targetType)}
+                                </span>
+                            </td>
+                            <td className="ellipsis-cell">
+                                {s.targetSummary || "-"}
+                            </td>
+                            <td>{getReasonLabel(s.reasonType)}</td>
+                            <td>
+                                <span className={badge.className}>
+                                {badge.text}
+                                </span>
+                            </td>
+                            <td>
+                                {s.createdAt || s.created_at || "-"}
+                            </td>
+                            <td>{s.action || "-"}</td>
+                            </tr>
+                        );
+                        })}
+                    </tbody>
+                    </table>
+                </div>
+                )}
+            </>
+            )}
+
+            {activeTab === "reported" && (
+            <>
+                {reportedList.length === 0 ? (
+                <div className="sanction-empty">
+                    아직 신고가 처리된 내역이 없습니다.
+                </div>
+                ) : (
+                <div className="sanction-table-wrapper">
+                    <table className="sanction-table">
+                    <thead>
+                        <tr>
+                        <th style={{ width: "12%" }}>구분</th>
+                        <th style={{ width: "30%" }}>신고 대상 요약</th>
+                        <th style={{ width: "18%" }}>신고 사유</th>
+                        <th style={{ width: "16%" }}>처리 결과</th>
+                        <th style={{ width: "12%" }}>신고일</th>
+                        <th style={{ width: "12%" }}>처리일</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {reportedList.map((r) => (
+                        <tr key={r.reportId}>
+                            <td>
+                            <span className="target-pill">
+                                {getTargetLabel(r.targetType)}
+                            </span>
+                            </td>
+                            <td className="ellipsis-cell">
+                            {r.targetSummary || "-"}
+                            </td>
+                            <td>{getReasonLabel(r.reasonType)}</td>
+                            <td>
+                            <span className="status-badge done">
+                                {r.result || "조치 완료"}
+                            </span>
+                            </td>
+                            <td>{r.createdAt || r.created_at || "-"}</td>
+                            <td>{r.processedAt || r.processed_at || "-"}</td>
+                        </tr>
+                        ))}
+                    </tbody>
+                    </table>
+                </div>
+                )}
+            </>
             )}
         </section>
         </div>
     </main>
+
     <Footer />
     </>
 );
-};
+}
 
-export default Sanction;
+export default Sanctions;
