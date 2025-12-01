@@ -292,6 +292,35 @@ const Report = () => {
         throw new Error(`${targetName} ${action}에 실패했습니다.`);
       }
 
+      // 숨김 처리(ACTIVE -> HIDDEN)를 한 경우, 신고 상태를 "처리완료"로 변경
+      if (!isHidden) {
+        const statusResponse = await fetch(`/react/api/community/reports/${selectedReport.reportId}/status`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ status: 'RESOLVED' }),
+        });
+
+        if (!statusResponse.ok) {
+          console.error('신고 상태 업데이트 실패');
+        }
+      }
+      // 숨김 해제(HIDDEN -> ACTIVE)를 한 경우, 신고 상태를 "대기중"으로 변경
+      else if (isHidden) {
+        const statusResponse = await fetch(`/react/api/community/reports/${selectedReport.reportId}/status`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ status: 'PENDING' }),
+        });
+
+        if (!statusResponse.ok) {
+          console.error('신고 상태 업데이트 실패');
+        }
+      }
+
       alert(`${targetName}이 ${action} 처리되었습니다.`);
 
       // 목록 새로고침
