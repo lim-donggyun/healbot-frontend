@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Sidebar from './Sidebar';
-import '../../../pages/MainPage.css';
-import './Community.css';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import Sidebar from "./Sidebar";
+import "../../../pages/MainPage.css";
+import "./Community.css";
 
 const Community = () => {
   const navigate = useNavigate();
@@ -10,15 +10,15 @@ const Community = () => {
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const [keyword, setKeyword] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState('ALL');
+  const [keyword, setKeyword] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("ALL");
   const [selectedPost, setSelectedPost] = useState(null);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [editFormData, setEditFormData] = useState({
-    title: '',
-    content: '',
-    category: 'free'
+    title: "",
+    content: "",
+    category: "free",
   });
 
   const rowsPerPage = 5;
@@ -26,11 +26,16 @@ const Community = () => {
   // 카테고리 라벨 변환
   const getCategoryLabel = (category) => {
     switch (category) {
-      case "notice": return "공지";
-      case "free": return "자유";
-      case "question": return "질문";
-      case "review": return "후기";
-      default: return "기타";
+      case "notice":
+        return "공지";
+      case "free":
+        return "자유";
+      case "question":
+        return "질문";
+      case "review":
+        return "후기";
+      default:
+        return "기타";
     }
   };
 
@@ -40,6 +45,9 @@ const Community = () => {
     let cls = "";
 
     switch (category) {
+      case "notice":
+        cls = "important";
+        break;
       case "free":
         cls = "";
         break;
@@ -66,20 +74,20 @@ const Community = () => {
     const fetchPosts = async () => {
       try {
         setLoading(true);
-        const response = await fetch('/react/api/community/posts', {
-          method: 'GET',
+        const response = await fetch("/react/api/community/posts", {
+          method: "GET",
         });
 
         if (!response.ok) {
-          throw new Error('게시글을 불러오는데 실패했습니다.');
+          throw new Error("게시글을 불러오는데 실패했습니다.");
         }
 
         const data = await response.json();
         setPosts(data);
         setFilteredPosts(data);
       } catch (error) {
-        console.error('게시글 데이터 로드 실패:', error);
-        alert('게시글 데이터를 불러오는데 실패했습니다.');
+        console.error("게시글 데이터 로드 실패:", error);
+        alert("게시글 데이터를 불러오는데 실패했습니다.");
       } finally {
         setLoading(false);
       }
@@ -101,9 +109,7 @@ const Community = () => {
     const filtered = posts.filter((p) => {
       const keywordLower = keyword.trim().toLowerCase();
       const textMatch =
-        !keywordLower ||
-        p.title.toLowerCase().includes(keywordLower) ||
-        p.content.toLowerCase().includes(keywordLower);
+        !keywordLower || p.title.toLowerCase().includes(keywordLower) || p.content.toLowerCase().includes(keywordLower);
 
       const categoryMatch = categoryFilter === "ALL" || p.category === categoryFilter;
 
@@ -116,8 +122,8 @@ const Community = () => {
 
   // 초기화
   const handleReset = () => {
-    setKeyword('');
-    setCategoryFilter('ALL');
+    setKeyword("");
+    setCategoryFilter("ALL");
     setFilteredPosts(posts);
     setCurrentPage(1);
   };
@@ -126,11 +132,11 @@ const Community = () => {
   const handleDetailClick = async (postId) => {
     try {
       const response = await fetch(`/react/api/community/posts/${postId}?admin=true`, {
-        method: 'GET',
+        method: "GET",
       });
 
       if (!response.ok) {
-        throw new Error('게시글을 불러오는데 실패했습니다.');
+        throw new Error("게시글을 불러오는데 실패했습니다.");
       }
 
       const data = await response.json();
@@ -138,8 +144,8 @@ const Community = () => {
       setIsDetailModalOpen(true);
       setIsEditMode(false);
     } catch (error) {
-      console.error('게시글 상세 조회 실패:', error);
-      alert('게시글을 불러오는데 실패했습니다.');
+      console.error("게시글 상세 조회 실패:", error);
+      alert("게시글을 불러오는데 실패했습니다.");
     }
   };
 
@@ -148,7 +154,7 @@ const Community = () => {
     setEditFormData({
       title: selectedPost.title,
       content: selectedPost.content,
-      category: selectedPost.category
+      category: selectedPost.category,
     });
     setIsEditMode(true);
   };
@@ -156,9 +162,9 @@ const Community = () => {
   // 수정 폼 입력 처리
   const handleEditInputChange = (e) => {
     const { name, value } = e.target;
-    setEditFormData(prev => ({
+    setEditFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -168,22 +174,22 @@ const Community = () => {
 
     try {
       const response = await fetch(`/react/api/community/posts/${selectedPost.postId}?admin=true`, {
-        method: 'PUT',
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(editFormData),
       });
 
       if (!response.ok) {
-        throw new Error('게시글 수정에 실패했습니다.');
+        throw new Error("게시글 수정에 실패했습니다.");
       }
 
-      alert('게시글이 수정되었습니다.');
+      alert("게시글이 수정되었습니다.");
 
       // 목록 새로고침
-      const listResponse = await fetch('/react/api/community/posts', {
-        method: 'GET',
+      const listResponse = await fetch("/react/api/community/posts", {
+        method: "GET",
       });
       const data = await listResponse.json();
       setPosts(data);
@@ -191,8 +197,8 @@ const Community = () => {
       setIsDetailModalOpen(false);
       setIsEditMode(false);
     } catch (error) {
-      console.error('게시글 수정 실패:', error);
-      alert('게시글 수정 중 오류가 발생했습니다.');
+      console.error("게시글 수정 실패:", error);
+      alert("게시글 수정 중 오류가 발생했습니다.");
     }
   };
 
@@ -203,26 +209,26 @@ const Community = () => {
 
     try {
       const response = await fetch(`/react/api/community/posts/${selectedPost.postId}?admin=true`, {
-        method: 'DELETE',
+        method: "DELETE",
       });
 
       if (!response.ok) {
-        throw new Error('게시글 삭제에 실패했습니다.');
+        throw new Error("게시글 삭제에 실패했습니다.");
       }
 
-      alert('게시글이 삭제되었습니다.');
+      alert("게시글이 삭제되었습니다.");
 
       // 삭제 후 목록 새로고침
-      const listResponse = await fetch('/react/api/community/posts', {
-        method: 'GET',
+      const listResponse = await fetch("/react/api/community/posts", {
+        method: "GET",
       });
       const data = await listResponse.json();
       setPosts(data);
       setFilteredPosts(data);
       setIsDetailModalOpen(false);
     } catch (error) {
-      console.error('게시글 삭제 실패:', error);
-      alert('게시글 삭제 중 오류가 발생했습니다.');
+      console.error("게시글 삭제 실패:", error);
+      alert("게시글 삭제 중 오류가 발생했습니다.");
     }
   };
 
@@ -262,15 +268,16 @@ const Community = () => {
     return (
       <main className="admin-page admin-community-page">
         <Sidebar />
-        <div style={{
-          gridColumn: '1 / -1',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          minHeight: '400px',
-          fontSize: '16px',
-          color: 'var(--muted)'
-        }}>
+        <div
+          style={{
+            gridColumn: "1 / -1",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            minHeight: "400px",
+            fontSize: "16px",
+            color: "var(--muted)",
+          }}>
           데이터를 불러오는 중...
         </div>
       </main>
@@ -291,14 +298,13 @@ const Community = () => {
             </h2>
           </div>
 
-            <div className="form-group">
-              <label className="form-label">카테고리</label>
+          <div className="community-search-filters">
+            <div className="filter-group">
               <select
-                className="select"
+                className="filter-select"
                 value={categoryFilter}
-                onChange={(e) => setCategoryFilter(e.target.value)}
-              >
-                <option value="ALL">전체</option>
+                onChange={(e) => setCategoryFilter(e.target.value)}>
+                <option value="ALL">전체 카테고리</option>
                 <option value="free">자유</option>
                 <option value="question">질문</option>
                 <option value="review">후기</option>
@@ -321,27 +327,25 @@ const Community = () => {
             <table className="community-table">
               <thead>
                 <tr>
-                  <th style={{ width: '10%' }}>카테고리</th>
-                  <th style={{ width: '50%' }}>제목</th>
-                  <th style={{ width: '15%' }}>작성자</th>
-                  <th style={{ width: '15%' }}>작성일</th>
-                  <th className="text-center" style={{ width: '10%' }}>조회수</th>
+                  <th style={{ width: "10%" }}>카테고리</th>
+                  <th style={{ width: "50%" }}>제목</th>
+                  <th style={{ width: "15%" }}>작성자</th>
+                  <th style={{ width: "15%" }}>작성일</th>
+                  <th className="text-center" style={{ width: "10%" }}>
+                    조회수
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {pageItems.length === 0 ? (
                   <tr>
-                    <td colSpan="5" style={{ textAlign: 'center', padding: '40px' }}>
+                    <td colSpan="5" style={{ textAlign: "center", padding: "40px" }}>
                       등록된 게시글이 없습니다.
                     </td>
                   </tr>
                 ) : (
                   pageItems.map((post) => (
-                    <tr
-                      key={post.postId}
-                      onClick={() => handleDetailClick(post.postId)}
-                      style={{ cursor: 'pointer' }}
-                    >
+                    <tr key={post.postId} onClick={() => handleDetailClick(post.postId)} style={{ cursor: "pointer" }}>
                       <td>{getCategoryPill(post.category)}</td>
                       <td>{post.title}</td>
                       <td>{post.memberId}</td>
@@ -357,72 +361,68 @@ const Community = () => {
           {/* 페이징 */}
           {totalPages > 1 && (
             <div className="pagination">
-                <button
-                  onClick={() => setCurrentPage(1)}
-                  className={`page-btn arrow-btn ${currentPage === 1 ? "disabled" : ""}`}
-                  disabled={currentPage === 1}
-                  title="첫 페이지"
-                >
-                  처음 페이지
-                </button>
+              <button
+                onClick={() => setCurrentPage(1)}
+                className={`page-btn arrow-btn ${currentPage === 1 ? "disabled" : ""}`}
+                disabled={currentPage === 1}
+                title="첫 페이지">
+                처음 페이지
+              </button>
 
-                <button
-                  onClick={goToPrevGroup}
-                  className={`page-btn arrow-btn ${currentPageGroup === 1 ? "disabled" : ""}`}
-                  disabled={currentPageGroup === 1}
-                  title="이전 5페이지"
-                >
-                  «
-                </button>
+              <button
+                onClick={goToPrevGroup}
+                className={`page-btn arrow-btn ${currentPageGroup === 1 ? "disabled" : ""}`}
+                disabled={currentPageGroup === 1}
+                title="이전 5페이지">
+                «
+              </button>
 
-                {pageNumbers.map((number) => (
-                  <button
-                    key={number}
-                    onClick={() => setCurrentPage(number)}
-                    className={`page-btn ${currentPage === number ? "active" : ""}`}
-                  >
-                    {number}
-                  </button>
-                ))}
-
+              {pageNumbers.map((number) => (
                 <button
-                  onClick={goToNextGroup}
-                  className={`page-btn arrow-btn ${endPage >= totalPages ? "disabled" : ""}`}
-                  disabled={endPage >= totalPages}
-                  title="다음 5페이지"
-                >
-                  »
+                  key={number}
+                  onClick={() => setCurrentPage(number)}
+                  className={`page-btn ${currentPage === number ? "active" : ""}`}>
+                  {number}
                 </button>
+              ))}
 
-                <button
-                  onClick={() => setCurrentPage(totalPages)}
-                  className={`page-btn arrow-btn ${currentPage === totalPages ? "disabled" : ""}`}
-                  disabled={currentPage === totalPages}
-                  title="마지막 페이지"
-                >
-                  끝 페이지
-                </button>
-              </div>
-            )}
+              <button
+                onClick={goToNextGroup}
+                className={`page-btn arrow-btn ${endPage >= totalPages ? "disabled" : ""}`}
+                disabled={endPage >= totalPages}
+                title="다음 5페이지">
+                »
+              </button>
+
+              <button
+                onClick={() => setCurrentPage(totalPages)}
+                className={`page-btn arrow-btn ${currentPage === totalPages ? "disabled" : ""}`}
+                disabled={currentPage === totalPages}
+                title="마지막 페이지">
+                끝 페이지
+              </button>
+            </div>
+          )}
         </div>
       </section>
 
       {/* 게시글 상세 모달 */}
       {isDetailModalOpen && selectedPost && (
-        <div className="modal-overlay" onClick={() => {
-          setIsDetailModalOpen(false);
-          setIsEditMode(false);
-        }}>
+        <div
+          className="modal-overlay"
+          onClick={() => {
+            setIsDetailModalOpen(false);
+            setIsEditMode(false);
+          }}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h3>{isEditMode ? '게시글 수정' : '게시글 상세'}</h3>
+              <h3>{isEditMode ? "게시글 수정" : "게시글 상세"}</h3>
               <button
                 className="modal-close"
                 onClick={() => {
                   setIsDetailModalOpen(false);
                   setIsEditMode(false);
-                }}
-              >
+                }}>
                 ✕
               </button>
             </div>
@@ -431,43 +431,44 @@ const Community = () => {
               /* 조회 모드 */
               <>
                 <div className="modal-body">
-                                      <div className="detail-section">
-                                        <h4>기본 정보</h4>
-                                        <div className="detail-grid-3-col">
-                                          <div className="detail-item">
-                                            <div className="detail-label">게시글 ID</div>
-                                            <div className="detail-value">{selectedPost.postId}</div>
-                                          </div>
-                                          <div className="detail-item">
-                                            <div className="detail-label">카테고리</div>
-                                            <div className="detail-value">{getCategoryPill(selectedPost.category)}</div>
-                                          </div>
-                                          <div className="detail-item">
-                                            <div className="detail-label">조회수</div>
-                                            <div className="detail-value">{selectedPost.views || 0}</div>
-                                          </div>
-                                        </div>
-                                        <div className="detail-grid-2-col">
-                                          <div className="detail-item">
-                                            <div className="detail-label">작성자</div>
-                                            <div className="detail-value">{selectedPost.memberId}</div>
-                                          </div>
-                                          <div className="detail-item">
-                                            <div className="detail-label">작성일</div>
-                                            <div className="detail-value">{formatDate(selectedPost.createdAt)}</div>
-                                          </div>
-                                        </div>
-                                        <div className="detail-item title-detail-item">
-                                          <div className="detail-label">제목</div>
-                                          <div className="detail-value">{selectedPost.title}</div>
-                                        </div>
-                                        <div className="detail-item">
-                                          <div className="detail-label">내용</div>
-                                          <div className="detail-value" style={{ whiteSpace: 'pre-wrap' }}>
-                                            {selectedPost.content}
-                                          </div>
-                                        </div>
-                                      </div>                </div>
+                  <div className="detail-section">
+                    <h4>기본 정보</h4>
+                    <div className="detail-grid-3-col">
+                      <div className="detail-item">
+                        <div className="detail-label">게시글 ID</div>
+                        <div className="detail-value">{selectedPost.postId}</div>
+                      </div>
+                      <div className="detail-item">
+                        <div className="detail-label">카테고리</div>
+                        <div className="detail-value">{getCategoryPill(selectedPost.category)}</div>
+                      </div>
+                      <div className="detail-item">
+                        <div className="detail-label">조회수</div>
+                        <div className="detail-value">{selectedPost.views || 0}</div>
+                      </div>
+                    </div>
+                    <div className="detail-grid-2-col">
+                      <div className="detail-item">
+                        <div className="detail-label">작성자</div>
+                        <div className="detail-value">{selectedPost.memberId}</div>
+                      </div>
+                      <div className="detail-item">
+                        <div className="detail-label">작성일</div>
+                        <div className="detail-value">{formatDate(selectedPost.createdAt)}</div>
+                      </div>
+                    </div>
+                    <div className="detail-item title-detail-item">
+                      <div className="detail-label">제목</div>
+                      <div className="detail-value">{selectedPost.title}</div>
+                    </div>
+                    <div className="detail-item">
+                      <div className="detail-label">내용</div>
+                      <div className="detail-value" style={{ whiteSpace: "pre-wrap" }}>
+                        {selectedPost.content}
+                      </div>
+                    </div>
+                  </div>{" "}
+                </div>
                 <div className="modal-footer">
                   <button className="edit-btn" onClick={handleEditFromDetail}>
                     수정
@@ -487,8 +488,7 @@ const Community = () => {
                         className="select"
                         name="category"
                         value={editFormData.category}
-                        onChange={handleEditInputChange}
-                      >
+                        onChange={handleEditInputChange}>
                         <option value="free">자유</option>
                         <option value="question">질문</option>
                         <option value="review">후기</option>
@@ -519,11 +519,7 @@ const Community = () => {
                   </div>
                 </div>
                 <div className="modal-footer">
-                  <button
-                    type="button"
-                    className="btn-outline btn"
-                    onClick={() => setIsEditMode(false)}
-                  >
+                  <button type="button" className="btn-outline btn" onClick={() => setIsEditMode(false)}>
                     취소
                   </button>
                   <button type="submit" className="btn">
