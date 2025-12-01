@@ -44,6 +44,7 @@ function HospitalMap() {
   const [showAutocomplete, setShowAutocomplete] = useState(false); // 자동완성 표시 여부
   const [allHospitalsCache, setAllHospitalsCache] = useState([]); // 전체 병원 목록 캐시
   const [isMapInitialized, setIsMapInitialized] = useState(false); // 지도 초기화 완료 여부
+  const [isLocationReady, setIsLocationReady] = useState(false); // 위치 정보 준비 여부
   const [displayCount, setDisplayCount] = useState(10); // 표시할 병원 개수
   const mapRef = useRef(null);
   const kakaoMapRef = useRef(null);
@@ -124,43 +125,49 @@ function HospitalMap() {
     }
   }, [searchParams]);
 
-  // 지도 초기화 후 진료과 필터 또는 응급실 필터 적용
+  // 위치 준비 및 URL 파라미터 처리 완료 후 초기 병원 목록 로드
   useEffect(() => {
-    if (!isMapInitialized) return;
+    // isLocationReady가 true가 될 때만 실행 (최초 1회)
+    if (!isLocationReady) return;
 
     const deptParam = searchParams.get("dept");
     const emergencyParam = searchParams.get("emergency");
 
-    // 응급실 파라미터가 있으면 우선 처리
-    if (emergencyParam === "true" && kakaoMapRef.current) {
-      // 서울 전역을 보여주도록 지도 설정
-      const { lat, lng } = getSeoulCenter();
-      const seoulCenter = new window.kakao.maps.LatLng(lat, lng);
-      kakaoMapRef.current.setCenter(seoulCenter);
-      kakaoMapRef.current.setLevel(7); // 서울 전역이 보이는 줌 레벨
-
-      // 약간의 지연을 두고 응급실 병원 로드
+    // URL 파라미터가 있으면 해당 조건으로 검색 실행
+    // emergency=true가 우선순위를 가짐
+    if (emergencyParam === "true") {
+      console.log("URL 파라미터 감지: 응급실 검색 실행");
+      // 응급실은 서울 전역을 보여주도록 지도 설정
+      if (kakaoMapRef.current) {
+        const { lat, lng } = getSeoulCenter();
+        const seoulCenter = new window.kakao.maps.LatLng(lat, lng);
+        kakaoMapRef.current.setCenter(seoulCenter);
+        kakaoMapRef.current.setLevel(7);
+      }
+      // 약간의 지연 후 로드 (지도 이동 시간 고려)
       setTimeout(() => {
-        loadHospitalsAndMarkers(false); // 자동 선택 없이 로드만
+        loadHospitalsAndMarkers(false);
       }, 300);
-      return;
-    }
-
-    // 진료과 파라미터 처리
-    if (deptParam && departmentList.includes(deptParam)) {
+    } else if (deptParam) {
+      console.log("URL 파라미터 감지: 진료과 검색 실행");
+      // 진료과 파라미터가 있으면 현재 위치 기반으로 검색
+      // 약간의 지연 후 로드
       setTimeout(() => {
         loadHospitalsAndMarkers();
-      }, 500);
+      }, 300);
+    } else {
+      // URL 파라미터가 없으면, 현재 위치/기본 위치 기반으로 병원 로드
+      console.log("위치 준비 완료: 기본 병원 목록 로드");
+      loadHospitalsAndMarkers();
     }
-  }, [isMapInitialized]);
+  }, [isLocationReady]);
 
   useEffect(() => {
     // 이미 지도가 초기화되어 있으면 리턴
     if (kakaoMapRef.current) return;
 
     const initializeMap = () => {
-      if (!mapRef.current) return;
-      if (kakaoMapRef.current) return; // 이중 초기화 방지
+      if (!mapRef.current || kakaoMapRef.current) return; // 이중 초기화 방지
 
       const container = mapRef.current;
       const { lat, lng } = getSeoulCenter();
@@ -172,49 +179,22 @@ function HospitalMap() {
       const map = new window.kakao.maps.Map(container, options);
       kakaoMapRef.current = map;
 
-      // 지도 클릭 시 InfoWindow 닫기
+      // 지도 이벤트 리스너 설정
       window.kakao.maps.event.addListener(map, "click", () => {
         if (currentInfoWindowRef.current) {
           currentInfoWindowRef.current.setMap(null);
           currentInfoWindowRef.current = null;
         }
       });
-
-      // 줌 레벨 변경 이벤트 리스너
       window.kakao.maps.event.addListener(map, "zoom_changed", () => {
-        const level = map.getLevel();
-        currentZoomLevel.current = level;
-        updateMarkerStyles(level);
+        currentZoomLevel.current = map.getLevel();
       });
-
-      // 지도 이동/줌 완료 시 이벤트 리스너 - 마커만 업데이트
       window.kakao.maps.event.addListener(map, "idle", async () => {
-        if (!kakaoMapRef.current) return;
-
-        console.log("🗺️ idle 이벤트 발생 - filterTypeRef:", filterTypeRef.current);
-
-        // 검색어 입력된 검색 모드일 때는 자동 로드 하지 않음 (검색 결과 유지)
-        // 단, 진료과 필터만 적용된 경우는 자동 로드 필요
-        if (isSearchModeRef.current) {
-          console.log("🗺️ 검색 모드라 idle 무시");
-          return;
-        }
-
-        // 응급실 필터일 때는 지도 이동 시 마커 업데이트 하지 않음 (전국 응급실 유지)
-        if (filterTypeRef.current === "emergency") {
-          console.log("🗺️ 응급실 필터라 idle 무시");
-          return;
-        }
-
-        console.log("🗺️ idle 이벤트로 마커 업데이트 시작");
-
+        if (!kakaoMapRef.current || isSearchModeRef.current || filterTypeRef.current === "emergency") return;
         try {
-          // 지도 영역 가져오기
           const bounds = kakaoMapRef.current.getBounds();
           const swLatLng = bounds.getSouthWest();
           const neLatLng = bounds.getNorthEast();
-
-          // 지도 영역 기반 병원 조회
           let hospitalData = await getHospitalsByBounds(
             swLatLng.getLat(),
             swLatLng.getLng(),
@@ -222,154 +202,94 @@ function HospitalMap() {
             neLatLng.getLng(),
             false
           );
-
-          // 진료과 필터 적용 (ref를 통해 최신 값 참조)
           const currentDepartments = selectedDepartmentsRef.current;
           if (!currentDepartments.includes("전체") && currentDepartments.length > 0) {
-            const departmentResults = await searchHospitals({
-              departments: currentDepartments,
-            });
-
+            const departmentResults = await searchHospitals({ departments: currentDepartments });
             const departmentIds = new Set(departmentResults.map((h) => h.hospitalId));
             hospitalData = hospitalData.filter((h) => departmentIds.has(h.hospitalId));
           }
-
-          setMapMarkers(hospitalData); // 마커만 업데이트 (사이드바는 그대로)
+          setMapMarkers(hospitalData);
         } catch (error) {
-          // 마커 로드 실패
+          console.error("Idle 마커 로드 실패:", error);
         }
       });
 
       // 지도 초기화 완료 상태 업데이트
       setIsMapInitialized(true);
 
-      // URL 파라미터 확인
+      // URL에 emergency=true가 있으면 현재 위치 가져오기 스킵 (새로운 useEffect에서 처리)
       const urlParams = new URLSearchParams(window.location.search);
-      const hasEmergencyParam = urlParams.get("emergency") === "true";
-      const hasDeptParam = urlParams.get("dept");
-
-      // 응급실 파라미터가 있으면 현재 위치 가져오기 스킵
-      if (hasEmergencyParam) {
-        // 응급실은 useEffect에서 서울 전역으로 처리
+      if (urlParams.get("emergency") === "true") {
+        console.log("응급실 파라미터 감지, 현위치 우선조회 스킵.");
+        setIsLocationReady(true); // 위치가 준비되었다고 간주하여 다음 로직 실행
         return;
       }
 
-      // 지도 초기화 후 현재 위치로 이동 후 병원 로드
-      setTimeout(() => {
-        // 세션 스토리지에서 캐시된 위치 정보 확인
+      // 지도 초기화 후 현재 위치 로드
+      const locateUser = () => {
         const cachedLocation = sessionStorage.getItem('userLocation');
         const cachedTime = sessionStorage.getItem('userLocationTime');
         const now = Date.now();
 
-        // 20분 이내 캐시가 있으면 사용
         if (cachedLocation && cachedTime && (now - parseInt(cachedTime) < 1200000)) {
-          console.log('✅ 캐시된 위치 사용 (즉시)');
+          console.log('✅ 캐시된 위치 사용');
           const { lat, lng } = JSON.parse(cachedLocation);
-
-          // 현재 위치 저장
           currentLocationRef.current = { lat, lng };
-
-          // 현재 위치로 지도 이동 및 줌 레벨 3으로 설정
           const currentPosition = new window.kakao.maps.LatLng(lat, lng);
           map.setCenter(currentPosition);
           map.setLevel(3);
-
           showCurrentLocationMarker(lat, lng);
-
-          if (!hasDeptParam) {
-            setTimeout(() => {
-              loadHospitalsAndMarkers();
-            }, 300);
-          }
+          setIsLocationReady(true); // 위치 준비 완료
           return;
         }
 
-        // 캐시가 없으면 위치 정보 가져오기
         if (navigator.geolocation) {
-          const startTime = performance.now(); // 시작 시간 측정
           console.log("⏱️ 현위치 인식 시작...");
-
           navigator.geolocation.getCurrentPosition(
             (position) => {
-              const endTime = performance.now(); // 종료 시간 측정
-              const duration = ((endTime - startTime) / 1000).toFixed(2); // 초 단위로 변환
-
-              const lat = position.coords.latitude;
-              const lng = position.coords.longitude;
-              const accuracy = position.coords.accuracy;
-
-              console.log(`✅ 현위치 인식 완료 (${duration}초 소요)`);
-              console.log("🌍 현재 위치:", { lat, lng, accuracy });
-
-              // sessionStorage에 위치 정보 저장 (20분간 캐시)
-              sessionStorage.setItem('userLocation', JSON.stringify({ lat, lng }));
-              sessionStorage.setItem('userLocationTime', Date.now().toString());
-
-              // accuracy가 너무 낮으면 (10km 이상) IP 기반 위치로 판단하고 무시
+              console.log("✅ 현위치 인식 완료");
+              const { latitude: lat, longitude: lng, accuracy } = position.coords;
               if (accuracy > 10000) {
-                console.warn("⚠️ 위치 정확도가 너무 낮습니다. 기본 위치를 사용합니다.");
-                if (!hasDeptParam) {
-                  loadHospitalsAndMarkers();
-                }
+                console.warn("⚠️ 위치 정확도가 낮아 기본 위치를 사용합니다.");
+                setIsLocationReady(true); // 위치 준비 완료 (기본 위치)
                 return;
               }
-
-              // 현재 위치 저장
+              sessionStorage.setItem('userLocation', JSON.stringify({ lat, lng }));
+              sessionStorage.setItem('userLocationTime', Date.now().toString());
               currentLocationRef.current = { lat, lng };
-
-              // 현재 위치로 지도 이동 및 줌 레벨 3으로 설정
               const currentPosition = new window.kakao.maps.LatLng(lat, lng);
               map.setCenter(currentPosition);
               map.setLevel(3);
-
               showCurrentLocationMarker(lat, lng);
-
-              // 지도 이동 완료 후 병원 로드
-              // 진료과 파라미터가 있으면 useEffect에서 처리하므로 여기서는 건너뜀
-              if (!hasDeptParam) {
-                setTimeout(() => {
-                  loadHospitalsAndMarkers();
-                }, 300);
-              }
+              setIsLocationReady(true); // 위치 준비 완료
             },
             (error) => {
               console.error("Geolocation error:", error);
-              if (error.code === 1) {
-                console.warn("⚠️ 위치 권한이 거부되었습니다. 브라우저 설정에서 위치 권한을 허용해주세요.");
-              }
-              // 위치 가져오기 실패 시에도 기본 위치에서 병원 로드
-              // 진료과 파라미터가 있으면 useEffect에서 처리하므로 여기서는 건너뜀
-              if (!hasDeptParam) {
-                loadHospitalsAndMarkers();
-              }
+              setIsLocationReady(true); // 위치 가져오기 실패 시에도 준비 완료로 처리
             },
             {
-              enableHighAccuracy: false, // 빠른 네트워크 기반 위치 사용
-              timeout: 10000, // 5초
-              maximumAge: 300000, // 5분 이내 캐시 허용
+              enableHighAccuracy: false,
+              timeout: 10000,
+              maximumAge: 300000,
             }
           );
         } else {
-          // Geolocation 미지원 시에도 기본 위치에서 병원 로드
-          // 진료과 파라미터가 있으면 useEffect에서 처리하므로 여기서는 건너뜀
-          if (!hasDeptParam) {
-            loadHospitalsAndMarkers();
-          }
+          console.warn("Geolocation 미지원. 기본 위치를 사용합니다.");
+          setIsLocationReady(true); // Geolocation 미지원 시에도 준비 완료로 처리
         }
-      }, 500);
+      };
+      
+      setTimeout(locateUser, 100); // 약간의 지연 후 위치 확인 시작
     };
 
-    // 카카오맵 스크립트 로드
     if (window.kakao && window.kakao.maps) {
-      // 이미 로드되어 있으면 바로 초기화
       window.kakao.maps.load(initializeMap);
     } else {
-      // 스크립트가 없으면 추가
       const script = document.createElement("script");
       script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${
         import.meta.env.VITE_KAKAO_MAP_JS_KEY
       }&libraries=services&autoload=false`;
-      script.async = false;
+      script.async = true; 
       script.onload = () => {
         window.kakao.maps.load(initializeMap);
       };
@@ -1096,6 +1016,13 @@ function HospitalMap() {
 
   // 사이드바와 마커 모두 로드 (초기 로딩, 검색, 필터 변경 시)
   const loadHospitalsAndMarkers = async (autoSelectNearest = false) => {
+    // UX 개선: URL에 dept 파라미터가 있을 때, 아직 진료과 선택이 반영되지 않았다면 전체 병원 로딩을 건너뛰어 깜빡임 현상 방지
+    const deptParam = searchParams.get("dept");
+    if (hospitals.length === 0 && deptParam && selectedDepartments.includes("전체")) {
+      console.log("초기 로딩 건너뛰기: 진료과 파라미터 적용 대기 중...");
+      return;
+    }
+
     if (!kakaoMapRef.current) return;
 
     console.log("🏥 loadHospitalsAndMarkers 호출 - filterType:", filterType);

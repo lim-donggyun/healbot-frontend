@@ -55,8 +55,9 @@ function SearchResultPage() {
     );
   }
 
+  // FIX 1: notices와 communities 기본값을 []로 변경하여 null로 덮어씌우는 문제 해결
   const { keyword, symptomInfo, matchedSymptoms = [], results } = searchData;
-  const { hospitals = [], diseases = [], notices = null, communities = null } = results || {};
+  const { hospitals = [], diseases = [], notices = [], communities = [] } = results || {};
 
   // 증상으로 질병 검색
   const handleSymptomSearch = async () => {
@@ -235,7 +236,7 @@ function SearchResultPage() {
             className={`tab-btn ${activeTab === "integrated" ? "active" : ""}`}
             onClick={() => setActiveTab("integrated")}
           >
-            통합검색 ({hospitals.length + diseases.length})
+            통합검색 ({hospitals.length + diseases.length + notices.length + communities.length})
           </button>
           <button
             className={`tab-btn ${activeTab === "hospitals" ? "active" : ""}`}
@@ -253,13 +254,13 @@ function SearchResultPage() {
             className={`tab-btn ${activeTab === "notices" ? "active" : ""}`}
             onClick={() => handleTabClick("notices", noticeSectionRef)}
           >
-            공지사항 (0)
+            공지사항 ({notices.length})
           </button>
           <button
             className={`tab-btn ${activeTab === "communities" ? "active" : ""}`}
             onClick={() => handleTabClick("communities", communitySectionRef)}
           >
-            커뮤니티 (0)
+            커뮤니티 ({communities.length})
           </button>
         </div>
 
@@ -388,7 +389,7 @@ function SearchResultPage() {
             )}
 
             {/* 공지사항 검색 결과 - 통합검색에서는 상위 2개만 */}
-            {notices && notices.length > 0 && (
+            {notices.length > 0 && (
               <div className="result-section">
                 <div className="result-section-header">
                   <h2>
@@ -408,8 +409,9 @@ function SearchResultPage() {
                   <div className="hospital-list">
                     {notices.slice(0, 2).map((notice, index) => (
                       <div key={index} className="list-item">
-                        <h3>{highlightKeyword(notice.title, keyword)}</h3>
-                        <p>{highlightKeyword(notice.content?.substring(0, 100), keyword)}...</p>
+                        {/* FIX 3: notice.title -> notice.TITLE, notice.content -> notice.CONTENT */}
+                        <h3>{highlightKeyword(notice.TITLE, keyword)}</h3>
+                        <p>{highlightKeyword(notice.CONTENT?.substring(0, 100), keyword)}...</p>
                       </div>
                     ))}
                   </div>
@@ -418,7 +420,7 @@ function SearchResultPage() {
             )}
 
             {/* 커뮤니티 검색 결과 - 통합검색에서는 상위 2개만 */}
-            {communities && communities.length > 0 && (
+            {communities.length > 0 && (
               <div className="result-section">
                 <div className="result-section-header">
                   <h2>
@@ -438,8 +440,9 @@ function SearchResultPage() {
                   <div className="hospital-list">
                     {communities.slice(0, 2).map((community, index) => (
                       <div key={index} className="list-item">
-                        <h3>{highlightKeyword(community.title, keyword)}</h3>
-                        <p>{highlightKeyword(community.content?.substring(0, 100), keyword)}...</p>
+                        {/* FIX 3: community.title -> community.TITLE, community.content -> community.CONTENT */}
+                        <h3>{highlightKeyword(community.TITLE, keyword)}</h3>
+                        <p>{highlightKeyword(community.CONTENT?.substring(0, 100), keyword)}...</p>
                       </div>
                     ))}
                   </div>
@@ -536,11 +539,26 @@ function SearchResultPage() {
             <div className="result-section-header">
               <h2>
                 <FaBell className="section-icon" />
-                공지사항 (총 0건)
+                공지사항 (총 {notices.length}건)
               </h2>
             </div>
             <div className="result-section-body">
-              <div className="no-results">검색 결과가 없습니다.</div>
+              {notices.length === 0 ? (
+                <div className="no-results">검색 결과가 없습니다.</div>
+              ) : (
+                <>
+                  <div className="hospital-list">
+                    {getPaginatedItems(notices, 'notices').map((notice, index) => (
+                      <div key={index} className="list-item">
+                        {/* FIX 3: notice.title -> notice.TITLE, notice.content -> notice.CONTENT */}
+                        <h3>{highlightKeyword(notice.TITLE, keyword)}</h3>
+                        <p>{highlightKeyword(notice.CONTENT?.substring(0, 100), keyword)}...</p>
+                      </div>
+                    ))}
+                  </div>
+                  <Pagination category="notices" totalItems={notices} />
+                </>
+              )}
             </div>
           </div>
         )}
@@ -551,11 +569,26 @@ function SearchResultPage() {
             <div className="result-section-header">
               <h2>
                 <FaComments className="section-icon" />
-                커뮤니티 (총 0건)
+                커뮤니티 (총 {communities.length}건)
               </h2>
             </div>
             <div className="result-section-body">
-              <div className="no-results">검색 결과가 없습니다.</div>
+              {communities.length === 0 ? (
+                <div className="no-results">검색 결과가 없습니다.</div>
+              ) : (
+                <>
+                  <div className="hospital-list">
+                    {getPaginatedItems(communities, 'communities').map((community, index) => (
+                      <div key={index} className="list-item">
+                        {/* FIX 3: community.title -> community.TITLE, community.content -> community.CONTENT */}
+                        <h3>{highlightKeyword(community.TITLE, keyword)}</h3>
+                        <p>{highlightKeyword(community.CONTENT?.substring(0, 100), keyword)}...</p>
+                      </div>
+                    ))}
+                  </div>
+                  <Pagination category="communities" totalItems={communities} />
+                </>
+              )}
             </div>
           </div>
         )}
