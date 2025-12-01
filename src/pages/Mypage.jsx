@@ -17,87 +17,61 @@ const [sanctionCount, setSanctionCount] = useState(0);
 
 const navigate = useNavigate();
 
-// 🔹 프로필 조회 + 내가 쓴 글 개수 + 제재 내역 개수 조회
+// 🔹 프로필 조회 + 내가 쓴 글 개수 + 제재 내역 개수 조회 (병렬 처리)
 useEffect(() => {
     const fetchProfileAndCounts = async () => {
     try {
-        // 1) 프로필
-        const res = await fetch("/react/api/member/profile", {
-        method: "GET",
-        });
+        // 모든 API를 병렬로 호출
+        const [profileRes, postCountRes, sanctionCountRes] = await Promise.all([
+        fetch("/react/api/member/profile", { method: "GET" }),
+        fetch("/react/api/community/my-post-count", { method: "GET" }),
+        fetch("/react/api/community/my-sanction-count", { method: "GET" })
+        ]);
 
-        if (res.status === 401) {
+        // 1) 프로필 처리
+        if (profileRes.status === 401) {
         alert("로그인이 필요합니다.");
         navigate("/login");
         return;
         }
 
-        if (!res.ok) {
-        console.error("프로필 조회 실패:", res.status);
+        if (!profileRes.ok) {
+        console.error("프로필 조회 실패:", profileRes.status);
         alert("프로필 정보를 불러오지 못했습니다.");
         return;
         }
 
-        const data = await res.json();
-        setProfile(data);
+        const profileData = await profileRes.json();
+        setProfile(profileData);
 
-        // 2) 내가 쓴 글 개수
+        // 2) 내가 쓴 글 개수 처리
+        if (postCountRes.ok) {
         try {
-        const res2 = await fetch("/react/api/community/my-post-count", {
-            method: "GET",
-        });
-
-        if (res2.status === 401) {
-            alert("로그인이 필요합니다.");
-            navigate("/login");
-            return;
-        }
-
-        if (res2.ok) {
-            const data2 = await res2.json();
-            const count =
-            typeof data2.count === "number" ? data2.count : 0;
+            const data = await postCountRes.json();
+            const count = typeof data.count === "number" ? data.count : 0;
             setPostCount(count);
-        } else {
-            console.error("내 글 개수 조회 실패:", res2.status);
-        }
         } catch (e) {
-        console.error("내 글 개수 조회 오류:", e);
+            console.error("내 글 개수 파싱 오류:", e);
+        }
+        } else {
+        console.error("내 글 개수 조회 실패:", postCountRes.status);
         }
 
-        // 3) 제재 내역 개수
+        // 3) 제재 내역 개수 처리
+        if (sanctionCountRes.ok) {
         try {
-        // 🔥 여기 엔드포인트는 실제 백엔드에 맞게 수정해서 사용
-        const res3 = await fetch(
-            "/react/api/community/my-sanction-count",
-            {
-            method: "GET",
-            }
-        );
-
-        if (res3.status === 401) {
-            alert("로그인이 필요합니다.");
-            navigate("/login");
-            return;
-        }
-
-        if (res3.ok) {
-            const data3 = await res3.json();
-            const count =
-            typeof data3.count === "number" ? data3.count : 0;
+            const data = await sanctionCountRes.json();
+            const count = typeof data.count === "number" ? data.count : 0;
             setSanctionCount(count);
-        } else {
-            console.error(
-            "제재 내역 개수 조회 실패:",
-            res3.status
-            );
-        }
         } catch (e) {
-        console.error("제재 내역 개수 조회 오류:", e);
+            console.error("제재 내역 개수 파싱 오류:", e);
+        }
+        } else {
+        console.error("제재 내역 개수 조회 실패:", sanctionCountRes.status);
         }
     } catch (err) {
-        console.error("프로필 조회 오류:", err);
-        alert("프로필 조회 중 오류가 발생했습니다.");
+        console.error("데이터 조회 오류:", err);
+        alert("정보를 불러오는 중 오류가 발생했습니다.");
     } finally {
         setLoading(false);
     }

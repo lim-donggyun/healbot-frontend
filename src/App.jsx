@@ -89,7 +89,6 @@ function App() {
         <Route path="/first-aid" element={<FirstAidPage />} />
         <Route path="/health-checkup" element={<HealthCheckupPage />} />
         <Route path="/home-medicine" element={<HomeMedicinePage />} />
-        <Route path="/mypage" element={<MyPage />} />
         <Route path="/terms" element={<Terms />} />
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/partners" element={<Partners />} />
@@ -103,10 +102,10 @@ function App() {
         <Route path="/mypage/profile" element={<Profile />} />
         <Route path="/mypage/reviews" element={<MyReview />} />
         <Route path="/mypage/delete" element={<DeleteAccount />} />
+        <Route path="/mypage/sanctions" element={<Sanctions />} />
         <Route path="/community" element={<Community />} />
         <Route path="/community/:id" element={<CommunityDetail />} />
         <Route path="/community/write" element={<CommunityWrite />} />
-        <Route path="/mypage/sanctions" element={<Sanctions />} />
         <Route path="/hospitals" element={<HospitalMap />} />
         <Route path="/review/ocr" element={<OCR />} />
         <Route path="/review/:hospitalId" element={<Review />} />

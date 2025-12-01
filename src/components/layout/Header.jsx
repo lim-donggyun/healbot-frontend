@@ -14,8 +14,13 @@ function Header() {
   const location = useLocation();
 
   // 항상 hover 상태를 유지해야 하는 페이지들 (관리자 페이지도 포함)
-  const alwaysScrolledPages = ['/login', '/signup', '/find-id', '/find-pass', '/mypage', '/search-result', '/community', '/hospitals'];
-  const isAlwaysScrolled = alwaysScrolledPages.includes(location.pathname) || location.pathname.startsWith('/admin');
+  const alwaysScrolledPages = [
+    '/login', '/signup', '/find-id', '/find-pass', '/mypage',
+    '/search-result', '/community', '/hospitals',
+    '/about', '/faq', '/customer-service', '/inquiry',
+    '/event', '/notice', '/terms', '/privacy', '/partners'
+  ];
+  const isAlwaysScrolled = alwaysScrolledPages.includes(location.pathname) || location.pathname.startsWith('/admin') || location.pathname.startsWith('/mypage');
 
   // 세션 확인
   useEffect(() => {
