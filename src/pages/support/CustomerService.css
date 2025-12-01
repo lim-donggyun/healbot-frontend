@@ -107,8 +107,17 @@
 }
 
 .cs-quick-icon {
-  font-size: 3rem;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
+  color: #3284b1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cs-quick-icon svg {
+  width: 48px;
+  height: 48px;
+  stroke-width: 1.5;
 }
 
 .cs-quick-card h3 {
@@ -154,6 +163,14 @@
   color: #2c3e50;
   margin-bottom: 20px;
   font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.guide-icon {
+  color: #3284b1;
+  flex-shrink: 0;
 }
 
 .cs-guide-card ol {
@@ -192,8 +209,17 @@
 }
 
 .cs-contact-icon {
-  font-size: 3rem;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
+  color: #3284b1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cs-contact-icon svg {
+  width: 48px;
+  height: 48px;
+  stroke-width: 1.5;
 }
 
 .cs-contact-card h3 {
@@ -258,16 +284,18 @@
 
 .cs-notice-box {
   width: 100%;
-  background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+  background: #3284b1;
   color: white;
-  padding: 30px;
-  border-radius: 12px;
+  padding: 40px 35px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
 }
 
 .cs-notice-box h3 {
-  font-size: 1.2rem;
-  margin-bottom: 15px;
-  font-weight: 700;
+  font-size: 1.3rem;
+  margin-bottom: 18px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
 }
 
 .cs-notice-box ul {
@@ -279,8 +307,10 @@
 .cs-notice-box ul li {
   padding: 8px 0 8px 20px;
   position: relative;
-  line-height: 1.6;
+  line-height: 1.7;
   font-size: 0.95rem;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.95);
 }
 
 .cs-notice-box ul li:before {

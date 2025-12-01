@@ -48,17 +48,32 @@ function Partners() {
             <h2>제휴 안내</h2>
             <div className="partners-cards">
               <div className="partners-card">
-                <div className="partners-card-icon">🏥</div>
+                <div className="partners-card-icon">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <path d="M12 2v20M17 7H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                    <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                  </svg>
+                </div>
                 <h3>의료기관 제휴</h3>
                 <p>병원, 의원, 한의원 등 의료기관과의 정보 연동 및 홍보 제휴</p>
               </div>
               <div className="partners-card">
-                <div className="partners-card-icon">💊</div>
+                <div className="partners-card-icon">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                  </svg>
+                </div>
                 <h3>제약/헬스케어 제휴</h3>
                 <p>제약회사, 헬스케어 기업과의 제품 정보 제공 및 마케팅 협력</p>
               </div>
               <div className="partners-card">
-                <div className="partners-card-icon">🤝</div>
+                <div className="partners-card-icon">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                </div>
                 <h3>기술/서비스 제휴</h3>
                 <p>IT 기술, 서비스 기업과의 기술 협력 및 공동 서비스 개발</p>
               </div>
@@ -156,21 +171,35 @@ function Partners() {
             <h2>직접 문의</h2>
             <div className="contact-methods">
               <div className="contact-method">
-                <div className="contact-icon">📧</div>
+                <div className="contact-icon">
+                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                    <polyline points="22,6 12,13 2,6"></polyline>
+                  </svg>
+                </div>
                 <div className="contact-info">
                   <strong>이메일</strong>
                   <p>partners@healbot.com</p>
                 </div>
               </div>
               <div className="contact-method">
-                <div className="contact-icon">📞</div>
+                <div className="contact-icon">
+                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                  </svg>
+                </div>
                 <div className="contact-info">
                   <strong>전화</strong>
                   <p>1588-0000 (내선 2번)</p>
                 </div>
               </div>
               <div className="contact-method">
-                <div className="contact-icon">⏰</div>
+                <div className="contact-icon">
+                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                  </svg>
+                </div>
                 <div className="contact-info">
                   <strong>상담 시간</strong>
                   <p>평일 09:00 - 18:00</p>

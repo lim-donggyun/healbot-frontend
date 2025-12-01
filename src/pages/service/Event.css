@@ -59,27 +59,30 @@
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  padding: 40px 20px 60px;
-  padding-top: 150px;
+  padding: 40px 20px 80px;
+  padding-top: 180px;
   max-width: 1200px;
   margin: 0 auto;
 }
 
 .event-page-wrapper h1 {
-  font-size: 2.5rem;
-  color: #2c3e50;
-  margin-bottom: 10px;
+  font-size: 3rem;
+  color: #1a1a1a;
+  margin-bottom: 20px;
   text-align: center;
   font-weight: 700;
+  letter-spacing: -0.02em;
   width: 100%;
 }
 
 .event-subtitle {
   text-align: center;
-  color: #7f8c8d;
-  font-size: 1rem;
-  margin-bottom: 50px;
+  color: #6b7280;
+  font-size: 1.2rem;
+  margin-bottom: 80px;
   width: 100%;
+  font-weight: 300;
+  letter-spacing: -0.01em;
 }
 
 .event-grid {
@@ -87,82 +90,90 @@
   grid-template-columns: repeat(2, 1fr);
   gap: 30px;
   width: 100%;
-  margin-bottom: 50px;
+  margin-bottom: 60px;
 }
 
 .event-card {
   background: white;
-  border-radius: 15px;
+  border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-  transition: all 0.3s ease;
+  border: 1px solid #e5e7eb;
+  transition: all 0.2s ease;
   position: relative;
 }
 
 .event-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+  border-color: #3284b1;
+  box-shadow: 0 4px 12px rgba(50, 132, 177, 0.1);
 }
 
 .event-status-badge {
   position: absolute;
   top: 20px;
   right: 20px;
-  padding: 8px 16px;
-  border-radius: 20px;
+  padding: 6px 16px;
+  border-radius: 6px;
   font-size: 0.85rem;
   font-weight: 600;
   z-index: 1;
+  letter-spacing: -0.01em;
 }
 
 .event-status-badge[data-status="진행중"] {
-  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+  background: #3284b1;
   color: white;
 }
 
 .event-status-badge[data-status="예정"] {
-  background: #ecf0f1;
-  color: #7f8c8d;
+  background: #f3f4f6;
+  color: #6b7280;
+  border: 1px solid #e5e7eb;
 }
 
 .event-status-badge[data-status="종료"] {
-  background: #34495e;
+  background: #9ca3af;
   color: white;
   opacity: 0.7;
 }
 
 .event-image {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #fafbfc;
   padding: 50px;
   text-align: center;
-  font-size: 5rem;
+  color: #3284b1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .event-content {
-  padding: 30px;
+  padding: 35px 30px;
 }
 
 .event-title {
   font-size: 1.4rem;
-  color: #2c3e50;
-  margin-bottom: 10px;
+  color: #1a1a1a;
+  margin-bottom: 12px;
   font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
 .event-period {
-  color: #7f8c8d;
+  color: #6b7280;
   font-size: 0.9rem;
-  margin-bottom: 15px;
+  margin-bottom: 18px;
   display: flex;
   align-items: center;
-  gap: 5px;
+  font-weight: 400;
 }
 
 .event-description {
-  color: #555;
-  line-height: 1.6;
+  color: #4b5563;
+  line-height: 1.7;
   margin-bottom: 20px;
   font-size: 1rem;
+  font-weight: 300;
 }
 
 .event-details {
@@ -172,51 +183,54 @@
 }
 
 .event-details li {
-  color: #666;
+  color: #6b7280;
   padding: 8px 0 8px 20px;
   position: relative;
   font-size: 0.95rem;
+  font-weight: 300;
+  line-height: 1.6;
 }
 
 .event-details li:before {
-  content: "✓";
+  content: "•";
   position: absolute;
   left: 0;
-  color: #3498db;
+  color: #3284b1;
   font-weight: bold;
 }
 
 .event-participate-btn {
   width: 100%;
   padding: 14px;
-  background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+  background: #3284b1;
   color: white;
   border: none;
-  border-radius: 10px;
+  border-radius: 6px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
+  letter-spacing: -0.01em;
 }
 
 .event-participate-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+  background: #2a6d93;
 }
 
 .event-notice-box {
   width: 100%;
   background: white;
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  padding: 50px 40px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
 }
 
 .event-notice-box h3 {
-  font-size: 1.2rem;
-  color: #2c3e50;
-  margin-bottom: 15px;
+  font-size: 1.4rem;
+  color: #1a1a1a;
+  margin-bottom: 20px;
   font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
 .event-notice-box ul {
@@ -226,18 +240,19 @@
 }
 
 .event-notice-box ul li {
-  color: #666;
-  padding: 8px 0 8px 20px;
+  color: #6b7280;
+  padding: 10px 0 10px 20px;
   position: relative;
   font-size: 0.95rem;
-  line-height: 1.6;
+  line-height: 1.7;
+  font-weight: 300;
 }
 
 .event-notice-box ul li:before {
   content: "•";
   position: absolute;
   left: 0;
-  color: #3498db;
+  color: #3284b1;
   font-weight: bold;
 }
 
@@ -250,57 +265,76 @@
 
 @media (max-width: 768px) {
   .event-page-wrapper .page {
-    padding: 40px 20px;
-    padding-top: 120px;
+    padding: 40px 20px 60px;
+    padding-top: 140px;
   }
 
   .event-page-wrapper h1 {
-    font-size: 2rem;
+    font-size: 2.2rem;
+  }
+
+  .event-subtitle {
+    font-size: 1.05rem;
+    margin-bottom: 60px;
   }
 
   .event-grid {
     gap: 20px;
+    margin-bottom: 50px;
   }
 
   .event-image {
     padding: 40px;
-    font-size: 4rem;
   }
 
   .event-content {
-    padding: 25px;
+    padding: 30px 25px;
   }
 
   .event-title {
     font-size: 1.2rem;
   }
+
+  .event-notice-box {
+    padding: 40px 30px;
+  }
 }
 
 @media (max-width: 480px) {
   .event-page-wrapper .page {
-    padding: 30px 15px;
-    padding-top: 100px;
+    padding: 30px 15px 50px;
+    padding-top: 120px;
   }
 
   .event-page-wrapper h1 {
-    font-size: 1.6rem;
+    font-size: 1.8rem;
+  }
+
+  .event-subtitle {
+    font-size: 1rem;
   }
 
   .event-image {
     padding: 30px;
-    font-size: 3rem;
+  }
+
+  .event-image svg {
+    width: 60px;
+    height: 60px;
   }
 
   .event-content {
-    padding: 20px;
+    padding: 25px 20px;
   }
 
   .event-status-badge {
     top: 15px;
     right: 15px;
+    font-size: 0.8rem;
+    padding: 5px 12px;
   }
 
   .event-notice-box {
-    padding: 20px;
+    padding: 30px 20px;
   }
 }
