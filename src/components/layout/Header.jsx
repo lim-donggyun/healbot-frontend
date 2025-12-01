@@ -259,7 +259,7 @@ function Header() {
               </div>
 
               <div className="nav-item">
-                <a href="/review/ocr" className="nav-link">
+                <a href="/review" className="nav-link">
                   리뷰
                 </a>
               </div>
