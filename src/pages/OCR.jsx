@@ -2,7 +2,7 @@
 import React, { useState, useRef } from "react";
 import "./OCR.css";
 
-const OCR = ({ hospitalId, onVerified }) => {
+const OCR = ({ onVerified }) => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [extractedText, setExtractedText] = useState("");
@@ -93,10 +93,6 @@ const OCR = ({ hospitalId, onVerified }) => {
   // 영수증 텍스트로 병원 정보 인증
   const handleVerify = async () => {
     if (!extractedText || error) return;
-    if (!hospitalId) {
-      setError("병원 정보가 없습니다. 다시 시도해주세요.");
-      return;
-    }
 
     try {
       setIsLoading(true);
@@ -107,7 +103,7 @@ const OCR = ({ hospitalId, onVerified }) => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          hospitalId,
+          // ✅ 이제 hospitalId 안 보냄
           ocrText: extractedText,
         }),
       });
@@ -115,22 +111,28 @@ const OCR = ({ hospitalId, onVerified }) => {
       if (!res.ok) throw new Error("인증 요청 실패");
 
       const data = await res.json();
+      console.log("[OCR] verify result:", data);
 
-      if (!data.success || !data.verified) {
+      if (!data.verified || !data.hospitalId) {
         setVerifyMessage(
-          data.message || "영수증의 병원명/주소가 병원 정보와 일치하지 않습니다."
+          data.message ||
+            "영수증의 병원명/주소가 병원 정보와 일치하는 곳을 찾지 못했습니다."
         );
         return;
       }
 
       setVerifyMessage("✅ 영수증 인증이 완료되었습니다.");
+
       if (onVerified) {
         onVerified({
+          hospitalId: data.hospitalId,
+          hospitalName: data.hospitalName,
           image: selectedImage,
           text: extractedText,
         });
       }
     } catch (e) {
+      console.error("[OCR] verify error:", e);
       setError(e.message || "영수증 인증 중 오류가 발생했습니다.");
     } finally {
       setIsLoading(false);

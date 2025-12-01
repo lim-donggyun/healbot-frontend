@@ -109,7 +109,7 @@ function App() {
         <Route path="/mypage/sanctions" element={<Sanctions />} />
         <Route path="/hospitals" element={<HospitalMap />} />
         <Route path="/review/ocr" element={<OCR />} />
-        <Route path="/review" element={<Review />} />
+        <Route path="/review/:hospitalId" element={<Review />} />
         <Route path="/reviews/write" element={<WriteReview />} />
       </Routes>
     </Router>
