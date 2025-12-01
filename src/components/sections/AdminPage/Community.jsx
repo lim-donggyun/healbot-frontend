@@ -40,9 +40,6 @@ const Community = () => {
     let cls = "";
 
     switch (category) {
-      case "notice":
-        cls = "important";
-        break;
       case "free":
         cls = "";
         break;
@@ -317,7 +314,6 @@ const Community = () => {
                 onChange={(e) => setCategoryFilter(e.target.value)}
               >
                 <option value="ALL">전체</option>
-                <option value="notice">공지</option>
                 <option value="free">자유</option>
                 <option value="question">질문</option>
                 <option value="review">후기</option>

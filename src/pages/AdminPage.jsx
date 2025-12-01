@@ -7,6 +7,7 @@ import Notice from '../components/sections/AdminPage/Notice';
 import HospitalManagement from '../components/sections/AdminPage/HospitalManagement';
 import Community from '../components/sections/AdminPage/Community';
 import Report from '../components/sections/AdminPage/Report';
+import ReviewManagement from '../components/sections/AdminPage/Review';
 import OCR from './OCR';
 import FeaturedDiseases from '../components/sections/AdminPage/FeaturedDiseases';
 import './AdminPage.css';
@@ -30,6 +31,9 @@ const AdminPage = () => {
     }
     if (location.pathname === '/admin/reports') {
       return <Report />;
+    }
+    if (location.pathname === '/admin/reviews') {
+      return <ReviewManagement />;
     }
     if (location.pathname === '/admin/ocr') {
       return <OCR />;

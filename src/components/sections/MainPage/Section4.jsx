@@ -93,9 +93,9 @@ function InfoSection({ onHealthInfoClick }) {
                 <li
                   key={notice.noticeId}
                   className="notice-item"
-                  onClick={() => handleNoticeClick(notice.noticeId)}
+                  onClick={() => handleNoticeClick(notice.noticeNo)}
                   style={{ cursor: "pointer" }}>
-                  <span className="notice-title">{notice.title}</span>
+                  <span className="notice-title">{notice.noticeSubject}</span>
                   <span className="notice-date">{formatDate(notice.createdAt)}</span>
                 </li>
               ))
