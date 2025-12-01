@@ -340,15 +340,18 @@ const FeaturedDiseases = () => {
 
   // 질환 수정 모달 열기
   const handleEditModalOpen = (disease) => {
-    setEditingDisease({
-      diseaseNo: disease.diseaseNo || null,
-      질환명: disease.질환명 || '',
-      설명: disease.설명 || '',
-      이미지: disease.이미지 || ''
-    });
-    setEditImagePreview(disease.이미지 || '');
+      setEditingDisease({
+        diseaseNo: disease.diseaseNo || null,
+        질환명: disease.질환명 || '',
+        진료과: disease.진료과 || '',
+        설명: disease.설명 || '',
+        전체증상목록: disease.전체증상목록 || '',
+        환자수: disease.환자수 || '',
+        이미지: disease.이미지 || ''
+      });    setEditImagePreview(disease.이미지 || '');
     setEditImageFile(null);
     setIsEditModalOpen(true);
+    setIsDetailModalOpen(false);
   };
 
   // 질환 수정 제출
@@ -851,7 +854,7 @@ const FeaturedDiseases = () => {
 
         {/* 질환 수정 모달 */}
         {isEditModalOpen && (
-          <div className="modal" onClick={() => setIsEditModalOpen(false)}>
+          <div className="modal-overlay" onClick={() => setIsEditModalOpen(false)}>
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
               <div className="modal-header">
                 <h3>질환 수정</h3>
@@ -860,45 +863,87 @@ const FeaturedDiseases = () => {
                 </button>
               </div>
               <form className="hospital-form" onSubmit={(e) => { e.preventDefault(); handleEditDiseaseSubmit(); }}>
-                <div className="form-row">
-                  <label>질환명 *</label>
-                  <input
-                    type="text"
-                    name="질환명"
-                    value={editingDisease?.질환명 || ''}
-                    onChange={handleEditInputChange}
-                    placeholder="질환명을 입력하세요"
-                    required
-                  />
-                </div>
-                <div className="form-row">
-                  <label>설명</label>
-                  <textarea
-                    name="설명"
-                    value={editingDisease?.설명 || ''}
-                    onChange={handleEditInputChange}
-                    placeholder="질환 설명을 입력하세요"
-                    style={{ minHeight: '200px' }}
-                  />
-                </div>
-                <div className="form-row">
-                  <label>이미지</label>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleEditImageChange}
-                    style={{ cursor: 'pointer' }}
-                  />
-                  <small style={{ color: '#666', marginTop: '5px', display: 'block' }}>
-                    * 이미지를 선택하지 않으면 기존 이미지가 유지됩니다.
-                  </small>
-                </div>
-                {editImagePreview && (
-                  <div className="form-row">
-                    <label>미리보기</label>
-                    <img src={editImagePreview} alt="미리보기" style={{ maxWidth: '300px', maxHeight: '300px', objectFit: 'contain' }} />
+                <div className="form-two-column">
+                  {/* 좌측: 질환명, 진료과, 설명 */}
+                  <div className="form-column">
+                    <div className="form-row">
+                      <label>질환명 *</label>
+                      <input
+                        type="text"
+                        name="질환명"
+                        value={editingDisease?.질환명 || ''}
+                        onChange={handleEditInputChange}
+                        placeholder="질환명을 입력하세요"
+                        required
+                      />
+                    </div>
+                    <div className="form-row">
+                      <label>진료과 *</label>
+                      <input
+                        type="text"
+                        name="진료과"
+                        value={editingDisease?.진료과 || ''}
+                        onClick={() => setIsDepartmentModalOpen(true)}
+                        placeholder="진료과 선택"
+                        readOnly
+                        required
+                        style={{ cursor: 'pointer' }}
+                      />
+                    </div>
+                    <div className="form-row">
+                      <label>설명</label>
+                      <textarea
+                        name="설명"
+                        value={editingDisease?.설명 || ''}
+                        onChange={handleEditInputChange}
+                        placeholder="질환 설명을 입력하세요"
+                        style={{ minHeight: '200px' }}
+                      />
+                    </div>
                   </div>
-                )}
+
+                  {/* 우측: 증상 목록, 환자수, 이미지, 미리보기 */}
+                  <div className="form-column">
+                    <div className="form-row">
+                      <label>증상 목록</label>
+                      <input
+                        type="text"
+                        name="전체증상목록"
+                        value={editingDisease?.전체증상목록 || ''}
+                        onClick={() => setIsSymptomsModalOpen(true)}
+                        placeholder="증상 선택"
+                        readOnly
+                        style={{ cursor: 'pointer' }}
+                      />
+                    </div>
+                    <div className="form-row">
+                      <label>환자수</label>
+                      <input
+                        type="number"
+                        name="환자수"
+                        value={editingDisease?.환자수 || ''}
+                        onChange={handleEditInputChange}
+                        placeholder="환자수를 입력하세요"
+                        min="0"
+                      />
+                    </div>
+                    <div className="form-row">
+                      <label>이미지</label>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleEditImageChange}
+                        style={{ cursor: 'pointer' }}
+                      />
+                    </div>
+                    {editImagePreview && (
+                      <div className="form-row">
+                        <label>미리보기</label>
+                        <img src={editImagePreview} alt="미리보기" style={{ maxWidth: '200px', maxHeight: '200px', objectFit: 'contain' }} />
+                      </div>
+                    )}
+                  </div>
+                </div>
 
                 <div className="form-actions">
                   <button type="button" className="cancel-btn" onClick={() => setIsEditModalOpen(false)}>

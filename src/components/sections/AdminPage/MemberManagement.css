@@ -304,6 +304,7 @@ aside.admin-sidebar nav.admin-nav {
   color: #495057;
   border-bottom: 2px solid #dee2e6;
   font-size: 14px;
+  height: 45px;
 }
 
 .member-table th:nth-child(1) {
@@ -351,6 +352,7 @@ aside.admin-sidebar nav.admin-nav {
   overflow: hidden;
   text-overflow: ellipsis;
   text-align: center;
+  height: 45px;
 }
 
 .member-table tbody tr {

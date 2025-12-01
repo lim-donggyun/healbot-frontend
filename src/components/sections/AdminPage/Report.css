@@ -25,6 +25,168 @@
   gap: 20px;
 }
 
+/* 신고 관리 */
+.report-management {
+  padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.report-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.report-header h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #333;
+  margin: 0;
+}
+
+.report-count {
+  color: #3284b1;
+  font-weight: 700;
+}
+
+/* 검색 필터 */
+.report-search-filters {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.report-search-filters .filter-group {
+  display: flex;
+  gap: 10px;
+}
+
+.report-search-filters .filter-select {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1px solid #dee2e6;
+  border-radius: 5px;
+  font-size: 14px;
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.3s;
+  height: 44px;
+  box-sizing: border-box;
+  min-width: 150px;
+}
+
+.report-search-filters .filter-select:hover {
+  border-color: #3284b1;
+}
+
+.report-search-filters .filter-select:focus {
+  outline: none;
+  border-color: #3284b1;
+  box-shadow: 0 0 0 3px rgba(50, 132, 177, 0.1);
+}
+
+/* 신고 테이블 스타일 */
+.report-table-container {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.report-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.report-table thead {
+  background-color: #f8f9fa;
+}
+
+.report-table th {
+  padding: 12px;
+  text-align: center;
+  font-weight: 600;
+  color: #495057;
+  border-bottom: 2px solid #dee2e6;
+  font-size: 14px;
+  height: 45px;
+}
+
+.report-table td {
+  padding: 12px;
+  border-bottom: 1px solid #dee2e6;
+  font-size: 14px;
+  color: #333;
+  text-align: center;
+  height: 45px;
+}
+
+.report-table tbody tr {
+  transition: all 0.3s ease;
+}
+
+.report-table tbody tr:hover {
+  background-color: #e3f2fd;
+  transform: scale(1.01);
+  box-shadow: 0 2px 8px rgba(50, 132, 177, 0.15);
+}
+
+/* 페이지네이션 */
+.report-management .pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  margin-top: 20px;
+}
+
+.report-management .page-btn {
+  min-width: 40px;
+  height: 40px;
+  width: 40px;
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  color: #495057;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.report-management .page-btn.arrow-btn {
+  width: auto;
+  padding: 0 16px;
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0 5px;
+  border-radius: 0;
+}
+
+.report-management .page-btn:hover {
+  color: #3284b1;
+}
+
+.report-management .page-btn.active {
+  background-color: #3284b1;
+  color: white;
+}
+
+.report-management .page-btn.disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.report-management .page-btn.disabled:hover {
+  color: #495057;
+}
+
 .admin-report-page .admin-header {
   display: flex;
   justify-content: space-between;
@@ -125,63 +287,9 @@
 
 .admin-report-page .textarea {
   font-family: inherit;
-  resize: vertical;
+  resize: none;
 }
 
-/* 테이블 */
-.admin-report-page .table-wrapper {
-  border-radius: 14px;
-  border: 1px solid var(--border);
-  overflow: hidden;
-  background: var(--card);
-  margin-top: 20px;
-}
-
-.admin-report-page .table-scroll {
-  max-height: 500px;
-  overflow: auto;
-}
-
-.admin-report-page table {
-  width: 100%;
-  border-collapse: collapse;
-  min-width: 800px;
-  font-size: 13px;
-}
-
-.admin-report-page thead {
-  background: #f3f4f6;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
-
-.admin-report-page th,
-.admin-report-page td {
-  padding: 12px;
-  border-bottom: 1px solid var(--border);
-  text-align: left;
-}
-
-.admin-report-page th {
-  font-size: 12px;
-  color: var(--muted);
-  font-weight: 600;
-  text-align: center;
-}
-
-.admin-report-page td {
-  text-align: center;
-}
-
-.admin-report-page tbody tr {
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.admin-report-page tbody tr:hover {
-  background: #f9fafb;
-}
 
 /* 카테고리 뱃지 */
 .admin-report-page .category-pill {
@@ -210,6 +318,12 @@
   height: 6px;
   border-radius: 999px;
   background: currentColor;
+}
+
+/* Prevent ellipsis in category column */
+.report-table td:first-child {
+  white-space: normal;
+  overflow: visible;
 }
 
 /* 페이지네이션 */
