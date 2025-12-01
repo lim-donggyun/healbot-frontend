@@ -286,19 +286,13 @@ const Community = () => {
 
       {/* 메인 */}
       <section className="admin-main">
-        {/* 커뮤니티 관리 */}
+        {/* 커뮤니티 관리 컨텐츠 */}
         <section className="admin-card">
-          <div className="admin-card-header">
-            <div>
-              <div className="admin-card-title">커뮤니티 관리</div>
-              <div className="admin-card-sub">
-                사용자가 작성한 커뮤니티 게시글을 조회하고 관리할 수 있습니다.
-              </div>
-            </div>
-          </div>
+          {/* 수정됨: admin-card-header 부분 삭제됨 */}
 
           {/* 검색 필터 */}
-          <div className="filter-grid" style={{ marginTop: '20px' }}>
+          {/* 수정됨: 헤더 삭제로 인해 불필요해진 상단 여백 제거 (marginTop: '20px' -> '0px' 또는 생략) */}
+          <div className="filter-grid" style={{ marginTop: '0' }}>
             <div className="form-group">
               <label className="form-label">검색어</label>
               <input

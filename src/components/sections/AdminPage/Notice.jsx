@@ -39,12 +39,12 @@ const Notice = () => {
 
         // 백엔드 응답을 프론트엔드 형식으로 변환
         const convertedData = data.map(notice => ({
-          NOTICE_ID: notice.noticeId,
-          TITLE: notice.title,
-          CONTENT: notice.content,
+          NOTICE_ID: notice.noticeNo,
+          TITLE: notice.noticeSubject,
+          CONTENT: notice.noticeContent,
           CATEGORY: notice.category,
           CREATED_AT: notice.createdAt,
-          VIEWS: notice.viewCount || notice.VIEW_COUNT || 0
+          VIEWS: notice.viewCount || 0
         }));
 
         setNotices(convertedData);
@@ -161,18 +161,23 @@ const Notice = () => {
     e.preventDefault();
 
     try {
-      const result = await updateNotice(selectedNotice.NOTICE_ID, editFormData);
+      const noticeData = {
+        noticeSubject: editFormData.title,
+        noticeContent: editFormData.content,
+        category: editFormData.category
+      };
+      const result = await updateNotice(selectedNotice.NOTICE_ID, noticeData);
       if (result.success) {
         alert('공지사항이 수정되었습니다.');
         // 목록 새로고침
         const data = await getAllNotices();
         const convertedData = data.map(notice => ({
-          NOTICE_ID: notice.noticeId,
-          TITLE: notice.title,
-          CONTENT: notice.content,
+          NOTICE_ID: notice.noticeNo,
+          TITLE: notice.noticeSubject,
+          CONTENT: notice.noticeContent,
           CATEGORY: notice.category,
           CREATED_AT: notice.createdAt,
-          VIEWS: notice.viewCount || notice.VIEW_COUNT || 0
+          VIEWS: notice.viewCount || 0
         }));
 
         setNotices(convertedData);
@@ -200,12 +205,12 @@ const Notice = () => {
         // 삭제 후 목록 새로고침
         const data = await getAllNotices();
         const convertedData = data.map(notice => ({
-          NOTICE_ID: notice.noticeId,
-          TITLE: notice.title,
-          CONTENT: notice.content,
+          NOTICE_ID: notice.noticeNo,
+          TITLE: notice.noticeSubject,
+          CONTENT: notice.noticeContent,
           CATEGORY: notice.category,
           CREATED_AT: notice.createdAt,
-          VIEWS: notice.viewCount || notice.VIEW_COUNT || 0
+          VIEWS: notice.viewCount || 0
         }));
 
         setNotices(convertedData);
@@ -233,8 +238,8 @@ const Notice = () => {
 
     try {
       const noticeData = {
-        title: newNotice.title,
-        content: newNotice.content,
+        noticeSubject: newNotice.title,
+        noticeContent: newNotice.content,
         category: newNotice.category
       };
 
@@ -244,12 +249,12 @@ const Notice = () => {
         // 생성 후 목록 새로고침
         const data = await getAllNotices();
         const convertedData = data.map(notice => ({
-          NOTICE_ID: notice.noticeId,
-          TITLE: notice.title,
-          CONTENT: notice.content,
+          NOTICE_ID: notice.noticeNo,
+          TITLE: notice.noticeSubject,
+          CONTENT: notice.noticeContent,
           CATEGORY: notice.category,
           CREATED_AT: notice.createdAt,
-          VIEWS: notice.viewCount || notice.VIEW_COUNT || 0
+          VIEWS: notice.viewCount || 0
         }));
 
         setNotices(convertedData);
