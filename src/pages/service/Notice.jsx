@@ -41,9 +41,9 @@ function Notice() {
         setError(null);
 
         // 네비게이션 state에 모달을 열 ID가 있는지 확인
-        const noticeIdToOpen = location.state?.openModalForId;
-        if (noticeIdToOpen) {
-          const noticeToOpen = data.find(n => n.noticeId === noticeIdToOpen);
+        const noticeNoToOpen = location.state?.openModalForId;
+        if (noticeNoToOpen) {
+          const noticeToOpen = data.find(n => n.noticeNo === noticeNoToOpen);
           if (noticeToOpen) {
             // 모달을 직접 엽니다.
             setSelectedNotice(noticeToOpen);
@@ -51,11 +51,11 @@ function Notice() {
             
             // 조회수 증가 로직
             if (sessionData.admin_YN !== 'Y') {
-              await incrementNoticeView(noticeToOpen.noticeId);
+              await incrementNoticeView(noticeToOpen.noticeNo);
               // 로컬 상태 업데이트
               setNotices(prevNotices =>
                 prevNotices.map(n =>
-                  n.noticeId === noticeIdToOpen
+                  n.noticeNo === noticeNoToOpen
                     ? { ...n, viewCount: (n.viewCount || 0) + 1 }
                     : n
                 )
@@ -102,9 +102,9 @@ function Notice() {
 
     if (!isAdmin) {
       try {
-        await incrementNoticeView(notice.noticeId);
+        await incrementNoticeView(notice.noticeNo);
         const updatedNotices = notices.map(n =>
-          n.noticeId === notice.noticeId ? { ...n, viewCount: (n.viewCount || 0) + 1 } : n
+          n.noticeNo === notice.noticeNo ? { ...n, viewCount: (n.viewCount || 0) + 1 } : n
         );
         setNotices(updatedNotices);
         setSelectedNotice(prev => ({ ...prev, viewCount: (prev.viewCount || 0) + 1 }));
@@ -240,12 +240,12 @@ function Notice() {
                   <tbody>
                     {currentNotices.map((notice) => (
                       <tr
-                        key={notice.noticeId}
+                        key={notice.noticeNo}
                         onClick={() => handleNoticeClick(notice)}
                         style={{ cursor: 'pointer' }}
                       >
                         <td>{getCategoryPill(notice.category)}</td>
-                        <td className="notice-title-cell">{notice.title}</td>
+                        <td className="notice-title-cell">{notice.noticeSubject}</td>
                         <td>{formatDate(notice.createdAt)}</td>
                         <td>{notice.viewCount?.toLocaleString() || 0}</td>
                       </tr>

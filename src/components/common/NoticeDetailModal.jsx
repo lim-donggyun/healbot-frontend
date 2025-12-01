@@ -69,12 +69,12 @@ const NoticeDetailModal = ({ isOpen, onClose, notice }) => {
               </div>
               <div className="detail-item full-width">
                 <div className="detail-label">제목</div>
-                <div className="detail-value">{notice.title}</div>
+                <div className="detail-value">{notice.noticeSubject}</div>
               </div>
               <div className="detail-item full-width">
                 <div className="detail-label">내용</div>
                 <div className="detail-value" style={{ whiteSpace: 'pre-wrap' }}>
-                  {notice.content}
+                  {notice.noticeContent}
                 </div>
               </div>
             </div>

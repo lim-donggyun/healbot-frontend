@@ -40,9 +40,6 @@ const Community = () => {
     let cls = "";
 
     switch (category) {
-      case "notice":
-        cls = "important";
-        break;
       case "free":
         cls = "";
         break;
@@ -294,10 +291,14 @@ const Community = () => {
             </h2>
           </div>
 
-          <div className="community-search-filters">
-            <div className="filter-group">
-              <select className="filter-select" value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)}>
-                <option value="ALL">전체 카테고리</option>
+            <div className="form-group">
+              <label className="form-label">카테고리</label>
+              <select
+                className="select"
+                value={categoryFilter}
+                onChange={(e) => setCategoryFilter(e.target.value)}
+              >
+                <option value="ALL">전체</option>
                 <option value="free">자유</option>
                 <option value="question">질문</option>
                 <option value="review">후기</option>
