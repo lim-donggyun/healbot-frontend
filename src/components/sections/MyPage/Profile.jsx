@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from "react";
-import "./Profile.css"; // 스타일은 나중에 손봐도 됨 (없어도 동작은 함)
+import { useNavigate } from "react-router-dom";
+import Header from "../../layout/Header";
+import Footer from "../../layout/Footer";
+import "./Profile.css";
 
 // 프로필 수정 컴포넌트
 const Profile = () => {
+const navigate = useNavigate();
 const [loading, setLoading] = useState(true);
 const [saving, setSaving] = useState(false);
 
@@ -12,10 +16,22 @@ const [phone, setPhone] = useState("");
 const [birthdate, setBirthdate] = useState("");
 const [gender, setGender] = useState(""); // "M" | "F"
 const [address, setAddress] = useState("");
+const [detailAddress, setDetailAddress] = useState("");
 
 // 간단한 검증 함수들
 const validateEmail = (val) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
 const validatePhoneFormat = (val) => /^010-\d{4}-\d{4}$/.test(val);
+
+// Daum 주소 검색 스크립트 로드
+useEffect(() => {
+    const postcodeScriptId = "daum-postcode-script";
+    if (!document.getElementById(postcodeScriptId)) {
+    const script = document.createElement("script");
+    script.src = "//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js";
+    script.id = postcodeScriptId;
+    document.head.appendChild(script);
+    }
+}, []);
 
 // 프로필 조회 (마운트 시 1번 호출)
 useEffect(() => {
@@ -38,7 +54,24 @@ useEffect(() => {
         setName(data.userName || "");
         setEmail(data.email || "");
         setPhone(data.phone || "");
-        setBirthdate(data.bornDate || "");
+
+        // 생년월일 형식 변환 (YYYY-MM-DD 형식으로)
+        let formattedBirthdate = "";
+        if (data.bornDate) {
+        const dateStr = String(data.bornDate);
+        if (dateStr.length === 8) {
+            // YYYYMMDD 형식인 경우
+            formattedBirthdate = `${dateStr.slice(0, 4)}-${dateStr.slice(4, 6)}-${dateStr.slice(6, 8)}`;
+        } else if (dateStr.includes('-') || dateStr.includes('.') || dateStr.includes('/')) {
+            // 이미 구분자가 있는 경우 YYYY-MM-DD로 변환
+            const cleaned = dateStr.replace(/[./]/g, '-');
+            formattedBirthdate = cleaned.slice(0, 10);
+        } else {
+            formattedBirthdate = dateStr;
+        }
+        }
+        setBirthdate(formattedBirthdate);
+
         setGender(data.gender || "");
         setAddress(data.address || "");
     } catch (err) {
@@ -50,6 +83,33 @@ useEffect(() => {
 
     fetchProfile();
 }, []);
+
+// 주소 검색
+const handleAddressSearch = () => {
+    if (!window.daum) {
+    alert("주소 검색 서비스가 로드되지 않았습니다. 잠시 후 다시 시도해주세요.");
+    return;
+    }
+
+    new window.daum.Postcode({
+    oncomplete: function (data) {
+        let fullAddress = data.address;
+        let extraAddress = "";
+
+        if (data.addressType === "R") {
+        if (data.bname !== "") {
+            extraAddress += data.bname;
+        }
+        if (data.buildingName !== "") {
+            extraAddress += extraAddress !== "" ? `, ${data.buildingName}` : data.buildingName;
+        }
+        fullAddress += extraAddress !== "" ? ` (${extraAddress})` : "";
+        }
+
+        setAddress(fullAddress);
+    },
+    }).open();
+};
 
 const handleSubmit = async (e) => {
     e.preventDefault();
@@ -101,7 +161,7 @@ const handleSubmit = async (e) => {
         phone: phone,
         bornDate: birthdate,
         gender: gender,
-        address: address,
+        address: detailAddress.trim() ? `${address} ${detailAddress}` : address,
         }),
     });
 
@@ -119,6 +179,7 @@ const handleSubmit = async (e) => {
     }
 
     alert("프로필 정보가 수정되었습니다.");
+    navigate('/mypage');
     } catch (err) {
     console.error("프로필 수정 오류:", err);
     alert("프로필 수정 중 오류가 발생했습니다. 다시 시도해주세요.");
@@ -129,19 +190,32 @@ const handleSubmit = async (e) => {
 
 if (loading) {
     return (
-    <section className="mp-card">
-        <h2 className="mp-card-title">프로필 수정</h2>
-        <p>정보를 불러오는 중입니다...</p>
-    </section>
+    <>
+        <Header />
+        <main className="profile-main">
+        <div className="profile-container">
+            <section className="mp-card">
+            <h2 className="mp-card-title">프로필 수정</h2>
+            <p>정보를 불러오는 중입니다...</p>
+            </section>
+        </div>
+        </main>
+        <Footer />
+    </>
     );
 }
 
 return (
-    <section className="mp-card">
-    <h2 className="mp-card-title">프로필 수정</h2>
-    <p className="mp-sub-desc">
-        회원님의 기본 정보를 수정할 수 있습니다.
-    </p>
+    <>
+    <Header />
+    <main className="profile-main">
+        <div className="profile-container">
+        <div className="profile-header">
+            <h1 className="profile-title">프로필 수정</h1>
+            <p className="profile-subtitle">회원님의 기본 정보를 수정할 수 있습니다.</p>
+        </div>
+
+        <section className="mp-card">
 
     <form className="mp-form" onSubmit={handleSubmit}>
         {/* 이름 */}
@@ -241,16 +315,37 @@ return (
             className="mp-input"
             value={address}
             onChange={(e) => setAddress(e.target.value)}
-            placeholder="기본 주소를 입력해주세요."
+            placeholder="클릭하여 주소 검색"
+            onClick={handleAddressSearch}
+            readOnly
+            style={{ cursor: "pointer" }}
+        />
+        </div>
+
+        {/* 상세주소 */}
+        <div className="mp-form-group mp-form-full">
+        <label className="mp-label" htmlFor="pf-detail-address">
+            상세주소
+        </label>
+        <input
+            id="pf-detail-address"
+            type="text"
+            className="mp-input"
+            value={detailAddress}
+            onChange={(e) => setDetailAddress(e.target.value)}
+            placeholder="상세 주소를 입력해주세요."
         />
         </div>
 
         {/* 버튼 영역 */}
         <div className="mp-btn-row">
-        {/* 필요하면 취소 버튼에 onClick으로 마이페이지로 돌아가게 처리 */}
-        {/* <button type="button" className="mp-btn mp-btn-ghost" onClick={() => window.history.back()}>
+        <button
+            type="button"
+            className="mp-btn mp-btn-ghost"
+            onClick={() => navigate('/mypage')}
+        >
             취소
-        </button> */}
+        </button>
         <button
             type="submit"
             className="mp-btn mp-btn-primary"
@@ -261,6 +356,10 @@ return (
         </div>
     </form>
     </section>
+        </div>
+    </main>
+    <Footer />
+    </>
 );
 };
 

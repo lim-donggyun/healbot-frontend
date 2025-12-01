@@ -1,77 +1,79 @@
 /* ===================== 공통 레이아웃 ===================== */
 
 .mr-main {
-background: #f5f7fb;
-min-height: calc(100vh - 160px); /* 헤더/푸터 높이 고려해서 적당히 */
-padding-top: 60px;
+background: #f5f5f5;
+min-height: calc(100vh - 160px);
+padding-top: 180px;
+padding-bottom: 80px;
 }
 
 .mr-container {
-max-width: 960px;
+max-width: 1200px;
 margin: 0 auto;
-padding: 40px 16px 80px;
-box-sizing: border-box;
+padding: 0 20px;
 }
 
-/* ===================== 헤더 영역 ===================== */
-
+/* 상단 헤더 영역 */
 .mr-header-row {
 display: flex;
 justify-content: space-between;
-align-items: flex-end;
-gap: 24px;
-margin-bottom: 24px;
+align-items: flex-start;
+gap: 20px;
+margin-bottom: 30px;
 flex-wrap: wrap;
 }
 
 .mr-title-wrap {
-display: flex;
-flex-direction: column;
-gap: 8px;
+flex: 1;
+min-width: 300px;
 }
 
 .mr-page-title {
-font-size: 24px;
+margin: 0 0 10px;
+font-size: 3rem;
 font-weight: 700;
-color: #111827;
-margin: 0;
-padding-left: 200px;
+color: #1a1a1a;
+letter-spacing: -0.02em;
 }
 
 .mr-page-sub {
-font-size: 14px;
-color: #6b7280;
 margin: 0;
-padding-left: 200px;
+font-size: 1.2rem;
+color: #6b7280;
+font-weight: 300;
+letter-spacing: -0.01em;
 }
 
-/* ===================== 검색 영역 ===================== */
-
+/* 검색 영역 */
 .mr-actions {
 display: flex;
 align-items: center;
 gap: 12px;
-margin-left: auto;
 }
 
 .mr-search {
 display: flex;
 align-items: center;
-gap: 8px;
-padding: 6px 10px 6px 14px;
 background: #ffffff;
-border-radius: 999px;
 border: 1px solid #e5e7eb;
-box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
-min-width: 260px;
+border-radius: 8px;
+padding: 0 16px;
+min-width: 300px;
+transition: border-color 0.2s;
+}
+
+.mr-search:focus-within {
+border-color: #3284b1;
+box-shadow: 0 0 0 3px rgba(50, 132, 177, 0.1);
 }
 
 .mr-search input {
 flex: 1;
 border: none;
 outline: none;
-font-size: 14px;
-color: #111827;
+padding: 12px 8px;
+font-size: 0.95rem;
+color: #1a1a1a;
 background: transparent;
 }
 
@@ -81,96 +83,328 @@ color: #9ca3af;
 
 .mr-search-btn {
 border: none;
-outline: none;
-background: #111827;
-border-radius: 999px;
-padding: 6px 10px;
+background: transparent;
+padding: 6px;
 cursor: pointer;
+display: flex;
+align-items: center;
+justify-content: center;
+color: #6b7280;
+transition: color 0.2s;
+}
+
+.mr-search-btn:hover {
+color: #3284b1;
+}
+
+/* 리스트 섹션 */
+.mr-list-section {
+background: #ffffff;
+border-radius: 8px;
+padding: 30px;
+border: 1px solid #e5e7eb;
+min-height: 400px;
+}
+
+/* 카드 */
+.mr-card {
+background: #ffffff;
+border-radius: 8px;
+padding: 30px;
+border: 1px solid #e5e7eb;
+}
+
+.mr-empty {
+padding: 60px 20px;
+text-align: center;
+}
+
+.mr-empty-icon {
+font-size: 4rem;
+margin-bottom: 20px;
+}
+
+.mr-empty-text {
+font-size: 1.1rem;
+font-weight: 500;
+color: #1a1a1a;
+margin: 0 0 8px;
+}
+
+.mr-empty-sub {
+font-size: 0.95rem;
+color: #6b7280;
+margin: 0;
+}
+
+.mr-empty p {
+font-size: 0.95rem;
+color: #6b7280;
+margin: 0;
+}
+
+/* 리뷰 리스트 */
+.mr-review-list {
+list-style: none;
+padding: 0;
+margin: 0;
+display: flex;
+flex-direction: column;
+gap: 16px;
+}
+
+/* 커뮤니티 카드 스타일 (MyReview에서 사용) */
+.community-list {
+list-style: none;
+padding: 0;
+margin: 0;
+}
+
+.community-card {
+background: #ffffff;
+border: 1px solid #e5e7eb;
+border-radius: 8px;
+padding: 20px 24px;
+transition: all 0.2s;
+cursor: pointer;
+}
+
+.community-card:hover {
+border-color: #3284b1;
+box-shadow: 0 2px 8px rgba(50, 132, 177, 0.1);
+}
+
+.community-card-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 12px;
+}
+
+.community-card-title {
+font-size: 1.15rem;
+font-weight: 600;
+color: #1a1a1a;
+margin: 0;
+letter-spacing: -0.01em;
+}
+
+.community-card-badge {
+display: inline-flex;
+padding: 4px 10px;
+border-radius: 6px;
+font-size: 0.85rem;
+font-weight: 500;
+background: rgba(50, 132, 177, 0.1);
+color: #3284b1;
+}
+
+.community-card-content {
+font-size: 0.95rem;
+color: #4b5563;
+line-height: 1.6;
+margin-bottom: 16px;
+}
+
+.community-card-footer {
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding-top: 12px;
+border-top: 1px solid #f3f4f6;
+}
+
+.community-card-meta {
+display: flex;
+gap: 16px;
+font-size: 0.85rem;
+color: #6b7280;
+}
+
+.community-card-actions {
+display: flex;
+gap: 8px;
+}
+
+/* 삭제 버튼 */
+.community-delete-btn {
+padding: 6px 14px;
+background: #ef4444;
+color: #ffffff;
+border: none;
+border-radius: 6px;
+font-size: 0.85rem;
+font-weight: 600;
+cursor: pointer;
+transition: background 0.2s ease;
+}
+
+.community-delete-btn:hover {
+background: #dc2626;
+}
+
+/* 페이지네이션 */
+.mr-pagination {
+display: flex;
+justify-content: center;
+align-items: center;
+gap: 8px;
+margin-top: 30px;
+padding-top: 20px;
+border-top: 1px solid #e5e7eb;
+}
+
+.mr-pagination button {
+min-width: 36px;
+height: 36px;
+border: 1px solid #e5e7eb;
+background: #ffffff;
+border-radius: 6px;
+cursor: pointer;
+font-size: 0.9rem;
+font-weight: 500;
+color: #4b5563;
+transition: all 0.2s;
 display: flex;
 align-items: center;
 justify-content: center;
 }
 
-.mr-search-btn svg {
-stroke: #ffffff;
+.mr-pagination button:hover:not(:disabled) {
+border-color: #3284b1;
+color: #3284b1;
+background: rgba(50, 132, 177, 0.05);
 }
 
-/* ===================== 리스트 섹션 ===================== */
-
-.mr-list-section {
-margin-top: 12px;
+.mr-pagination button.active {
+background: #3284b1;
+color: #ffffff;
+border-color: #3284b1;
 }
 
-/* 커뮤니티 카드 리스트와 간격 조정 */
-.mr-review-list {
-margin-top: 12px;
+.mr-pagination button:disabled {
+cursor: not-allowed;
+opacity: 0.5;
 }
 
-/* ===================== 빈 상태 ===================== */
-
-.mr-empty {
-background: #ffffff;
-border-radius: 16px;
-padding: 40px 24px;
-text-align: center;
-border: 1px dashed #d1d5db;
-color: #4b5563;
+/* 테이블 */
+.mr-table-wrapper {
+width: 100%;
+overflow-x: auto;
 }
 
-.mr-empty-icon {
-font-size: 28px;
-margin-bottom: 12px;
+.mr-table {
+width: 100%;
+border-collapse: collapse;
+font-size: 0.95rem;
 }
 
-.mr-empty-text {
-font-size: 16px;
+.mr-table thead tr {
+background: #fafbfc;
+}
+
+.mr-table th,
+.mr-table td {
+padding: 14px 12px;
+border-bottom: 1px solid #e5e7eb;
+text-align: left;
+}
+
+.mr-table th {
 font-weight: 600;
-margin: 0 0 6px;
-color: #111827;
+color: #1a1a1a;
+font-size: 0.9rem;
+letter-spacing: -0.01em;
 }
 
-.mr-empty-sub {
-font-size: 13px;
-margin: 0;
-color: #6b7280;
+.mr-table td {
+color: #4b5563;
+font-weight: 300;
 }
 
-/* ===================== 페이징 ===================== */
-
-.mr-pagination {
-margin-top: 24px;
-display: flex;
-justify-content: center;
-gap: 6px;
+.mr-table tbody tr:hover {
+background: #fafbfc;
 }
 
-/* Community.css 에 page-btn 이 있을 가능성 높아서, 살짝만 보정 */
-.mr-pagination .page-btn {
-min-width: 32px;
-height: 32px;
-padding: 0 10px;
-border-radius: 999px;
-font-size: 13px;
+/* 삭제 버튼 */
+.mr-delete-btn {
+padding: 6px 14px;
+background: #ef4444;
+color: #ffffff;
+border: none;
+border-radius: 6px;
+font-size: 0.85rem;
+font-weight: 600;
+cursor: pointer;
+transition: background 0.2s ease;
 }
 
-/* ===================== 반응형 ===================== */
+.mr-delete-btn:hover {
+background: #dc2626;
+}
 
+/* 반응형 */
 @media (max-width: 768px) {
-.mr-container {
-    padding: 24px 12px 48px;
+.mr-main {
+    padding-top: 140px;
+    padding-bottom: 60px;
 }
 
 .mr-header-row {
-    align-items: flex-start;
+    flex-direction: column;
 }
 
-.mr-actions {
-    width: 100%;
-    margin-left: 0;
+.mr-page-title {
+    font-size: 2.2rem;
+}
+
+.mr-page-sub {
+    font-size: 1.05rem;
 }
 
 .mr-search {
-    width: 100%;
-    min-width: 0;
+    min-width: 100%;
+}
+
+.mr-list-section {
+    padding: 25px 20px;
+}
+
+.community-card {
+    padding: 16px 20px;
+}
+}
+
+@media (max-width: 480px) {
+.mr-main {
+    padding-top: 120px;
+}
+
+.mr-page-title {
+    font-size: 1.8rem;
+}
+
+.mr-page-sub {
+    font-size: 1rem;
+}
+
+.mr-list-section {
+    padding: 20px 15px;
+}
+
+.community-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.mr-pagination {
+    gap: 4px;
+}
+
+.mr-pagination button {
+    min-width: 32px;
+    height: 32px;
+    font-size: 0.85rem;
 }
 }
