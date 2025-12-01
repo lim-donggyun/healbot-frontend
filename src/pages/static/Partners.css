@@ -66,21 +66,24 @@
 }
 
 .partners-page-wrapper h1 {
-  font-size: 2.5rem;
-  color: #2c3e50;
-  margin-bottom: 10px;
+  font-size: 3rem;
+  color: #1a1a1a;
+  margin-bottom: 20px;
   text-align: center;
   font-weight: 700;
   width: 100%;
+  letter-spacing: -0.02em;
 }
 
 .partners-subtitle {
   text-align: center;
-  color: #7f8c8d;
-  font-size: 1rem;
-  margin-bottom: 50px;
+  color: #6b7280;
+  font-size: 1.2rem;
+  margin-bottom: 80px;
   width: 100%;
   line-height: 1.6;
+  font-weight: 300;
+  letter-spacing: -0.01em;
 }
 
 .partners-content {
@@ -96,10 +99,11 @@
 .partners-info-section h2,
 .partners-form-section h2,
 .partners-contact-section h2 {
-  font-size: 1.8rem;
-  color: #2c3e50;
-  margin-bottom: 25px;
+  font-size: 2.2rem;
+  color: #1a1a1a;
+  margin-bottom: 50px;
   font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
 .partners-cards {
@@ -110,41 +114,46 @@
 
 .partners-card {
   background: white;
-  padding: 30px;
-  border-radius: 12px;
+  padding: 35px 30px;
+  border-radius: 8px;
   text-align: center;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-  transition: all 0.3s ease;
-}
-
-.partners-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+  border: 1px solid #e5e7eb;
 }
 
 .partners-card-icon {
-  font-size: 3rem;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
+  color: #3284b1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.partners-card-icon svg {
+  width: 48px;
+  height: 48px;
+  stroke-width: 1.5;
 }
 
 .partners-card h3 {
   font-size: 1.2rem;
-  color: #2c3e50;
-  margin-bottom: 10px;
+  color: #1a1a1a;
+  margin-bottom: 12px;
   font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
 .partners-card p {
-  color: #666;
-  line-height: 1.6;
+  color: #6b7280;
+  line-height: 1.7;
   font-size: 0.95rem;
+  font-weight: 300;
 }
 
 .partners-form-section {
   background: white;
-  padding: 40px;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  padding: 45px 40px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
 }
 
 .partners-form {
@@ -166,9 +175,10 @@
 }
 
 .form-group label {
-  font-size: 0.95rem;
-  color: #2c3e50;
+  font-size: 1rem;
+  color: #1a1a1a;
   font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
 .required {
@@ -178,42 +188,46 @@
 .form-group input,
 .form-group select,
 .form-group textarea {
-  padding: 12px 15px;
-  border: 2px solid #ecf0f1;
-  border-radius: 8px;
+  padding: 13px 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
   font-size: 1rem;
-  color: #2c3e50;
-  transition: all 0.3s ease;
+  color: #1a1a1a;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  font-weight: 300;
 }
 
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: #3498db;
+  border-color: #3284b1;
+  box-shadow: 0 0 0 3px rgba(50, 132, 177, 0.1);
 }
 
 .form-group textarea {
   resize: none;
   font-family: inherit;
+  line-height: 1.6;
 }
 
 .partners-submit-btn {
-  padding: 15px;
-  background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+  padding: 16px;
+  background: #3284b1;
   color: white;
   border: none;
-  border-radius: 10px;
-  font-size: 1.1rem;
+  border-radius: 6px;
+  font-size: 1.05rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   margin-top: 10px;
+  letter-spacing: -0.01em;
 }
 
 .partners-submit-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+  background: #2a6d93;
 }
 
 .contact-methods {
@@ -223,30 +237,46 @@
 }
 
 .contact-method {
-  background: white;
+  background: transparent;
   padding: 25px;
-  border-radius: 12px;
+  border-radius: 6px;
   display: flex;
   align-items: center;
   gap: 15px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  border: none;
 }
 
 .contact-icon {
-  font-size: 2rem;
+  color: #3284b1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.contact-icon svg {
+  width: 40px;
+  height: 40px;
+  stroke-width: 1.5;
+}
+
+.contact-info {
+  background: transparent;
 }
 
 .contact-info strong {
   display: block;
-  color: #3498db;
+  color: #1a1a1a;
   font-size: 1rem;
-  margin-bottom: 5px;
+  margin-bottom: 6px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
 .contact-info p {
-  color: #555;
-  font-size: 0.95rem;
+  color: #6b7280;
+  font-size: 1rem;
   margin: 0;
+  font-weight: 300;
 }
 
 /* 반응형 디자인 */

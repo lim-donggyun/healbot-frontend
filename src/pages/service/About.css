@@ -59,216 +59,243 @@
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  padding: 40px 20px 60px;
-  padding-top: 150px;
+  padding: 40px 20px 80px;
+  padding-top: 180px;
   max-width: 1200px;
   margin: 0 auto;
 }
 
 .about-page-wrapper h1 {
-  font-size: 2.5rem;
-  color: #2c3e50;
-  margin-bottom: 10px;
+  font-size: 3rem;
+  color: #1a1a1a;
+  margin-bottom: 20px;
   text-align: center;
   font-weight: 700;
+  letter-spacing: -0.02em;
   width: 100%;
 }
 
 .about-subtitle {
   text-align: center;
-  color: #7f8c8d;
-  font-size: 1.1rem;
-  margin-bottom: 60px;
+  color: #6b7280;
+  font-size: 1.2rem;
+  margin-bottom: 80px;
   width: 100%;
+  font-weight: 400;
+  letter-spacing: -0.01em;
 }
 
 .about-section {
-  margin-bottom: 60px;
+  margin-bottom: 100px;
   width: 100%;
 }
 
 .about-section h2 {
-  font-size: 2rem;
-  color: #2c3e50;
-  margin-bottom: 30px;
+  font-size: 2.2rem;
+  color: #1a1a1a;
+  margin-bottom: 50px;
   text-align: center;
   font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
 .hero-section {
-  background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
-  color: white;
-  padding: 50px 40px;
-  border-radius: 15px;
-  box-shadow: 0 10px 30px rgba(52, 152, 219, 0.3);
+  background: #3284b1;
+  color: #ffffff;
+  padding: 60px 50px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
 }
 
 .hero-section h2 {
-  color: white;
-  margin-bottom: 20px;
+  color: #ffffff;
+  margin-bottom: 30px;
+  font-size: 2rem;
 }
 
 .hero-content p {
-  font-size: 1.1rem;
-  line-height: 1.8;
-  margin-bottom: 15px;
+  font-size: 1.05rem;
+  line-height: 1.9;
+  margin-bottom: 20px;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 300;
 }
 
 .feature-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 30px;
-  margin-top: 30px;
+  gap: 1px;
+  margin-top: 0;
+  background: #e5e7eb;
+  border: 1px solid #e5e7eb;
 }
 
 .feature-card {
   background: white;
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-  text-align: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.feature-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+  padding: 40px 30px;
+  border-radius: 4px;
+  box-shadow: none;
+  text-align: left;
 }
 
 .feature-icon {
-  font-size: 3rem;
-  margin-bottom: 15px;
+  margin-bottom: 24px;
+  color: #3284b1;
+  display: flex;
+  align-items: center;
+}
+
+.feature-icon svg {
+  width: 48px;
+  height: 48px;
+  stroke-width: 1.5;
 }
 
 .feature-card h3 {
-  font-size: 1.3rem;
-  color: #2c3e50;
-  margin-bottom: 10px;
+  font-size: 1.2rem;
+  color: #1a1a1a;
+  margin-bottom: 12px;
   font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
 .feature-card p {
-  color: #666;
-  line-height: 1.6;
+  color: #6b7280;
+  line-height: 1.7;
   font-size: 0.95rem;
+  font-weight: 300;
 }
 
 .why-list {
   display: flex;
   flex-direction: column;
-  gap: 25px;
-  margin-top: 30px;
+  gap: 1px;
+  margin-top: 0;
+  background: #e5e7eb;
+  border: 1px solid #e5e7eb;
 }
 
 .why-item {
   display: flex;
   align-items: flex-start;
-  gap: 25px;
+  gap: 30px;
   background: white;
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-  transition: transform 0.3s ease;
-}
-
-.why-item:hover {
-  transform: translateX(10px);
+  padding: 40px;
+  border-radius: 4px;
+  box-shadow: none;
 }
 
 .why-number {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: #3498db;
-  min-width: 80px;
-  text-align: center;
+  font-size: 3rem;
+  font-weight: 300;
+  color: #d1d5db;
+  min-width: 100px;
+  text-align: left;
+  line-height: 1;
+  letter-spacing: -0.02em;
 }
 
 .why-content h3 {
-  font-size: 1.4rem;
-  color: #2c3e50;
-  margin-bottom: 10px;
+  font-size: 1.3rem;
+  color: #1a1a1a;
+  margin-bottom: 12px;
   font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
 .why-content p {
-  color: #666;
-  line-height: 1.7;
+  color: #6b7280;
+  line-height: 1.8;
   font-size: 1rem;
+  font-weight: 300;
 }
 
 .vision-content {
   background: white;
-  padding: 40px;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-  margin-top: 30px;
+  padding: 60px;
+  border-radius: 8px;
+  box-shadow: none;
+  margin-top: 0;
+  border: 1px solid #e5e7eb;
 }
 
 .vision-content > p {
-  color: #555;
-  line-height: 1.8;
+  color: #4b5563;
+  line-height: 1.9;
   font-size: 1.05rem;
-  margin-bottom: 30px;
+  margin-bottom: 40px;
   text-align: center;
+  font-weight: 300;
 }
 
 .vision-box {
-  background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+  background: #3284b1;
   color: white;
-  padding: 40px;
-  border-radius: 12px;
+  padding: 50px 60px;
+  border-radius: 6px;
   text-align: center;
+  border-left: 4px solid #2a6d93;
 }
 
 .vision-box h3 {
   font-size: 1.8rem;
-  margin-bottom: 15px;
-  font-weight: 700;
+  margin-bottom: 20px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
 }
 
 .vision-box p {
-  font-size: 1.1rem;
-  line-height: 1.6;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 300;
 }
 
 .contact-section {
   background: white;
-  padding: 40px;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  padding: 60px;
+  border-radius: 8px;
+  box-shadow: none;
   text-align: center;
+  border: 1px solid #e5e7eb;
 }
 
 .contact-section p {
-  color: #666;
-  margin-bottom: 30px;
-  font-size: 1rem;
+  color: #6b7280;
+  margin-bottom: 50px;
+  font-size: 1.05rem;
+  font-weight: 300;
 }
 
 .contact-info {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 30px;
-  margin-top: 30px;
+  gap: 1px;
+  margin-top: 0;
+  background: #e5e7eb;
+  border: 1px solid #e5e7eb;
 }
 
 .contact-item {
-  padding: 20px;
-  background: #f8f9fa;
-  border-radius: 10px;
+  padding: 30px;
+  background: #fafbfc;
+  border-radius: 4px;
 }
 
 .contact-item strong {
   display: block;
-  color: #3498db;
-  font-size: 1.1rem;
-  margin-bottom: 10px;
+  color: #1a1a1a;
+  font-size: 1rem;
+  margin-bottom: 12px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
 .contact-item p {
-  color: #555;
+  color: #6b7280;
   font-size: 1rem;
   margin: 0;
+  font-weight: 300;
 }
 
 /* 반응형 디자인 */
@@ -280,12 +307,77 @@
 
 @media (max-width: 768px) {
   .about-page-wrapper .page {
+    padding: 40px 20px 60px;
+    padding-top: 140px;
+  }
+
+  .about-page-wrapper h1 {
+    font-size: 2.2rem;
+  }
+
+  .about-subtitle {
+    font-size: 1.05rem;
+    margin-bottom: 60px;
+  }
+
+  .about-section {
+    margin-bottom: 80px;
+  }
+
+  .about-section h2 {
+    font-size: 1.8rem;
+    margin-bottom: 40px;
+  }
+
+  .hero-section {
     padding: 40px 30px;
+  }
+
+  .feature-grid {
+    grid-template-columns: 1fr;
+    gap: 1px;
+  }
+
+  .feature-card {
+    padding: 35px 25px;
+  }
+
+  .contact-info {
+    grid-template-columns: 1fr;
+    gap: 1px;
+  }
+
+  .why-item {
+    padding: 30px;
+    gap: 20px;
+  }
+
+  .why-number {
+    font-size: 2.5rem;
+    min-width: 80px;
+  }
+
+  .vision-content {
+    padding: 40px 30px;
+  }
+
+  .vision-box {
+    padding: 40px 30px;
+  }
+
+  .contact-section {
+    padding: 40px 30px;
+  }
+}
+
+@media (max-width: 480px) {
+  .about-page-wrapper .page {
+    padding: 30px 15px 50px;
     padding-top: 120px;
   }
 
   .about-page-wrapper h1 {
-    font-size: 2rem;
+    font-size: 1.8rem;
   }
 
   .about-subtitle {
@@ -293,44 +385,39 @@
   }
 
   .about-section h2 {
-    font-size: 1.6rem;
-  }
-
-  .feature-grid {
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
-
-  .contact-info {
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
-
-  .why-item {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .why-number {
-    min-width: auto;
-  }
-}
-
-@media (max-width: 480px) {
-  .about-page-wrapper .page {
-    padding: 30px 20px;
-    padding-top: 100px;
-  }
-
-  .about-page-wrapper h1 {
-    font-size: 1.6rem;
+    font-size: 1.5rem;
   }
 
   .hero-section {
     padding: 30px 20px;
   }
 
+  .feature-card {
+    padding: 30px 20px;
+  }
+
+  .why-item {
+    padding: 25px 20px;
+  }
+
+  .why-number {
+    font-size: 2rem;
+    min-width: 60px;
+  }
+
+  .vision-content {
+    padding: 30px 20px;
+  }
+
+  .vision-box {
+    padding: 30px 20px;
+  }
+
   .vision-box h3 {
     font-size: 1.4rem;
+  }
+
+  .contact-section {
+    padding: 30px 20px;
   }
 }

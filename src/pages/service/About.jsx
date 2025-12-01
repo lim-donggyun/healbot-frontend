@@ -30,32 +30,61 @@ function About() {
           <h2>주요 기능</h2>
           <div className="feature-grid">
             <div className="feature-card">
-              <div className="feature-icon">🔍</div>
+              <div className="feature-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <path d="m21 21-4.35-4.35"></path>
+                </svg>
+              </div>
               <h3>AI 증상 검색</h3>
               <p>증상을 입력하면 AI가 분석하여 가능성 있는 질병과 대처 방법을 안내합니다.</p>
             </div>
             <div className="feature-card">
-              <div className="feature-icon">🏥</div>
+              <div className="feature-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M12 2v20M17 7H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                  <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                </svg>
+              </div>
               <h3>병원 찾기</h3>
               <p>진료과목별, 지역별로 병원을 검색하고 진료시간, 위치 정보를 확인할 수 있습니다.</p>
             </div>
             <div className="feature-card">
-              <div className="feature-icon">🚑</div>
+              <div className="feature-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                  <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                </svg>
+              </div>
               <h3>응급실 정보</h3>
               <p>실시간 응급실 가용 병상 정보와 위치를 제공하여 응급 상황에 빠르게 대응합니다.</p>
             </div>
             <div className="feature-card">
-              <div className="feature-icon">📚</div>
+              <div className="feature-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                  <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                </svg>
+              </div>
               <h3>질병 백과</h3>
               <p>다양한 질병에 대한 상세 정보, 증상, 예방법, 치료법을 제공합니다.</p>
             </div>
             <div className="feature-card">
-              <div className="feature-icon">💊</div>
+              <div className="feature-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+              </div>
               <h3>약물 정보</h3>
               <p>의약품 검색, 복용법, 부작용, 상호작용 정보를 확인할 수 있습니다.</p>
             </div>
             <div className="feature-card">
-              <div className="feature-icon">💬</div>
+              <div className="feature-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                </svg>
+              </div>
               <h3>커뮤니티</h3>
               <p>건강 관련 정보를 공유하고 다른 사용자들과 소통할 수 있습니다.</p>
             </div>
