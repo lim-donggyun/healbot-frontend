@@ -170,34 +170,41 @@ const OCR = ({ onVerified }) => {
 
           {/* 추출된 텍스트 */}
           {extractedText && (
-            <div className="ocr-result-section">
-              <h3 className="ocr-section-title">추출된 텍스트</h3>
-              <div className="ocr-result">
-                <pre>{extractedText}</pre>
-              </div>
-
-              <div className="ocr-result-actions">
-                <button
-                  className="ocr-btn ocr-btn-copy"
-                  type="button"
-                  onClick={() => {
-                    navigator.clipboard.writeText(extractedText);
-                    alert("텍스트가 클립보드에 복사되었습니다!");
-                  }}
-                >
-                  📋 텍스트 복사
-                </button>
-                <button
-                  className="ocr-btn ocr-btn-confirm"
-                  type="button"
-                  onClick={handleVerify}
-                  disabled={!!error || !extractedText}
-                >
-                  ✅ 이 영수증으로 인증하고 리뷰 작성하기
-                </button>
-              </div>
+          <div className="ocr-result-section">
+            <h3 className="ocr-section-title">추출된 텍스트</h3>
+            <div className="ocr-result">
+              {extractedText
+                .split("\n")
+                .filter((line) => line.trim() !== "")
+                .map((line, idx) => (
+                  <div key={idx} className="ocr-result-line">
+                    {line}
+                  </div>
+                ))}
             </div>
-          )}
+
+            <div className="ocr-result-actions">
+              <button
+                className="ocr-btn ocr-btn-copy"
+                type="button"
+                onClick={() => {
+                  navigator.clipboard.writeText(extractedText);
+                  alert("텍스트가 클립보드에 복사되었습니다!");
+                }}
+              >
+                📋 텍스트 복사
+              </button>
+              <button
+                className="ocr-btn ocr-btn-confirm"
+                type="button"
+                onClick={handleVerify}
+                disabled={!!error || !extractedText}
+              >
+                ✅ 이 영수증으로 인증하고 리뷰 작성하기
+              </button>
+            </div>
+          </div>
+        )}
         </div>
       </div>
     </div>
