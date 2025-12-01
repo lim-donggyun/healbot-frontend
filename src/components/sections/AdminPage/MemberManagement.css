@@ -889,7 +889,6 @@ tbody tr:hover {
 }
 
 .form-row input,
-.form-row textarea,
 .form-row select {
   width: 200px;
   padding: 8px 10px;
