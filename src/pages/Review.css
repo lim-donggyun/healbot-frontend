@@ -206,7 +206,7 @@ color: #999;
 }
 }
 /* === OCR 모달 공통 === */
-.modal-overlay {
+.ocr-modal-overlay {
 position: fixed;
 inset: 0;
 z-index: 2000;
@@ -216,7 +216,7 @@ align-items: center;
 justify-content: center;
 }
 
-.modal-content {
+.ocr-modal-content {
 position: relative;
 width: min(720px, 100% - 32px);
 max-height: 90vh;        /* 화면 넘치면 안쪽만 스크롤 */
@@ -228,7 +228,7 @@ padding: 24px 24px 20px;
 }
 
 /* 모달 안쪽 닫기 버튼 */
-.modal-close {
+.ocr-modal-close {
 position: absolute;
 top: 12px;
 right: 16px;
@@ -239,6 +239,6 @@ cursor: pointer;
 color: #6b7280;
 }
 
-.modal-close:hover {
+.ocr-modal-close:hover {
 color: #111827;
 }

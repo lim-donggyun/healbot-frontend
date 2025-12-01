@@ -199,18 +199,11 @@ return (
 
     {/* OCR 모달 */}
     {showOCR && (
-        <div className="rwm-backdrop" onClick={() => setShowOCR(false)}>
-        <div className="rwm-modal" onClick={(e) => e.stopPropagation()}>
-            <OCR hospitalId={hospitalId} onVerified={handleOcrVerified} />
-            <div style={{ textAlign: "right", marginTop: "8px" }}>
-            <button
-                className="rwm-btn rwm-btn-secondary"
-                onClick={() => setShowOCR(false)}
-            >
-                닫기
-            </button>
+        <div className="ocr-modal-overlay" onClick={() => setShowOCR(false)}>
+            <div className="ocr-modal-content" onClick={(e) => e.stopPropagation()}>
+                <button className="ocr-modal-close" onClick={() => setShowOCR(false)}>×</button>
+                <OCR hospitalId={hospitalId} onVerified={handleOcrVerified} />
             </div>
-        </div>
         </div>
     )}
 
