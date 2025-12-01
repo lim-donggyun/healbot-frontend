@@ -327,25 +327,27 @@ const MemberManagement = () => {
 
   if (loading) {
     return (
-      <main className="admin-page">
-        <div
-          style={{
-            gridColumn: "1 / -1",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            minHeight: "400px",
-            fontSize: "16px",
-            color: "var(--muted)",
-          }}>
-          데이터를 불러오는 중...
-        </div>
+      <main className="admin-page member-management-page">
+        <Sidebar />
+        <section className="admin-main">
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              minHeight: "400px",
+              fontSize: "16px",
+              color: "var(--muted)",
+            }}>
+            데이터를 불러오는 중...
+          </div>
+        </section>
       </main>
     );
   }
 
   return (
-    <main className="admin-page">
+    <main className="admin-page member-management-page">
       <Sidebar />
 
       {/* 메인 */}
@@ -359,17 +361,6 @@ const MemberManagement = () => {
           </div>
 
           <div className="member-search-filters">
-            <input
-              type="text"
-              className="search-input"
-              placeholder="회원 ID, 이름, 이메일, 연락처, 주소로 검색..."
-              value={keyword}
-              onChange={(e) => {
-                setKeyword(e.target.value);
-                applyFilter();
-              }}
-            />
-
             <div className="filter-group">
               <select className="filter-select" value={roleFilter} onChange={(e) => setRoleFilter(e.target.value)}>
                 <option value="ALL">전체 로그인타입</option>
@@ -384,6 +375,17 @@ const MemberManagement = () => {
                 <option value="F">여성</option>
               </select>
             </div>
+
+            <input
+              type="text"
+              className="search-input"
+              placeholder="회원 ID, 이름, 이메일, 연락처, 주소로 검색..."
+              value={keyword}
+              onChange={(e) => {
+                setKeyword(e.target.value);
+                applyFilter();
+              }}
+            />
           </div>
 
           <div className="member-table-container">
@@ -530,18 +532,18 @@ const MemberManagement = () => {
                     </div>
                   </div>
 
-                  <div className="detail-section">
+                  <div className="detail-section contact-info-section">
                     <h4>연락처 정보</h4>
                     <div className="detail-grid">
-                      <div className="detail-item full-width">
+                      <div className="detail-item">
                         <div className="detail-label">이메일</div>
                         <div className="detail-value">{selectedMember.EMAIL}</div>
                       </div>
-                      <div className="detail-item full-width">
+                      <div className="detail-item">
                         <div className="detail-label">연락처</div>
                         <div className="detail-value">{selectedMember.PHONE}</div>
                       </div>
-                      <div className="detail-item full-width">
+                      <div className="detail-item">
                         <div className="detail-label">주소</div>
                         <div className="detail-value">{selectedMember.ADDRESS}</div>
                       </div>

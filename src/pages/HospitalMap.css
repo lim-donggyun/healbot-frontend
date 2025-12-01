@@ -1089,7 +1089,6 @@
   padding: 20px;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: auto auto;
   gap: 20px;
 }
 
@@ -1163,7 +1162,7 @@
   font-weight: 600;
   color: #333;
   margin-bottom: 12px;
-  padding-bottom: 8px;
+  padding-bottom: 4px;
   border-bottom: 2px solid #3fc1ec;
 }
 
@@ -1316,7 +1315,7 @@
   width: 100%;
   margin-top: 12px;
   padding: 12px 16px;
-  background: linear-gradient(135deg, #FEE500 0%, #FFEB3B 100%);
+  background: linear-gradient(135deg, #fee500 0%, #ffeb3b 100%);
   color: #3c1e1e;
   border: none;
   border-radius: 8px;

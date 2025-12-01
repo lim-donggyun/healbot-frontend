@@ -43,8 +43,6 @@ const HospitalManagement = () => {
     longitude: "",
     latitude: "",
     simpleMap: "",
-    mainImage: null, // Changed to null for file object
-    websiteURL: "",
     departments: "",
   });
 
@@ -202,14 +200,6 @@ const HospitalManagement = () => {
     }));
   };
 
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    setFormData((prev) => ({
-      ...prev,
-      mainImage: file,
-    }));
-  };
-
   const handleAddressSearch = () => {
     if (!window.daum) {
       alert("주소 검색 서비스(Daum)가 로드되지 않았습니다. 잠시 후 다시 시도해주세요.");
@@ -265,11 +255,7 @@ const HospitalManagement = () => {
 
     const dataToSend = new FormData();
     for (const key in formData) {
-      if (key === "mainImage" && formData[key]) {
-        dataToSend.append(key, formData[key]);
-      } else if (key !== "mainImage") {
-        dataToSend.append(key, formData[key]);
-      }
+      dataToSend.append(key, formData[key]);
     }
 
     try {
@@ -307,6 +293,35 @@ const HospitalManagement = () => {
     }
   };
 
+  // 상세 모달이 열릴 때 카카오맵 렌더링
+  useEffect(() => {
+    if (isDetailModalOpen && selectedHospital && selectedHospital.latitude && selectedHospital.longitude) {
+      setTimeout(() => {
+        const container = document.getElementById("admin-detail-kakao-map");
+        if (!container || !window.kakao || !window.kakao.maps) return;
+
+        const options = {
+          center: new window.kakao.maps.LatLng(
+            parseFloat(selectedHospital.latitude),
+            parseFloat(selectedHospital.longitude)
+          ),
+          level: 3,
+        };
+        const map = new window.kakao.maps.Map(container, options);
+
+        // 마커 생성
+        const markerPosition = new window.kakao.maps.LatLng(
+          parseFloat(selectedHospital.latitude),
+          parseFloat(selectedHospital.longitude)
+        );
+        const marker = new window.kakao.maps.Marker({
+          position: markerPosition,
+        });
+        marker.setMap(map);
+      }, 100);
+    }
+  }, [isDetailModalOpen, selectedHospital]);
+
   const handleEditFromDetail = () => {
     setFormData({
       hospitalId: selectedHospital.hospitalId || "",
@@ -324,8 +339,6 @@ const HospitalManagement = () => {
       longitude: selectedHospital.longitude || "",
       latitude: selectedHospital.latitude || "",
       simpleMap: selectedHospital.simpleMap || "",
-      mainImage: null, // File input cannot be pre-filled
-      websiteURL: selectedHospital.websiteURL || "",
       departments: departments.join(", ") || "",
     });
     setIsEditMode(true);
@@ -370,8 +383,6 @@ const HospitalManagement = () => {
       longitude: "",
       latitude: "",
       simpleMap: "",
-      mainImage: null,
-      websiteURL: "",
       departments: "",
     });
     setSelectedHospital(null);
@@ -431,7 +442,7 @@ const HospitalManagement = () => {
   }
 
   return (
-    <main className="admin-page">
+    <main className="admin-page hospital-management-page">
       <Sidebar />
       <section className="admin-main">
         <div className="hospital-management">
@@ -579,6 +590,7 @@ const HospitalManagement = () => {
               <form onSubmit={handleSubmit} className="hospital-form">
                 <div className="form-two-column">
                   <div className="form-column">
+                    {/* 왼쪽 열 (Left Column) - 7개 */}
                     <div className="form-row">
                       <label>병원 ID *</label>
                       <input
@@ -590,7 +602,6 @@ const HospitalManagement = () => {
                         disabled={isEditMode}
                       />
                     </div>
-
                     <div className="form-row">
                       <label>병원명 *</label>
                       <input
@@ -601,7 +612,6 @@ const HospitalManagement = () => {
                         required
                       />
                     </div>
-
                     <div className="form-row">
                       <label>주소 *</label>
                       <div className="address-input-group">
@@ -617,7 +627,6 @@ const HospitalManagement = () => {
                         />
                       </div>
                     </div>
-
                     <div className="form-row">
                       <label>상세 주소</label>
                       <input
@@ -626,85 +635,6 @@ const HospitalManagement = () => {
                         value={formData.detailAddress || ""}
                         onChange={handleInputChange}
                         placeholder="상세 주소 입력"
-                      />
-                    </div>
-
-                    <div className="form-row">
-                      <label>병원 등급</label>
-                      <select name="hospitalGrade" value={formData.hospitalGrade} onChange={handleInputChange}>
-                        <option value="">선택하세요</option>
-                        <option value="1">1차병원</option>
-                        <option value="2">2차병원</option>
-                        <option value="3">3차병원</option>
-                      </select>
-                    </div>
-
-                    <div className="form-row">
-                      <label>병원 유형</label>
-                      <select name="hospitalType" value={formData.hospitalType} onChange={handleInputChange}>
-                        <option value="">선택하세요</option>
-                        <option value="한의원">한의원</option>
-                        <option value="의원">의원</option>
-                        <option value="치과의원">치과의원</option>
-                        <option value="한방병원">한방병원</option>
-                        <option value="요양병원">요양병원</option>
-                        <option value="병원">병원</option>
-                        <option value="치과병원">치과병원</option>
-                        <option value="종합병원">종합병원</option>
-                      </select>
-                    </div>
-
-                    <div className="form-row">
-                      <label>전화번호</label>
-                      <input
-                        type="text"
-                        name="phone"
-                        value={formData.phone}
-                        onChange={handleInputChange}
-                        placeholder="02-1234-5678"
-                      />
-                    </div>
-
-                    <div className="form-row">
-                      <label>응급실 전화번호</label>
-                      <input
-                        type="text"
-                        name="erPhone"
-                        value={formData.erPhone}
-                        onChange={handleInputChange}
-                        placeholder="02-1234-5679"
-                      />
-                    </div>
-
-                    <div className="form-row">
-                      <label>응급실 여부</label>
-                      <select name="emergencyYn" value={formData.emergencyYn} onChange={handleInputChange}>
-                        <option value="N">없음</option>
-                        <option value="Y">있음</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="form-column">
-                    <div className="form-row" onClick={() => setIsOperatingHoursModalOpen(true)} style={{ cursor: 'pointer' }}>
-                      <label>운영시간</label>
-                      <input
-                        type="text"
-                        name="operatingHours"
-                        value={formData.operatingHours}
-                        readOnly
-                        placeholder="클릭하여 운영시간 설정"
-                        style={{ cursor: 'pointer' }}
-                      />
-                    </div>
-                    <div className="form-row">
-                      <label>점심시간</label>
-                      <input
-                        type="text"
-                        name="lunchTime"
-                        value={formData.lunchTime}
-                        onChange={handleInputChange}
-                        placeholder="12:00~13:00"
                       />
                     </div>
                     <div className="form-row">
@@ -730,34 +660,6 @@ const HospitalManagement = () => {
                         />
                       </div>
                     </div>
-
-                    <div className="form-row">
-                      <label>상세정보</label>
-                      <textarea
-                        name="details"
-                        value={formData.details}
-                        onChange={handleInputChange}
-                        style={{ height: "100px", resize: "none" }}
-                        placeholder="병원에 대한 상세 설명을 입력하세요"
-                      />
-                    </div>
-
-                    <div className="form-row">
-                      <label>웹사이트 URL</label>
-                      <input
-                        type="text"
-                        name="websiteURL"
-                        value={formData.websiteURL}
-                        onChange={handleInputChange}
-                        placeholder="https://www.example.com"
-                      />
-                    </div>
-
-                    <div className="form-row">
-                      <label>메인 이미지</label>
-                      <input type="file" name="mainImage" accept="image/*" onChange={handleImageUpload} />
-                    </div>
-
                     <div className="form-row">
                       <label>간의 약도</label>
                       <input
@@ -768,7 +670,32 @@ const HospitalManagement = () => {
                         placeholder="강남역 2번출구 앞"
                       />
                     </div>
-
+                    <div className="form-row">
+                      <label>병원 유형</label>
+                      <select name="hospitalType" value={formData.hospitalType} onChange={handleInputChange}>
+                        <option value="">선택하세요</option>
+                        <option value="한의원">한의원</option>
+                        <option value="의원">의원</option>
+                        <option value="치과의원">치과의원</option>
+                        <option value="한방병원">한방병원</option>
+                        <option value="요양병원">요양병원</option>
+                        <option value="병원">병원</option>
+                        <option value="치과병원">치과병원</option>
+                        <option value="종합병원">종합병원</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className="form-column">
+                    {/* 오른쪽 열 (Right Column) - 7개 */}
+                    <div className="form-row">
+                      <label>병원 등급</label>
+                      <select name="hospitalGrade" value={formData.hospitalGrade} onChange={handleInputChange}>
+                        <option value="">선택하세요</option>
+                        <option value="1">1차병원</option>
+                        <option value="2">2차병원</option>
+                        <option value="3">3차병원</option>
+                      </select>
+                    </div>
                     <div className="form-row" onClick={() => setIsDepartmentsModalOpen(true)} style={{ cursor: 'pointer' }}>
                       <label>진료과</label>
                       <input
@@ -780,6 +707,66 @@ const HospitalManagement = () => {
                         style={{ cursor: 'pointer' }}
                       />
                     </div>
+                    <div className="form-row" onClick={() => setIsOperatingHoursModalOpen(true)} style={{ cursor: 'pointer' }}>
+                      <label>운영시간</label>
+                      <input
+                        type="text"
+                        name="operatingHours"
+                        value={formData.operatingHours}
+                        readOnly
+                        placeholder="클릭하여 운영시간 설정"
+                        style={{ cursor: 'pointer' }}
+                      />
+                    </div>
+                    <div className="form-row">
+                      <label>점심시간</label>
+                      <input
+                        type="text"
+                        name="lunchTime"
+                        value={formData.lunchTime}
+                        onChange={handleInputChange}
+                        placeholder="12:00~13:00"
+                      />
+                    </div>
+                    <div className="form-row">
+                      <label>전화번호</label>
+                      <input
+                        type="text"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleInputChange}
+                        placeholder="02-1234-5678"
+                      />
+                    </div>
+                    <div className="form-row">
+                      <label>응급실 전화번호</label>
+                      <input
+                        type="text"
+                        name="erPhone"
+                        value={formData.erPhone}
+                        onChange={handleInputChange}
+                        placeholder="02-1234-5679"
+                      />
+                    </div>
+                    <div className="form-row">
+                      <label>응급실 여부</label>
+                      <select name="emergencyYn" value={formData.emergencyYn} onChange={handleInputChange}>
+                        <option value="N">없음</option>
+                        <option value="Y">있음</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div className="form-full-width-row">
+                  <div className="form-row">
+                    <label>상세정보</label>
+                    <textarea
+                      name="details"
+                      value={formData.details}
+                      onChange={handleInputChange}
+                      style={{ height: "100px", resize: "none" }}
+                      placeholder="병원에 대한 상세 설명을 입력하세요"
+                    />
                   </div>
                 </div>
 
@@ -807,103 +794,143 @@ const HospitalManagement = () => {
                 </button>
               </div>
 
-              <div className="detail-content">
-                <div className="detail-section">
-                  <h4>기본 정보</h4>
-                  <div className="detail-grid">
-                    <div className="detail-item">
-                      <span className="detail-label">병원 ID:</span>
-                      <span className="detail-value">{selectedHospital.hospitalId}</span>
-                    </div>
-                    <div className="detail-item">
-                      <span className="detail-label">병원명:</span>
-                      <span className="detail-value">{selectedHospital.hospitalName}</span>
-                    </div>
-                    <div className="detail-item full-width">
-                      <span className="detail-label">주소:</span>
-                      <span className="detail-value">{selectedHospital.address}</span>
-                    </div>
-                    <div className="detail-item">
-                      <span className="detail-label">병원 등급:</span>
-                      <span className="detail-value">{formatHospitalGrade(selectedHospital.hospitalGrade)}</span>
-                    </div>
-                    <div className="detail-item">
-                      <span className="detail-label">병원 유형:</span>
-                      <span className="detail-value">{selectedHospital.hospitalType || "-"}</span>
-                    </div>
-                    <div className="detail-item">
-                      <span className="detail-label">전화번호:</span>
-                      <span className="detail-value">{selectedHospital.phone || "-"}</span>
-                    </div>
-                    <div className="detail-item">
-                      <span className="detail-label">응급실 전화:</span>
-                      <span className="detail-value">{selectedHospital.erPhone || "-"}</span>
-                    </div>
-                    <div className="detail-item">
-                      <span className="detail-label">응급실:</span>
-                      <span className="detail-value">{selectedHospital.emergencyYn === "Y" ? "있음" : "없음"}</span>
-                    </div>
-                    <div className="detail-item">
-                      <span className="detail-label">운영시간:</span>
-                      <span className="detail-value">
-                        {selectedHospital.operatingHours
-                          ? selectedHospital.operatingHours
-                              .split("|")
-                              .map((time, idx) => <div key={idx}>{time.trim()}</div>)
-                          : "-"}
-                      </span>
-                    </div>
-                    <div className="detail-item">
-                      <span className="detail-label">점심시간:</span>
-                      <span className="detail-value">{selectedHospital.lunchTime || "-"}</span>
-                    </div>
-                    <div className="detail-item">
-                      <span className="detail-label">경도:</span>
-                      <span className="detail-value">{selectedHospital.longitude || "-"}</span>
-                    </div>
-                    <div className="detail-item">
-                      <span className="detail-label">위도:</span>
-                      <span className="detail-value">{selectedHospital.latitude || "-"}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="detail-section">
-                  <h4>진료과 목록</h4>
-                  <div className="departments-list">
-                    {departments.length > 0 ? (
-                      departments.map((dept, index) => (
-                        <span key={index} className="department-tag">
-                          {dept}
+              <div className="detail-content detail-content-two-column">
+                {/* 왼쪽 열 */}
+                <div className="detail-left-column">
+                  <div className="detail-section">
+                    <h4>기본 정보</h4>
+                    <div className="detail-grid">
+                      <div className="detail-item">
+                        <span className="detail-label">병원 ID:</span>
+                        <span className="detail-value">{selectedHospital.hospitalId}</span>
+                      </div>
+                      <div className="detail-item">
+                        <span className="detail-label">병원명:</span>
+                        <span className="detail-value">{selectedHospital.hospitalName}</span>
+                      </div>
+                      <div className="detail-item">
+                        <span className="detail-label">병원 등급:</span>
+                        <span className="detail-value">{formatHospitalGrade(selectedHospital.hospitalGrade)}</span>
+                      </div>
+                      <div className="detail-item">
+                        <span className="detail-label">병원 유형:</span>
+                        <span className="detail-value">{selectedHospital.hospitalType || "-"}</span>
+                      </div>
+                      <div className="detail-item">
+                        <span className="detail-label">전화번호:</span>
+                        <span className="detail-value">{selectedHospital.phone || "-"}</span>
+                      </div>
+                      <div className="detail-item">
+                        <span className="detail-label">응급실 전화:</span>
+                        <span className="detail-value">{selectedHospital.erPhone || "-"}</span>
+                      </div>
+                      <div className="detail-item">
+                        <span className="detail-label">응급실:</span>
+                        <span className="detail-value">{selectedHospital.emergencyYn === "Y" ? "있음" : "없음"}</span>
+                      </div>
+                      <div className="detail-item">
+                        <span className="detail-label">운영시간:</span>
+                        <span className="detail-value">
+                          {selectedHospital.operatingHours
+                            ? selectedHospital.operatingHours
+                                .split("|")
+                                .map((time, idx) => <div key={idx}>{time.trim()}</div>)
+                            : "-"}
                         </span>
-                      ))
-                    ) : (
-                      <p className="no-data">등록된 진료과가 없습니다.</p>
-                    )}
+                      </div>
+                      <div className="detail-item">
+                        <span className="detail-label">점심시간:</span>
+                        <span className="detail-value">{selectedHospital.lunchTime || "-"}</span>
+                      </div>
+                      <div className="detail-item">
+                        <span className="detail-label">경도:</span>
+                        <span className="detail-value">{selectedHospital.longitude || "-"}</span>
+                      </div>
+                      <div className="detail-item">
+                        <span className="detail-label">위도:</span>
+                        <span className="detail-value">{selectedHospital.latitude || "-"}</span>
+                      </div>
+                      <div className="detail-item">
+                        <span className="detail-label">간단 지도:</span>
+                        <span className="detail-value">{selectedHospital.simpleMap || "-"}</span>
+                      </div>
+                      <div className="detail-item full-width">
+                        <span className="detail-label">상세정보:</span>
+                        <span className="detail-value">{selectedHospital.details || "-"}</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
-                <div className="detail-section">
-                  <h4>추가 정보</h4>
-                  <div className="detail-info">
-                    <div className="detail-item-single">
-                      <span className="detail-label">상세정보:</span>
-                      <span className="detail-value">{selectedHospital.details || "-"}</span>
+                {/* 오른쪽 열 */}
+                <div className="detail-right-column">
+                  <div className="detail-section">
+                    <h4>진료과 목록</h4>
+                    <div className="departments-list">
+                      {departments.length > 0 ? (
+                        departments.map((dept, index) => (
+                          <span key={index} className="department-tag">
+                            {dept}
+                          </span>
+                        ))
+                      ) : (
+                        <p className="no-data">등록된 진료과가 없습니다.</p>
+                      )}
                     </div>
-                    <div className="hospital-image-box">
-                      <a href="https://www.naver.com" target="_blank" rel="noopener noreferrer" className="image-link">
-                        <img
-                          src="https://pub-f8fd744877724e40a29110baaa7d9f66.r2.dev/healbot/main/section3.png"
-                          alt={selectedHospital.hospitalName}
-                          className="hospital-image"
-                        />
-                      </a>
+                  </div>
+
+                  <div className="detail-section">
+                    <h4>병원 위치</h4>
+                    <div className="detail-info">
+                      {selectedHospital.latitude && selectedHospital.longitude ? (
+                        <div className="hospital-map-box">
+                          <div
+                            id="admin-detail-kakao-map"
+                            style={{
+                              width: "100%",
+                              height: "250px",
+                              borderRadius: "8px",
+                              border: "2px solid #dee2e6",
+                              marginBottom: "12px",
+                            }}></div>
+                          <div className="detail-item-single">
+                            <span className="detail-label">주소:</span>
+                            <span className="detail-value">{selectedHospital.address || "-"}</span>
+                          </div>
+                          <button
+                            className="kakao-map-navigate-btn"
+                            onClick={() => {
+                              const lat = selectedHospital.latitude;
+                              const lng = selectedHospital.longitude;
+                              const name = selectedHospital.hospitalName;
+                              window.open(
+                                `https://map.kakao.com/link/map/${encodeURIComponent(name)},${lat},${lng}`,
+                                "_blank"
+                              );
+                            }}>
+                            <svg
+                              viewBox="0 0 24 24"
+                              width="18"
+                              height="18"
+                              fill="currentColor"
+                              style={{ marginRight: "6px" }}>
+                              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                            </svg>
+                            카카오맵에서 보기
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="detail-item-single">
+                          <span className="detail-label">주소:</span>
+                          <span className="detail-value">{selectedHospital.address || "-"}</span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div className="detail-actions">
+              <div className="modal-footer">
                 <button className="edit-btn" onClick={handleEditFromDetail}>
                   수정
                 </button>

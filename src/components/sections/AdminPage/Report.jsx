@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import '../../../pages/MainPage.css';
-import './Dashboard.css';
+import './Report.css';
 
 const Report = () => {
   const navigate = useNavigate();
@@ -319,7 +319,7 @@ const Report = () => {
 
   if (loading) {
     return (
-      <main className="admin-page">
+      <main className="admin-page admin-report-page">
         <Sidebar />
         <div style={{
           gridColumn: '1 / -1',
@@ -337,7 +337,7 @@ const Report = () => {
   }
 
   return (
-    <main className="admin-page">
+    <main className="admin-page admin-report-page">
       <Sidebar />
 
       {/* 메인 */}

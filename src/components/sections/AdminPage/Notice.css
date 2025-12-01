@@ -472,3 +472,39 @@
     max-height: 95vh;
   }
 }
+
+/* Edit and Delete Button Styles */
+.edit-btn,
+.delete-btn {
+  padding: 6px 12px;
+  margin-right: 5px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.3s;
+  color: white;
+}
+
+.edit-btn {
+  background-color: #28a745;
+}
+
+.edit-btn:hover {
+  background-color: #218838;
+}
+
+.delete-btn {
+  background-color: #dc3545;
+}
+
+.delete-btn:hover {
+  background-color: #c82333;
+}
+
+.modal-footer .edit-btn,
+.modal-footer .delete-btn {
+  padding: 10px 20px;
+  font-size: 14px;
+  margin-right: 0;
+}

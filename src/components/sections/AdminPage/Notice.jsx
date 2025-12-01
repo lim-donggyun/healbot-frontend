@@ -554,10 +554,10 @@ const Notice = () => {
                   </div>
                 </div>
                 <div className="modal-footer">
-                  <button className="btn-outline btn" onClick={handleEditFromDetail}>
+                  <button className="edit-btn" onClick={handleEditFromDetail}>
                     수정
                   </button>
-                  <button className="btn btn-danger" onClick={handleDeleteFromDetail}>
+                  <button className="delete-btn" onClick={handleDeleteFromDetail}>
                     삭제
                   </button>
                 </div>

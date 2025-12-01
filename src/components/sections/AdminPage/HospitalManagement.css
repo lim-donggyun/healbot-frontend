@@ -1,5 +1,8 @@
+/* ==================== HospitalManagement.css ==================== */
+/* 병원 관리 페이지 전용 스타일 */
+
 /* 로딩 */
-.loading-container {
+.hospital-management-page .loading-container {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -8,16 +11,16 @@
   gap: 20px;
 }
 
-.loading-spinner {
+.hospital-management-page .loading-spinner {
   width: 50px;
   height: 50px;
   border: 4px solid #f3f3f3;
   border-top: 4px solid #3284b1;
   border-radius: 50%;
-  animation: spin 1s linear infinite;
+  animation: hospital-spin 1s linear infinite;
 }
 
-@keyframes spin {
+@keyframes hospital-spin {
   0% {
     transform: rotate(0deg);
   }
@@ -26,7 +29,7 @@
   }
 }
 
-.loading-text {
+.hospital-management-page .loading-text {
   font-size: 16px;
   color: #6c757d;
   font-weight: 500;
@@ -49,6 +52,7 @@
   font-size: 24px;
   font-weight: 600;
   color: #333;
+  margin-top: 0;
 }
 
 .hospital-count {
@@ -322,8 +326,7 @@
   border-radius: 12px;
   width: 90%;
   max-width: 900px;
-  max-height: 85vh;
-  overflow-y: auto;
+  overflow-y: hidden !important;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
 }
 
@@ -413,8 +416,21 @@
   text-align: left; /* Ensure label is left-aligned */
 }
 
+.form-row textarea {
+  width: 622px; /* Set fixed width */
+  flex-grow: 0; /* Prevent stretching */
+  flex-shrink: 0; /* Prevent shrinking */
+  /* Removed flex: 1; to allow natural width */
+  padding: 10px 14px;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: all 0.2s;
+  background-color: #ffffff;
+  /* Removed margin-left: 10px; */
+}
+
 .form-row input,
-.form-row textarea,
 .form-row select {
   width: 200px; /* Set fixed width */
   flex-grow: 0; /* Prevent stretching */
@@ -500,17 +516,29 @@
 
 /* 상세 모달 */
 .detail-modal {
-  max-width: 900px;
+  max-width: 1200px;
   max-height: 90vh;
-  overflow-y: hidden; /* Added to remove scrollbar from detail modal */
+  display: flex;
+  flex-direction: column;
 }
 
 .detail-content {
   padding: 20px;
+}
+
+/* 2열 레이아웃 */
+.detail-content-two-column {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: auto auto;
-  gap: 20px;
+  gap: 30px;
+  padding: 20px 24px;
+}
+
+.detail-left-column,
+.detail-right-column {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
 }
 
 .detail-section {
@@ -519,77 +547,37 @@
   padding-bottom: 0;
 }
 
-.detail-section:nth-child(1) {
-  grid-column: 1;
-  grid-row: 1 / 3;
-  overflow: hidden;
-}
-
-.detail-section:nth-child(1) .detail-grid {
+.detail-section .detail-grid {
   display: flex;
   flex-direction: column;
   gap: 0;
 }
 
-.detail-section:nth-child(1) .detail-item {
+.detail-section .detail-item {
+  display: flex;
   flex-direction: row;
   gap: 10px;
   padding: 6px 0;
   border-bottom: 1px solid #e9ecef;
 }
 
-.detail-section:nth-child(1) .detail-item:last-child {
+.detail-section .detail-item:last-child {
   border-bottom: none;
 }
 
-.detail-section:nth-child(1) .detail-label {
+.detail-section .detail-label {
   min-width: 120px;
   flex-shrink: 0;
+  font-size: 13px;
+  color: #6c757d;
+  font-weight: 600;
 }
 
-.detail-section:nth-child(1) .detail-value {
+.detail-section .detail-value {
   flex: 1;
-}
-
-.detail-section:nth-child(2) {
-  grid-column: 2;
-  grid-row: 1;
-  display: flex; /* Use Flexbox */
-  flex-direction: column; /* Stack children vertically */
-  max-height: 150px; /* Set a fixed height for the entire section */
-  margin-bottom: 15px; /* Added margin-bottom */
-}
-
-.detail-section:nth-child(3) {
-  grid-column: 2;
-  grid-row: 2;
-}
-
-.detail-section:nth-child(3) .detail-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-}
-
-.detail-section:nth-child(3) .detail-item {
-  flex-direction: row;
-  gap: 10px;
-  padding: 6px 0;
-  border-bottom: 1px solid #e9ecef;
-}
-
-.detail-section:nth-child(3) .detail-item:last-child {
-  border-bottom: none;
-}
-
-.detail-section:nth-child(3) .detail-label {
-  min-width: 100px;
-  flex-shrink: 0;
-}
-
-.detail-section:nth-child(3) .detail-value {
-  flex: 1;
-  word-break: break-all;
+  font-size: 13px;
+  color: #333;
+  word-break: break-word;
 }
 
 .hospital-image-box {
@@ -715,9 +703,8 @@
   flex-wrap: wrap;
   gap: 6px;
   justify-content: flex-start;
-  overflow-y: auto; /* Enable vertical scrolling */
-  flex-grow: 1; /* Allow it to take up available space */
-  min-height: 0; /* Necessary for flex item with overflow */
+  max-height: 92px;
+  overflow-y: auto;
 }
 
 .department-tag {
@@ -738,24 +725,59 @@
 }
 
 /* 상세 액션 버튼 */
-.detail-actions {
+.detail-actions,
+.modal-footer {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
-  padding: 20px;
+  padding: 16px 24px;
   border-top: 1px solid #dee2e6;
 }
 
 .detail-actions .edit-btn,
-.detail-actions .delete-btn {
+.detail-actions .delete-btn,
+.modal-footer .edit-btn,
+.modal-footer .delete-btn {
   padding: 10px 20px;
   font-size: 14px;
   margin-right: 0;
 }
 
+/* 카카오맵 길찾기 버튼 */
+.kakao-map-navigate-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 12px 20px;
+  background-color: #fee500;
+  color: #3c1e1e;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 8px;
+}
+
+.kakao-map-navigate-btn:hover {
+  background-color: #fdd835;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.hospital-map-box {
+  width: 100%;
+}
+
 /* 반응형 */
 @media (max-width: 768px) {
   .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-content-two-column {
     grid-template-columns: 1fr;
   }
 

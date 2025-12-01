@@ -213,3 +213,79 @@ export const updateFeaturedDiseasesOrder = async (list) => {
     throw error;
   }
 };
+
+// 질환 추가 (관리자)
+export const addDisease = async (diseaseName, description, imageFile) => {
+  try {
+    const formData = new FormData();
+    formData.append("diseaseName", diseaseName);
+    formData.append("description", description);
+    if (imageFile) {
+      formData.append("image", imageFile);
+    }
+
+    const response = await fetch(`${API_BASE_URL}/admin/diseases`, {
+      method: "POST",
+      credentials: "include",
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error("질환 추가 실패");
+    }
+
+    const data = await response.json();
+    return data; // { success: true, message: "..." }
+  } catch (error) {
+    console.error("질환 추가 에러:", error);
+    throw error;
+  }
+};
+
+// 질환 수정 (관리자)
+export const updateDisease = async (diseaseNo, diseaseName, description, imageFile) => {
+  try {
+    const formData = new FormData();
+    formData.append("diseaseName", diseaseName);
+    formData.append("description", description);
+    if (imageFile) {
+      formData.append("image", imageFile);
+    }
+
+    const response = await fetch(`${API_BASE_URL}/admin/diseases/${diseaseNo}`, {
+      method: "PUT",
+      credentials: "include",
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error("질환 수정 실패");
+    }
+
+    const data = await response.json();
+    return data; // { success: true, message: "..." }
+  } catch (error) {
+    console.error("질환 수정 에러:", error);
+    throw error;
+  }
+};
+
+// 질환 삭제 (관리자)
+export const deleteDisease = async (diseaseNo) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/admin/diseases/${diseaseNo}`, {
+      method: "DELETE",
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      throw new Error("질환 삭제 실패");
+    }
+
+    const data = await response.json();
+    return data; // { success: true, message: "..." }
+  } catch (error) {
+    console.error("질환 삭제 에러:", error);
+    throw error;
+  }
+};

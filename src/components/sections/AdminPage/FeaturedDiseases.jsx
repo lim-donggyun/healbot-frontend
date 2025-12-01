@@ -8,10 +8,12 @@ import {
   addFeaturedDisease,
   removeFeaturedDisease,
   updateFeaturedDiseasesOrder,
-  getDiseaseByName
+  getDiseaseByName,
+  addDisease,
+  updateDisease,
+  deleteDisease
 } from '../../../utils/diseasesApi';
 import { symptomsByBodyPart } from '../../../data/symptomsData';
-import './HospitalManagement.css';
 import './FeaturedDiseases.css';
 
 const FeaturedDiseases = () => {
@@ -37,6 +39,10 @@ const FeaturedDiseases = () => {
     전체증상목록: '',
     환자수: ''
   });
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingDisease, setEditingDisease] = useState(null);
+  const [editImageFile, setEditImageFile] = useState(null);
+  const [editImagePreview, setEditImagePreview] = useState('');
 
   const itemsPerPage = 5;
 
@@ -273,26 +279,25 @@ const FeaturedDiseases = () => {
   };
 
   const handleAddDiseaseSubmit = async () => {
-    if (!newDisease.질환명 || !newDisease.진료과) {
-      alert('질환명과 진료과는 필수 입력 항목입니다.');
+    if (!newDisease.질환명) {
+      alert('질환명은 필수 입력 항목입니다.');
       return;
     }
 
     try {
-      // TODO: API 연동 (이미지 업로드 포함)
-      const formData = new FormData();
-      formData.append('질환명', newDisease.질환명);
-      formData.append('진료과', newDisease.진료과);
-      formData.append('설명', newDisease.설명);
-      formData.append('전체증상목록', newDisease.전체증상목록);
-      formData.append('환자수', newDisease.환자수);
-      if (imageFile) {
-        formData.append('이미지', imageFile);
-      }
+      const result = await addDisease(
+        newDisease.질환명,
+        newDisease.설명 || '',
+        imageFile
+      );
 
-      alert('질환 추가 기능은 추후 구현 예정입니다.');
-      setIsAddModalOpen(false);
-      // await fetchData(); // 데이터 새로고침
+      if (result.success) {
+        alert(result.message || '질환이 추가되었습니다.');
+        setIsAddModalOpen(false);
+        await fetchData(); // 데이터 새로고침
+      } else {
+        alert(result.message || '질환 추가에 실패했습니다.');
+      }
     } catch (error) {
       console.error('질환 추가 실패:', error);
       alert('질환 추가에 실패했습니다.');
@@ -333,6 +338,102 @@ const FeaturedDiseases = () => {
     }));
   };
 
+  // 질환 수정 모달 열기
+  const handleEditModalOpen = (disease) => {
+    setEditingDisease({
+      diseaseNo: disease.diseaseNo || null,
+      질환명: disease.질환명 || '',
+      설명: disease.설명 || '',
+      이미지: disease.이미지 || ''
+    });
+    setEditImagePreview(disease.이미지 || '');
+    setEditImageFile(null);
+    setIsEditModalOpen(true);
+  };
+
+  // 질환 수정 제출
+  const handleEditDiseaseSubmit = async () => {
+    if (!editingDisease.질환명) {
+      alert('질환명은 필수 입력 항목입니다.');
+      return;
+    }
+
+    if (!editingDisease.diseaseNo) {
+      alert('질환 번호가 없습니다. 다시 시도해주세요.');
+      return;
+    }
+
+    try {
+      const result = await updateDisease(
+        editingDisease.diseaseNo,
+        editingDisease.질환명,
+        editingDisease.설명 || '',
+        editImageFile
+      );
+
+      if (result.success) {
+        alert(result.message || '질환이 수정되었습니다.');
+        setIsEditModalOpen(false);
+        setIsDetailModalOpen(false);
+        await fetchData();
+      } else {
+        alert(result.message || '질환 수정에 실패했습니다.');
+      }
+    } catch (error) {
+      console.error('질환 수정 실패:', error);
+      alert('질환 수정에 실패했습니다.');
+    }
+  };
+
+  // 질환 삭제
+  const handleDeleteDisease = async (diseaseNo, diseaseName) => {
+    if (!diseaseNo) {
+      alert('질환 번호가 없습니다. 다시 시도해주세요.');
+      return;
+    }
+
+    if (!window.confirm(`"${diseaseName}"을(를) 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`)) {
+      return;
+    }
+
+    try {
+      const result = await deleteDisease(diseaseNo);
+
+      if (result.success) {
+        alert(result.message || '질환이 삭제되었습니다.');
+        setIsDetailModalOpen(false);
+        await fetchData();
+      } else {
+        alert(result.message || '질환 삭제에 실패했습니다.');
+      }
+    } catch (error) {
+      console.error('질환 삭제 실패:', error);
+      alert('질환 삭제에 실패했습니다.');
+    }
+  };
+
+  // 수정용 입력 변경 핸들러
+  const handleEditInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditingDisease(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  // 수정용 이미지 변경 핸들러
+  const handleEditImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setEditImageFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setEditImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   // 페이징 계산
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -363,7 +464,7 @@ const FeaturedDiseases = () => {
 
   if (loading) {
     return (
-      <main className="admin-page">
+      <main className="admin-page featured-diseases">
         <div className="loading-container" style={{ gridColumn: '1 / -1' }}>
           <div className="loading-spinner"></div>
           <div className="loading-text">데이터를 불러오는 중...</div>
@@ -373,7 +474,7 @@ const FeaturedDiseases = () => {
   }
 
   return (
-    <main className="admin-page">
+    <main className="admin-page featured-diseases">
       <Sidebar />
 
       <section className="admin-main">
@@ -579,7 +680,7 @@ const FeaturedDiseases = () => {
                         <button
                           className="find-department-btn secondary"
                           onClick={() => {
-                            alert('수정 기능은 추후 구현 예정입니다.');
+                            handleEditModalOpen(selectedDisease);
                           }}
                         >
                           수정
@@ -587,9 +688,7 @@ const FeaturedDiseases = () => {
                         <button
                           className="find-department-btn danger"
                           onClick={() => {
-                            if (window.confirm(`${selectedDisease.질환명}을(를) 삭제하시겠습니까?`)) {
-                              alert('삭제 기능은 추후 구현 예정입니다.');
-                            }
+                            handleDeleteDisease(selectedDisease.diseaseNo, selectedDisease.질환명);
                           }}
                         >
                           삭제
@@ -743,6 +842,70 @@ const FeaturedDiseases = () => {
                   </button>
                   <button type="submit" className="submit-btn">
                     추가
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* 질환 수정 모달 */}
+        {isEditModalOpen && (
+          <div className="modal" onClick={() => setIsEditModalOpen(false)}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-header">
+                <h3>질환 수정</h3>
+                <button className="modal-close" onClick={() => setIsEditModalOpen(false)}>
+                  ✕
+                </button>
+              </div>
+              <form className="hospital-form" onSubmit={(e) => { e.preventDefault(); handleEditDiseaseSubmit(); }}>
+                <div className="form-row">
+                  <label>질환명 *</label>
+                  <input
+                    type="text"
+                    name="질환명"
+                    value={editingDisease?.질환명 || ''}
+                    onChange={handleEditInputChange}
+                    placeholder="질환명을 입력하세요"
+                    required
+                  />
+                </div>
+                <div className="form-row">
+                  <label>설명</label>
+                  <textarea
+                    name="설명"
+                    value={editingDisease?.설명 || ''}
+                    onChange={handleEditInputChange}
+                    placeholder="질환 설명을 입력하세요"
+                    style={{ minHeight: '200px' }}
+                  />
+                </div>
+                <div className="form-row">
+                  <label>이미지</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleEditImageChange}
+                    style={{ cursor: 'pointer' }}
+                  />
+                  <small style={{ color: '#666', marginTop: '5px', display: 'block' }}>
+                    * 이미지를 선택하지 않으면 기존 이미지가 유지됩니다.
+                  </small>
+                </div>
+                {editImagePreview && (
+                  <div className="form-row">
+                    <label>미리보기</label>
+                    <img src={editImagePreview} alt="미리보기" style={{ maxWidth: '300px', maxHeight: '300px', objectFit: 'contain' }} />
+                  </div>
+                )}
+
+                <div className="form-actions">
+                  <button type="button" className="cancel-btn" onClick={() => setIsEditModalOpen(false)}>
+                    취소
+                  </button>
+                  <button type="submit" className="submit-btn">
+                    수정
                   </button>
                 </div>
               </form>

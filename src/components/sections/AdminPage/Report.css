@@ -1,0 +1,443 @@
+/* ==================== Report.css ==================== */
+/* 신고 관리 페이지 전용 스타일 */
+
+:root {
+  --bg: #f5f7fb;
+  --card: #ffffff;
+  --border: #e5e7eb;
+  --primary: #2563eb;
+  --primary-soft: #eff6ff;
+  --text: #111827;
+  --muted: #6b7280;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --success: #16a34a;
+}
+
+.admin-report-page * {
+  box-sizing: border-box;
+}
+
+/* 메인 컨테이너 */
+.admin-report-page .admin-main {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.admin-report-page .admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.admin-report-page .admin-header-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  color: var(--text);
+}
+
+.admin-report-page .admin-header-desc {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* 통계 카드 */
+.admin-report-page .admin-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.admin-report-page .stat-card {
+  background: var(--card);
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.admin-report-page .stat-label {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.admin-report-page .stat-main {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-report-page .stat-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+/* 필터 */
+.admin-report-page .admin-card {
+  background: var(--card);
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  padding: 18px 20px;
+}
+
+.admin-report-page .filter-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1.3fr) auto;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+.admin-report-page .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.admin-report-page .form-label {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.admin-report-page .input,
+.admin-report-page .select,
+.admin-report-page .textarea {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 13px;
+  outline: none;
+}
+
+.admin-report-page .input:focus,
+.admin-report-page .select:focus,
+.admin-report-page .textarea:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.12);
+}
+
+.admin-report-page .textarea {
+  font-family: inherit;
+  resize: vertical;
+}
+
+/* 테이블 */
+.admin-report-page .table-wrapper {
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+  background: var(--card);
+  margin-top: 20px;
+}
+
+.admin-report-page .table-scroll {
+  max-height: 500px;
+  overflow: auto;
+}
+
+.admin-report-page table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 800px;
+  font-size: 13px;
+}
+
+.admin-report-page thead {
+  background: #f3f4f6;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.admin-report-page th,
+.admin-report-page td {
+  padding: 12px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+}
+
+.admin-report-page th {
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 600;
+  text-align: center;
+}
+
+.admin-report-page td {
+  text-align: center;
+}
+
+.admin-report-page tbody tr {
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.admin-report-page tbody tr:hover {
+  background: #f9fafb;
+}
+
+/* 카테고리 뱃지 */
+.admin-report-page .category-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.admin-report-page .category-pill.important {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.admin-report-page .category-pill.event {
+  background: #ecfdf3;
+  color: #16a34a;
+}
+
+.admin-report-page .category-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: currentColor;
+}
+
+/* 페이지네이션 */
+.admin-report-page .table-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  background: #f9fafb;
+  border-top: 1px solid var(--border);
+}
+
+.admin-report-page .pagination {
+  display: flex;
+  gap: 4px;
+}
+
+.admin-report-page .page-btn {
+  min-width: 32px;
+  height: 32px;
+  padding: 0 8px;
+  border: 1px solid var(--border);
+  background: white;
+  color: var(--text);
+  cursor: pointer;
+  border-radius: 6px;
+  font-size: 13px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.admin-report-page .page-btn:hover {
+  background: #f9fafb;
+  border-color: var(--primary);
+}
+
+.admin-report-page .page-btn.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.admin-report-page .page-btn.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 모달 */
+.admin-report-page .modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.admin-report-page .modal-content {
+  background: white;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 700px;
+  max-height: 90vh;
+  overflow: auto;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.admin-report-page .modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.admin-report-page .modal-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.admin-report-page .modal-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: var(--muted);
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.admin-report-page .modal-close:hover {
+  background: #f3f4f6;
+  color: var(--text);
+}
+
+.admin-report-page .modal-body {
+  padding: 20px 24px;
+}
+
+.admin-report-page .modal-footer {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  padding: 16px 24px;
+  border-top: 1px solid var(--border);
+}
+
+/* 상세 정보 */
+.admin-report-page .detail-section {
+  margin-bottom: 20px;
+}
+
+.admin-report-page .detail-section h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--primary);
+}
+
+.admin-report-page .detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  row-gap: 12px;
+  column-gap: 12px;
+}
+
+.admin-report-page .detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.admin-report-page .detail-item.full-width {
+  grid-column: 1 / -1;
+}
+
+.admin-report-page .detail-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.admin-report-page .detail-value {
+  font-size: 13px;
+  color: var(--text);
+}
+
+/* 버튼 */
+.admin-report-page .btn {
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.admin-report-page .btn-primary {
+  background: var(--primary);
+  color: white;
+}
+
+.admin-report-page .btn-primary:hover {
+  background: #1d4ed8;
+}
+
+.admin-report-page .btn-danger {
+  background: var(--danger);
+  color: white;
+}
+
+.admin-report-page .btn-danger:hover {
+  background: #dc2626;
+}
+
+.admin-report-page .btn-outline {
+  background: white;
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+
+.admin-report-page .btn-outline:hover {
+  background: #f9fafb;
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .admin-report-page .filter-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-report-page .admin-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-report-page table {
+    min-width: 600px;
+  }
+
+  .admin-report-page .detail-grid {
+    grid-template-columns: 1fr;
+  }
+}

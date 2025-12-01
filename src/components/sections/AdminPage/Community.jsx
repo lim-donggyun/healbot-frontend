@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import '../../../pages/MainPage.css';
-import './Dashboard.css';
+import './Community.css';
 
 const Community = () => {
   const navigate = useNavigate();
@@ -263,7 +263,7 @@ const Community = () => {
 
   if (loading) {
     return (
-      <main className="admin-page">
+      <main className="admin-page admin-community-page">
         <Sidebar />
         <div style={{
           gridColumn: '1 / -1',
@@ -281,7 +281,7 @@ const Community = () => {
   }
 
   return (
-    <main className="admin-page">
+    <main className="admin-page admin-community-page">
       <Sidebar />
 
       {/* 메인 */}
