@@ -15,7 +15,7 @@ const Report = () => {
   const [selectedReport, setSelectedReport] = useState(null);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [isPenaltyModalOpen, setIsPenaltyModalOpen] = useState(false);
-  const [penaltyReason, setPenaltyReason] = useState('');
+  const [reply, setReply] = useState('');
 
   const rowsPerPage = 10;
 
@@ -82,19 +82,26 @@ const Report = () => {
     );
   };
 
-  // 게시글 상태 pill 스타일
-  const getPostStatusPill = (targetType, postStatus) => {
-    if (targetType !== 'POST') {
-      return <span style={{ color: 'var(--muted)' }}>-</span>;
+  // 게시글/댓글 상태 pill 스타일
+  const getContentStatusPill = (targetType, postStatus, commentStatus) => {
+    if (targetType === 'POST') {
+      const isHidden = postStatus === 'HIDDEN';
+      return (
+        <span className={`category-pill ${isHidden ? '' : 'event'}`}>
+          <span className="category-dot"></span>
+          {isHidden ? '숨김' : '공개'}
+        </span>
+      );
+    } else if (targetType === 'COMMENT') {
+      const isHidden = commentStatus === 'HIDDEN';
+      return (
+        <span className={`category-pill ${isHidden ? '' : 'event'}`}>
+          <span className="category-dot"></span>
+          {isHidden ? '숨김' : '공개'}
+        </span>
+      );
     }
-
-    const isHidden = postStatus === 'HIDDEN';
-    return (
-      <span className={`category-pill ${isHidden ? '' : 'event'}`}>
-        <span className="category-dot"></span>
-        {isHidden ? '숨김' : '공개'}
-      </span>
-    );
+    return <span style={{ color: 'var(--muted)' }}>-</span>;
   };
 
   // 컴포넌트 마운트 시 신고 데이터 로드
@@ -168,16 +175,16 @@ const Report = () => {
   // 제재사유 입력 모달 열기
   const handleOpenPenaltyModal = () => {
     // 기존 제재사유가 있으면 그것을 초기값으로 설정
-    setPenaltyReason(selectedReport?.penaltyReason || '');
+    setReply(selectedReport?.reply || '');
     setIsPenaltyModalOpen(true);
   };
 
-  // 제재사유 제출
+  // 답변 제출
   const handleSubmitPenalty = async () => {
     if (!selectedReport) return;
 
-    if (!penaltyReason.trim()) {
-      alert('제재사유를 입력해주세요.');
+    if (!reply.trim()) {
+      alert('답변을 입력해주세요.');
       return;
     }
 
@@ -187,15 +194,15 @@ const Report = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ penaltyReason: penaltyReason }),
+        body: JSON.stringify({ reply: reply }),
       });
 
       if (!response.ok) {
-        throw new Error('제재사유 등록에 실패했습니다.');
+        throw new Error('답변 등록에 실패했습니다.');
       }
 
-      const isUpdate = selectedReport?.penaltyReason ? true : false;
-      alert(isUpdate ? '제재사유가 수정되었습니다.' : '제재사유가 등록되었습니다.');
+      const isUpdate = selectedReport?.reply ? true : false;
+      alert(isUpdate ? '답변이 수정되었습니다.' : '답변이 등록되었습니다.');
 
       // 목록 새로고침
       const params = new URLSearchParams();
@@ -252,25 +259,40 @@ const Report = () => {
     }
   };
 
-  // 게시글 숨김/해제 토글
-  const handleTogglePostVisibility = async () => {
-    if (!selectedReport || selectedReport.targetType !== 'POST') return;
+  // 게시글/댓글 숨김/해제 토글 (모달용)
+  const handleToggleVisibility = async () => {
+    if (!selectedReport) return;
 
-    const isHidden = selectedReport.postStatus === 'HIDDEN';
+    let url = '';
+    let targetName = '';
+    let isHidden = false;
+
+    if (selectedReport.targetType === 'POST') {
+      url = `/react/api/community/posts/${selectedReport.postId}/toggle-visibility`;
+      targetName = '게시글';
+      isHidden = selectedReport.postStatus === 'HIDDEN';
+    } else if (selectedReport.targetType === 'COMMENT') {
+      url = `/react/api/community/comments/${selectedReport.commentId}/toggle-visibility`;
+      targetName = '댓글';
+      isHidden = selectedReport.commentStatus === 'HIDDEN';
+    } else {
+      return;
+    }
+
     const action = isHidden ? '숨김 해제' : '숨김';
-    const confirmed = window.confirm(`이 게시글을 ${action} 처리하시겠습니까?`);
+    const confirmed = window.confirm(`이 ${targetName}을 ${action} 처리하시겠습니까?`);
     if (!confirmed) return;
 
     try {
-      const response = await fetch(`/react/api/community/posts/${selectedReport.postId}/toggle-visibility`, {
+      const response = await fetch(url, {
         method: 'PUT',
       });
 
       if (!response.ok) {
-        throw new Error(`게시글 ${action}에 실패했습니다.`);
+        throw new Error(`${targetName} ${action}에 실패했습니다.`);
       }
 
-      alert(`게시글이 ${action} 처리되었습니다.`);
+      alert(`${targetName}이 ${action} 처리되었습니다.`);
 
       // 목록 새로고침
       const params = new URLSearchParams();
@@ -285,8 +307,8 @@ const Report = () => {
       setFilteredReports(data);
       setIsDetailModalOpen(false);
     } catch (error) {
-      console.error(`게시글 ${action} 실패:`, error);
-      alert(`게시글 ${action} 중 오류가 발생했습니다.`);
+      console.error(`${targetName} ${action} 실패:`, error);
+      alert(`${targetName} ${action} 중 오류가 발생했습니다.`);
     }
   };
 
@@ -342,19 +364,13 @@ const Report = () => {
 
       {/* 메인 */}
       <section className="admin-main">
-        {/* 신고 관리 */}
+        {/* 신고 관리 컨텐츠 */}
         <section className="admin-card">
-          <div className="admin-card-header">
-            <div>
-              <div className="admin-card-title">신고 관리</div>
-              <div className="admin-card-sub">
-                사용자가 신고한 게시글과 댓글을 조회하고 관리할 수 있습니다.
-              </div>
-            </div>
-          </div>
+          {/* 수정됨: admin-card-header 부분 삭제됨 */}
 
           {/* 검색 필터 */}
-          <div className="filter-grid" style={{ marginTop: '20px' }}>
+          {/* 수정됨: 헤더 삭제로 인해 불필요해진 상단 여백 제거 (marginTop: '20px' -> '0px') */}
+          <div className="filter-grid" style={{ marginTop: '0' }}>
             <div className="form-group">
               <label className="form-label">상태</label>
               <select
@@ -396,10 +412,10 @@ const Report = () => {
                   <tr>
                     <th style={{ width: '10%' }}>상태</th>
                     <th style={{ width: '10%' }}>유형</th>
-                    <th style={{ width: '10%' }}>게시글 상태</th>
+                    <th style={{ width: '12%' }}>숨김 상태</th>
                     <th style={{ width: '12%' }}>신고자</th>
                     <th style={{ width: '13%' }}>신고 사유</th>
-                    <th style={{ width: '30%' }}>신고 내용</th>
+                    <th style={{ width: '28%' }}>신고 내용</th>
                     <th style={{ width: '15%' }}>신고일</th>
                   </tr>
                 </thead>
@@ -419,7 +435,9 @@ const Report = () => {
                       >
                         <td>{getStatusPill(report.status)}</td>
                         <td>{getTargetTypeLabel(report.targetType)}</td>
-                        <td>{getPostStatusPill(report.targetType, report.postStatus)}</td>
+                        <td>
+                          {getContentStatusPill(report.targetType, report.postStatus, report.commentStatus)}
+                        </td>
                         <td>{report.reporterName || report.reporterId}</td>
                         <td>{getReasonLabel(report.reasonType)}</td>
                         <td style={{
@@ -541,11 +559,11 @@ const Report = () => {
                       {selectedReport.detail || '-'}
                     </div>
                   </div>
-                  {selectedReport.penaltyReason && (
+                  {selectedReport.reply && (
                     <div className="detail-item full-width">
-                      <div className="detail-label">관리자답변</div>
+                      <div className="detail-label">관리자 답변</div>
                       <div className="detail-value" style={{ whiteSpace: 'pre-wrap', color: '#e74c3c', fontWeight: 'bold' }}>
-                        {selectedReport.penaltyReason}
+                        {selectedReport.reply}
                       </div>
                     </div>
                   )}
@@ -599,18 +617,25 @@ const Report = () => {
                   답변 입력
                 </button>
               )}
-              {selectedReport.status === 'RESOLVED' && selectedReport.penaltyReason && (
+              {selectedReport.status === 'RESOLVED' && selectedReport.reply && (
                 <button className="btn" onClick={handleOpenPenaltyModal}>
                   답변 수정
                 </button>
               )}
-              {selectedReport.targetType === 'POST' && (
+              {(selectedReport.targetType === 'POST' || selectedReport.targetType === 'COMMENT') && (
                 <button
                   className="btn"
-                  style={{ backgroundColor: selectedReport.postStatus === 'HIDDEN' ? '#27ae60' : '#f39c12' }}
-                  onClick={handleTogglePostVisibility}
+                  style={{
+                    backgroundColor: selectedReport.targetType === 'POST'
+                      ? (selectedReport.postStatus === 'HIDDEN' ? '#27ae60' : '#f39c12')
+                      : (selectedReport.commentStatus === 'HIDDEN' ? '#27ae60' : '#f39c12')
+                  }}
+                  onClick={handleToggleVisibility}
                 >
-                  {selectedReport.postStatus === 'HIDDEN' ? '게시글 숨김 해제' : '게시글 숨김'}
+                  {selectedReport.targetType === 'POST'
+                    ? (selectedReport.postStatus === 'HIDDEN' ? '게시글 숨김 해제' : '게시글 숨김')
+                    : (selectedReport.commentStatus === 'HIDDEN' ? '댓글 숨김 해제' : '댓글 숨김')
+                  }
                 </button>
               )}
               <button className="btn btn-danger" onClick={handleDeleteReport}>
@@ -626,7 +651,7 @@ const Report = () => {
         <div className="modal-overlay" onClick={() => setIsPenaltyModalOpen(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '500px' }}>
             <div className="modal-header">
-              <h3>{selectedReport?.penaltyReason ? '답변 수정' : '답변 입력'}</h3>
+              <h3>{selectedReport?.reply ? '답변 수정' : '답변 입력'}</h3>
               <button
                 className="modal-close"
                 onClick={() => setIsPenaltyModalOpen(false)}
@@ -640,15 +665,12 @@ const Report = () => {
                 <label className="form-label">답변을 입력하세요</label>
                 <textarea
                   className="textarea"
-                  value={penaltyReason}
-                  onChange={(e) => setPenaltyReason(e.target.value)}
+                  value={reply}
+                  onChange={(e) => setReply(e.target.value)}
                   rows="6"
                   placeholder="답변을 입력하세요..."
                   style={{ width: '100%', resize: 'vertical' }}
                 />
-              </div>
-              <div style={{ fontSize: '12px', color: 'var(--muted)', marginTop: '8px' }}>
-                * 답변을 입력하면 신고가 자동으로 처리완료 상태로 변경됩니다.
               </div>
             </div>
 
@@ -657,7 +679,7 @@ const Report = () => {
                 취소
               </button>
               <button className="btn" onClick={handleSubmitPenalty}>
-                {selectedReport?.penaltyReason ? '수정' : '등록'}
+                {selectedReport?.reply ? '수정' : '등록'}
               </button>
             </div>
           </div>

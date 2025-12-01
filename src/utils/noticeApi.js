@@ -4,7 +4,7 @@ const API_BASE_URL = "/react/api";
 // 전체 공지사항 목록 조회
 export const getAllNotices = async () => {
   try {
-    const response = await fetch(`${API_BASE_URL}/admin/notices`, {
+    const response = await fetch(`${API_BASE_URL}/notices`, {
       method: "GET",
       credentials: "include",
     });

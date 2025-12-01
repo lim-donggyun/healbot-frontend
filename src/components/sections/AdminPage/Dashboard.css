@@ -176,12 +176,6 @@ aside.admin-sidebar nav.admin-nav {
   font-weight: 700;
 }
 
-.admin-card-sub {
-  font-size: 12px;
-  color: var(--muted);
-  margin-top: 2px;
-}
-
 .admin-badge-muted {
   font-size: 12px;
   color: var(--muted);

@@ -74,22 +74,11 @@ const Dashboard = () => {
   }, []);
 
   return (
-      <main className="admin-page">
-        <Sidebar />
+    <main className="admin-page">
+      <Sidebar />
 
-      {/* 메인 */}
       <section className="admin-main">
-        {/* 대시보드 헤더 */}
-        <section className="admin-card">
-          <div className="admin-card-header">
-            <div>
-              <div className="admin-card-title">관리자 대시보드</div>
-              <div className="admin-card-sub">
-                병원 서비스의 주요 지표와 현황을 한눈에 확인할 수 있습니다.
-              </div>
-            </div>
-          </div>
-        </section>
+        {/* 수정됨: 빈 헤더 카드 삭제함 */}
 
         {/* 통계 카드 */}
         <section className="admin-stats">
@@ -123,10 +112,7 @@ const Dashboard = () => {
         <section className="admin-card">
           <div className="admin-card-header">
             <div>
-              <div className="admin-card-title">일별 로그인 횟수</div>
-              <div className="admin-card-sub">
-                최근 7일간 사용자 로그인 활동 현황을 확인할 수 있습니다.
-              </div>
+              <div className="admin-card-title">일별 회원 로그인 횟수</div>
             </div>
           </div>
           <div style={{ marginTop: '24px', width: '100%', height: '300px', minHeight: '300px' }}>
@@ -171,10 +157,7 @@ const Dashboard = () => {
         <section className="admin-card">
           <div className="admin-card-header">
             <div>
-              <div className="admin-card-title">조회수 높은 공지사항 TOP 3</div>
-              <div className="admin-card-sub">
-                가장 많이 조회된 공지사항을 확인할 수 있습니다.
-              </div>
+              <div className="admin-card-title">공지사항 조회수 TOP 3</div>
             </div>
           </div>
           <div className="top-notices-list">
@@ -191,7 +174,7 @@ const Dashboard = () => {
                 <div key={notice.noticeId} className="top-notice-item">
                   <div className="top-notice-rank">{index + 1}</div>
                   <div className="top-notice-content">
-                    <div className="top-notice-title">{notice.title}</div>
+                    <div className="top-notice-title">{notice.noticeSubject}</div>
                     <div className="top-notice-meta">
                       <span className="top-notice-category">
                         {notice.category === 'IMPORTANT' ? '중요' :
@@ -215,7 +198,7 @@ const Dashboard = () => {
           </div>
         </section>
       </section>
-      </main>
+    </main>
   );
 };
 
