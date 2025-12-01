@@ -433,7 +433,7 @@ const Community = () => {
                 <div className="modal-body">
                   <div className="detail-section">
                     <h4>기본 정보</h4>
-                    <div className="detail-grid-3-col">
+                    <div className="detail-grid">
                       <div className="detail-item">
                         <div className="detail-label">게시글 ID</div>
                         <div className="detail-value">{selectedPost.postId}</div>
@@ -446,8 +446,6 @@ const Community = () => {
                         <div className="detail-label">조회수</div>
                         <div className="detail-value">{selectedPost.views || 0}</div>
                       </div>
-                    </div>
-                    <div className="detail-grid-2-col">
                       <div className="detail-item">
                         <div className="detail-label">작성자</div>
                         <div className="detail-value">{selectedPost.memberId}</div>
@@ -457,17 +455,23 @@ const Community = () => {
                         <div className="detail-value">{formatDate(selectedPost.createdAt)}</div>
                       </div>
                     </div>
-                    <div className="detail-item title-detail-item">
-                      <div className="detail-label">제목</div>
-                      <div className="detail-value">{selectedPost.title}</div>
-                    </div>
-                    <div className="detail-item">
-                      <div className="detail-label">내용</div>
-                      <div className="detail-value" style={{ whiteSpace: "pre-wrap" }}>
-                        {selectedPost.content}
+                  </div>
+
+                  <div className="detail-section">
+                    <h4>게시글 내용</h4>
+                    <div className="detail-grid">
+                      <div className="detail-item full-width">
+                        <div className="detail-label">제목</div>
+                        <div className="detail-value">{selectedPost.title}</div>
+                      </div>
+                      <div className="detail-item full-width">
+                        <div className="detail-label">내용</div>
+                        <div className="detail-value" style={{ whiteSpace: "pre-wrap" }}>
+                          {selectedPost.content}
+                        </div>
                       </div>
                     </div>
-                  </div>{" "}
+                  </div>
                 </div>
                 <div className="modal-footer">
                   <button className="edit-btn" onClick={handleEditFromDetail}>

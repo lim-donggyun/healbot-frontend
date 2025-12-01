@@ -111,32 +111,6 @@ const handleSearch = () => {
     setCurrentPage(1); // 검색 새로 하면 1페이지로
 };
 
-// 🔹 삭제 핸들러 (내 글만 버튼이 보이므로, 여기서는 그냥 호출만)
-const handleDelete = async (postId) => {
-    if (!window.confirm("정말 이 게시글을 삭제하시겠습니까?")) return;
-
-    try {
-    const res = await fetch(`/react/api/community/posts/${postId}`, {
-        method: "DELETE",
-    });
-
-    const data = await res.json().catch(() => ({}));
-
-    if (!res.ok || data.success === false) {
-        alert(data.message || "삭제에 실패했습니다.");
-        return;
-    }
-
-    alert("삭제되었습니다.");
-
-    // 프론트 목록에서 바로 제거
-    setPosts((prev) => prev.filter((p) => p.postId !== postId));
-    } catch (e) {
-    console.error("게시글 삭제 오류:", e);
-    alert("삭제 중 오류가 발생했습니다.");
-    }
-};
-
 // ================= 페이징 관련 계산 =================
 // 일단 서버에서 받은 전체 posts 그대로 사용
 const filteredPosts = useMemo(() => posts, [posts]);
@@ -311,20 +285,6 @@ return (
                         <span className="community-views">
                             조회 {post.views}
                         </span>
-
-                        {/* 🔥 내 글일 때만 삭제 버튼 노출 */}
-                        {loginMemberId === post.memberId && (
-                            <button
-                            type="button"
-                            className="community-delete-btn"
-                            onClick={(e) => {
-                                e.stopPropagation(); // 카드 클릭으로 상세 이동 막기
-                                handleDelete(post.postId);
-                            }}
-                            >
-                            삭제
-                            </button>
-                        )}
                         </div>
                     </div>
                     </li>

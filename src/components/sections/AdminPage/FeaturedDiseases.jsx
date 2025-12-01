@@ -288,7 +288,9 @@ const FeaturedDiseases = () => {
       const result = await addDisease(
         newDisease.질환명,
         newDisease.설명 || '',
-        imageFile
+        imageFile,
+        newDisease.진료과 || '',
+        newDisease.전체증상목록 || ''
       );
 
       if (result.success) {
@@ -325,17 +327,31 @@ const FeaturedDiseases = () => {
   };
 
   const handleDepartmentChange = (value) => {
-    setNewDisease(prev => ({
-      ...prev,
-      진료과: value
-    }));
+    if (isEditModalOpen) {
+      setEditingDisease(prev => ({
+        ...prev,
+        진료과: value
+      }));
+    } else {
+      setNewDisease(prev => ({
+        ...prev,
+        진료과: value
+      }));
+    }
   };
 
   const handleSymptomsChange = (value) => {
-    setNewDisease(prev => ({
-      ...prev,
-      전체증상목록: value
-    }));
+    if (isEditModalOpen) {
+      setEditingDisease(prev => ({
+        ...prev,
+        전체증상목록: value
+      }));
+    } else {
+      setNewDisease(prev => ({
+        ...prev,
+        전체증상목록: value
+      }));
+    }
   };
 
   // 질환 수정 모달 열기
@@ -371,7 +387,9 @@ const FeaturedDiseases = () => {
         editingDisease.diseaseNo,
         editingDisease.질환명,
         editingDisease.설명 || '',
-        editImageFile
+        editImageFile,
+        editingDisease.진료과 || '',
+        editingDisease.전체증상목록 || ''
       );
 
       if (result.success) {
@@ -962,7 +980,7 @@ const FeaturedDiseases = () => {
         <DepartmentsModal
           isOpen={isDepartmentModalOpen}
           onClose={() => setIsDepartmentModalOpen(false)}
-          value={newDisease.진료과}
+          value={isEditModalOpen ? (editingDisease?.진료과 || '') : newDisease.진료과}
           onChange={handleDepartmentChange}
         />
 
@@ -970,7 +988,7 @@ const FeaturedDiseases = () => {
         <SymptomsModal
           isOpen={isSymptomsModalOpen}
           onClose={() => setIsSymptomsModalOpen(false)}
-          value={newDisease.전체증상목록}
+          value={isEditModalOpen ? (editingDisease?.전체증상목록 || '') : newDisease.전체증상목록}
           onChange={handleSymptomsChange}
           symptomsByBodyPart={symptomsByBodyPart}
         />
