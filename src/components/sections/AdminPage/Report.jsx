@@ -17,7 +17,7 @@ const Report = () => {
   const [isPenaltyModalOpen, setIsPenaltyModalOpen] = useState(false);
   const [reply, setReply] = useState('');
 
-  const rowsPerPage = 10;
+  const rowsPerPage = 5;
 
   // 상태 라벨 변환
   const getStatusLabel = (status) => {
@@ -393,50 +393,34 @@ const Report = () => {
 
       {/* 메인 */}
       <section className="admin-main">
-        {/* 신고 관리 컨텐츠 */}
-        <section className="admin-card">
-          {/* 수정됨: admin-card-header 부분 삭제됨 */}
+        {/* 신고 관리 */}
+        <div className="report-management">
+          <div className="report-header">
+            <h2>
+              검색된 신고 <span className="report-count">{filteredReports.length}</span>개
+            </h2>
+          </div>
 
-          {/* 검색 필터 */}
-          {/* 수정됨: 헤더 삭제로 인해 불필요해진 상단 여백 제거 (marginTop: '20px' -> '0px') */}
-          <div className="filter-grid" style={{ marginTop: '0' }}>
-            <div className="form-group">
-              <label className="form-label">상태</label>
-              <select
-                className="select"
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-              >
-                <option value="">전체</option>
+          <div className="report-search-filters">
+            <div className="filter-group">
+              <select className="filter-select" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+                <option value="">전체 상태</option>
                 <option value="PENDING">대기중</option>
                 <option value="RESOLVED">처리완료</option>
               </select>
             </div>
 
-            <div className="form-group">
-              <label className="form-label">유형</label>
-              <select
-                className="select"
-                value={targetTypeFilter}
-                onChange={(e) => setTargetTypeFilter(e.target.value)}
-              >
-                <option value="">전체</option>
+            <div className="filter-group">
+              <select className="filter-select" value={targetTypeFilter} onChange={(e) => setTargetTypeFilter(e.target.value)}>
+                <option value="">전체 유형</option>
                 <option value="POST">게시글</option>
                 <option value="COMMENT">댓글</option>
               </select>
             </div>
-
-            <div className="filter-actions" style={{ alignSelf: 'flex-end' }}>
-              <button className="btn-outline btn" onClick={handleReset}>
-                초기화
-              </button>
-            </div>
           </div>
 
-          {/* 신고 테이블 */}
-          <div className="table-wrapper" style={{ marginTop: '20px' }}>
-            <div className="table-scroll">
-              <table>
+          <div className="report-table-container">
+            <table className="report-table">
                 <thead>
                   <tr>
                     <th style={{ width: '10%' }}>상태</th>
@@ -487,57 +471,55 @@ const Report = () => {
 
             {/* 페이징 */}
             {totalPages > 1 && (
-              <div className="table-footer">
-                <div style={{ fontSize: '12px', color: 'var(--muted)' }}>
-                  전체 {total}개 (현재 {startIdx + 1}-{endIdx})
-                </div>
-                <div className="pagination">
-                  <button
-                    onClick={() => setCurrentPage(1)}
-                    className={`page-btn ${currentPage === 1 ? "disabled" : ""}`}
-                    disabled={currentPage === 1}
-                  >
-                    처음
-                  </button>
+              <div className="pagination">
+                <button
+                  onClick={() => setCurrentPage(1)}
+                  className={`page-btn arrow-btn ${currentPage === 1 ? "disabled" : ""}`}
+                  disabled={currentPage === 1}
+                  title="첫 페이지"
+                >
+                  처음 페이지
+                </button>
 
-                  <button
-                    onClick={goToPrevGroup}
-                    className={`page-btn ${currentPageGroup === 1 ? "disabled" : ""}`}
-                    disabled={currentPageGroup === 1}
-                  >
-                    «
-                  </button>
+                <button
+                  onClick={goToPrevGroup}
+                  className={`page-btn arrow-btn ${currentPageGroup === 1 ? "disabled" : ""}`}
+                  disabled={currentPageGroup === 1}
+                  title="이전 5페이지"
+                >
+                  «
+                </button>
 
-                  {pageNumbers.map((number) => (
-                    <button
-                      key={number}
-                      onClick={() => setCurrentPage(number)}
-                      className={`page-btn ${currentPage === number ? "active" : ""}`}
-                    >
-                      {number}
-                    </button>
-                  ))}
-
+                {pageNumbers.map((number) => (
                   <button
-                    onClick={goToNextGroup}
-                    className={`page-btn ${endPage >= totalPages ? "disabled" : ""}`}
-                    disabled={endPage >= totalPages}
+                    key={number}
+                    onClick={() => setCurrentPage(number)}
+                    className={`page-btn ${currentPage === number ? "active" : ""}`}
                   >
-                    »
+                    {number}
                   </button>
+                ))}
 
-                  <button
-                    onClick={() => setCurrentPage(totalPages)}
-                    className={`page-btn ${currentPage === totalPages ? "disabled" : ""}`}
-                    disabled={currentPage === totalPages}
-                  >
-                    끝
-                  </button>
-                </div>
+                <button
+                  onClick={goToNextGroup}
+                  className={`page-btn arrow-btn ${endPage >= totalPages ? "disabled" : ""}`}
+                  disabled={endPage >= totalPages}
+                  title="다음 5페이지"
+                >
+                  »
+                </button>
+
+                <button
+                  onClick={() => setCurrentPage(totalPages)}
+                  className={`page-btn arrow-btn ${currentPage === totalPages ? "disabled" : ""}`}
+                  disabled={currentPage === totalPages}
+                  title="마지막 페이지"
+                >
+                  끝 페이지
+                </button>
               </div>
             )}
-          </div>
-        </section>
+        </div>
       </section>
 
       {/* 신고 상세 모달 */}
@@ -698,7 +680,7 @@ const Report = () => {
                   onChange={(e) => setReply(e.target.value)}
                   rows="6"
                   placeholder="답변을 입력하세요..."
-                  style={{ width: '100%', resize: 'vertical' }}
+                  style={{ width: '100%' }}
                 />
               </div>
             </div>

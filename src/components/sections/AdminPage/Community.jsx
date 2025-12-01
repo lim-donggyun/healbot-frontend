@@ -21,7 +21,7 @@ const Community = () => {
     category: 'free'
   });
 
-  const rowsPerPage = 10;
+  const rowsPerPage = 5;
 
   // 카테고리 라벨 변환
   const getCategoryLabel = (category) => {
@@ -283,28 +283,13 @@ const Community = () => {
 
       {/* 메인 */}
       <section className="admin-main">
-        {/* 커뮤니티 관리 컨텐츠 */}
-        <section className="admin-card">
-          {/* 수정됨: admin-card-header 부분 삭제됨 */}
-
-          {/* 검색 필터 */}
-          {/* 수정됨: 헤더 삭제로 인해 불필요해진 상단 여백 제거 (marginTop: '20px' -> '0px' 또는 생략) */}
-          <div className="filter-grid" style={{ marginTop: '0' }}>
-            <div className="form-group">
-              <label className="form-label">검색어</label>
-              <input
-                type="text"
-                className="input"
-                placeholder="제목, 내용으로 검색..."
-                value={keyword}
-                onChange={(e) => setKeyword(e.target.value)}
-                onKeyPress={(e) => {
-                  if (e.key === 'Enter') {
-                    applyFilter();
-                  }
-                }}
-              />
-            </div>
+        {/* 커뮤니티 관리 */}
+        <div className="community-management">
+          <div className="community-header">
+            <h2>
+              검색된 커뮤니티 <span className="community-count">{filteredPosts.length}</span>개
+            </h2>
+          </div>
 
             <div className="form-group">
               <label className="form-label">카테고리</label>
@@ -320,108 +305,106 @@ const Community = () => {
               </select>
             </div>
 
-            <div className="filter-actions" style={{ alignSelf: 'flex-end' }}>
-              <button className="btn" onClick={applyFilter}>
-                검색
-              </button>
-              <button className="btn-outline btn" onClick={handleReset}>
-                초기화
-              </button>
-            </div>
+            <input
+              type="text"
+              className="search-input"
+              placeholder="제목, 내용으로 검색..."
+              value={keyword}
+              onChange={(e) => {
+                setKeyword(e.target.value);
+                applyFilter();
+              }}
+            />
           </div>
 
-          {/* 게시글 테이블 */}
-          <div className="table-wrapper" style={{ marginTop: '20px' }}>
-            <div className="table-scroll">
-              <table>
-                <thead>
+          <div className="community-table-container">
+            <table className="community-table">
+              <thead>
+                <tr>
+                  <th style={{ width: '10%' }}>카테고리</th>
+                  <th style={{ width: '50%' }}>제목</th>
+                  <th style={{ width: '15%' }}>작성자</th>
+                  <th style={{ width: '15%' }}>작성일</th>
+                  <th className="text-center" style={{ width: '10%' }}>조회수</th>
+                </tr>
+              </thead>
+              <tbody>
+                {pageItems.length === 0 ? (
                   <tr>
-                    <th style={{ width: '10%' }}>카테고리</th>
-                    <th style={{ width: '50%' }}>제목</th>
-                    <th style={{ width: '15%' }}>작성자</th>
-                    <th style={{ width: '15%' }}>작성일</th>
-                    <th className="text-center" style={{ width: '10%' }}>조회수</th>
+                    <td colSpan="5" style={{ textAlign: 'center', padding: '40px' }}>
+                      등록된 게시글이 없습니다.
+                    </td>
                   </tr>
-                </thead>
-                <tbody>
-                  {pageItems.length === 0 ? (
-                    <tr>
-                      <td colSpan="5" style={{ textAlign: 'center', padding: '40px' }}>
-                        등록된 게시글이 없습니다.
-                      </td>
-                    </tr>
-                  ) : (
-                    pageItems.map((post) => (
-                      <tr
-                        key={post.postId}
-                        onClick={() => handleDetailClick(post.postId)}
-                        style={{ cursor: 'pointer' }}
-                      >
-                        <td>{getCategoryPill(post.category)}</td>
-                        <td>{post.title}</td>
-                        <td>{post.memberId}</td>
-                        <td>{formatDate(post.createdAt)}</td>
-                        <td className="text-center">{post.views || 0}</td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
-
-            {/* 페이징 */}
-            {totalPages > 1 && (
-              <div className="table-footer">
-                <div style={{ fontSize: '12px', color: 'var(--muted)' }}>
-                  전체 {total}개 (현재 {startIdx + 1}-{endIdx})
-                </div>
-                <div className="pagination">
-                  <button
-                    onClick={() => setCurrentPage(1)}
-                    className={`page-btn ${currentPage === 1 ? "disabled" : ""}`}
-                    disabled={currentPage === 1}
-                  >
-                    처음
-                  </button>
-
-                  <button
-                    onClick={goToPrevGroup}
-                    className={`page-btn ${currentPageGroup === 1 ? "disabled" : ""}`}
-                    disabled={currentPageGroup === 1}
-                  >
-                    «
-                  </button>
-
-                  {pageNumbers.map((number) => (
-                    <button
-                      key={number}
-                      onClick={() => setCurrentPage(number)}
-                      className={`page-btn ${currentPage === number ? "active" : ""}`}
+                ) : (
+                  pageItems.map((post) => (
+                    <tr
+                      key={post.postId}
+                      onClick={() => handleDetailClick(post.postId)}
+                      style={{ cursor: 'pointer' }}
                     >
-                      {number}
-                    </button>
-                  ))}
+                      <td>{getCategoryPill(post.category)}</td>
+                      <td>{post.title}</td>
+                      <td>{post.memberId}</td>
+                      <td>{formatDate(post.createdAt)}</td>
+                      <td className="text-center">{post.views || 0}</td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
 
-                  <button
-                    onClick={goToNextGroup}
-                    className={`page-btn ${endPage >= totalPages ? "disabled" : ""}`}
-                    disabled={endPage >= totalPages}
-                  >
-                    »
-                  </button>
+          {/* 페이징 */}
+          {totalPages > 1 && (
+            <div className="pagination">
+                <button
+                  onClick={() => setCurrentPage(1)}
+                  className={`page-btn arrow-btn ${currentPage === 1 ? "disabled" : ""}`}
+                  disabled={currentPage === 1}
+                  title="첫 페이지"
+                >
+                  처음 페이지
+                </button>
 
+                <button
+                  onClick={goToPrevGroup}
+                  className={`page-btn arrow-btn ${currentPageGroup === 1 ? "disabled" : ""}`}
+                  disabled={currentPageGroup === 1}
+                  title="이전 5페이지"
+                >
+                  «
+                </button>
+
+                {pageNumbers.map((number) => (
                   <button
-                    onClick={() => setCurrentPage(totalPages)}
-                    className={`page-btn ${currentPage === totalPages ? "disabled" : ""}`}
-                    disabled={currentPage === totalPages}
+                    key={number}
+                    onClick={() => setCurrentPage(number)}
+                    className={`page-btn ${currentPage === number ? "active" : ""}`}
                   >
-                    끝
+                    {number}
                   </button>
-                </div>
+                ))}
+
+                <button
+                  onClick={goToNextGroup}
+                  className={`page-btn arrow-btn ${endPage >= totalPages ? "disabled" : ""}`}
+                  disabled={endPage >= totalPages}
+                  title="다음 5페이지"
+                >
+                  »
+                </button>
+
+                <button
+                  onClick={() => setCurrentPage(totalPages)}
+                  className={`page-btn arrow-btn ${currentPage === totalPages ? "disabled" : ""}`}
+                  disabled={currentPage === totalPages}
+                  title="마지막 페이지"
+                >
+                  끝 페이지
+                </button>
               </div>
             )}
-          </div>
-        </section>
+        </div>
       </section>
 
       {/* 게시글 상세 모달 */}
@@ -448,47 +431,48 @@ const Community = () => {
               /* 조회 모드 */
               <>
                 <div className="modal-body">
-                  <div className="detail-section">
-                    <h4>기본 정보</h4>
-                    <div className="detail-grid">
-                      <div className="detail-item">
-                        <div className="detail-label">게시글 ID</div>
-                        <div className="detail-value">{selectedPost.postId}</div>
-                      </div>
-                      <div className="detail-item">
-                        <div className="detail-label">카테고리</div>
-                        <div className="detail-value">{getCategoryPill(selectedPost.category)}</div>
-                      </div>
-                      <div className="detail-item">
-                        <div className="detail-label">작성자</div>
-                        <div className="detail-value">{selectedPost.memberId}</div>
-                      </div>
-                      <div className="detail-item">
-                        <div className="detail-label">작성일</div>
-                        <div className="detail-value">{formatDate(selectedPost.createdAt)}</div>
-                      </div>
-                      <div className="detail-item">
-                        <div className="detail-label">조회수</div>
-                        <div className="detail-value">{selectedPost.views || 0}</div>
-                      </div>
-                      <div className="detail-item full-width">
-                        <div className="detail-label">제목</div>
-                        <div className="detail-value">{selectedPost.title}</div>
-                      </div>
-                      <div className="detail-item full-width">
-                        <div className="detail-label">내용</div>
-                        <div className="detail-value" style={{ whiteSpace: 'pre-wrap' }}>
-                          {selectedPost.content}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                                      <div className="detail-section">
+                                        <h4>기본 정보</h4>
+                                        <div className="detail-grid-3-col">
+                                          <div className="detail-item">
+                                            <div className="detail-label">게시글 ID</div>
+                                            <div className="detail-value">{selectedPost.postId}</div>
+                                          </div>
+                                          <div className="detail-item">
+                                            <div className="detail-label">카테고리</div>
+                                            <div className="detail-value">{getCategoryPill(selectedPost.category)}</div>
+                                          </div>
+                                          <div className="detail-item">
+                                            <div className="detail-label">조회수</div>
+                                            <div className="detail-value">{selectedPost.views || 0}</div>
+                                          </div>
+                                        </div>
+                                        <div className="detail-grid-2-col">
+                                          <div className="detail-item">
+                                            <div className="detail-label">작성자</div>
+                                            <div className="detail-value">{selectedPost.memberId}</div>
+                                          </div>
+                                          <div className="detail-item">
+                                            <div className="detail-label">작성일</div>
+                                            <div className="detail-value">{formatDate(selectedPost.createdAt)}</div>
+                                          </div>
+                                        </div>
+                                        <div className="detail-item title-detail-item">
+                                          <div className="detail-label">제목</div>
+                                          <div className="detail-value">{selectedPost.title}</div>
+                                        </div>
+                                        <div className="detail-item">
+                                          <div className="detail-label">내용</div>
+                                          <div className="detail-value" style={{ whiteSpace: 'pre-wrap' }}>
+                                            {selectedPost.content}
+                                          </div>
+                                        </div>
+                                      </div>                </div>
                 <div className="modal-footer">
-                  <button className="btn-outline btn" onClick={handleEditFromDetail}>
+                  <button className="edit-btn" onClick={handleEditFromDetail}>
                     수정
                   </button>
-                  <button className="btn btn-danger" onClick={handleDeleteFromDetail}>
+                  <button className="delete-btn" onClick={handleDeleteFromDetail}>
                     삭제
                   </button>
                 </div>
@@ -497,30 +481,30 @@ const Community = () => {
               /* 수정 모드 */
               <form onSubmit={handleUpdateSubmit}>
                 <div className="modal-body">
-                  <div className="form-group">
-                    <label className="form-label">제목</label>
-                    <input
-                      type="text"
-                      className="input"
-                      name="title"
-                      value={editFormData.title}
-                      onChange={handleEditInputChange}
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label className="form-label">카테고리</label>
-                    <select
-                      className="select"
-                      name="category"
-                      value={editFormData.category}
-                      onChange={handleEditInputChange}
-                    >
-                      <option value="notice">공지</option>
-                      <option value="free">자유</option>
-                      <option value="question">질문</option>
-                      <option value="review">후기</option>
-                    </select>
+                  <div className="form-group-row">
+                    <div className="form-group category-group">
+                      <select
+                        className="select"
+                        name="category"
+                        value={editFormData.category}
+                        onChange={handleEditInputChange}
+                      >
+                        <option value="free">자유</option>
+                        <option value="question">질문</option>
+                        <option value="review">후기</option>
+                      </select>
+                    </div>
+                    <div className="form-group title-group">
+                      <input
+                        type="text"
+                        className="input"
+                        name="title"
+                        value={editFormData.title}
+                        onChange={handleEditInputChange}
+                        placeholder="제목을 입력하세요"
+                        required
+                      />
+                    </div>
                   </div>
                   <div className="form-group">
                     <label className="form-label">내용</label>

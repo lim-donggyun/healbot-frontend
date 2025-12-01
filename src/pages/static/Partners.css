@@ -194,7 +194,7 @@
 }
 
 .form-group textarea {
-  resize: vertical;
+  resize: none;
   font-family: inherit;
 }
 

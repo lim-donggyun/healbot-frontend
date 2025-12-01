@@ -346,6 +346,16 @@ const Notice = () => {
           </div>
 
           <div className="notice-search-filters">
+            <div className="filter-group">
+              <select className="filter-select" value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)}>
+                <option value="ALL">전체 카테고리</option>
+                <option value="NOTICE">공지</option>
+                <option value="IMPORTANT">중요</option>
+                <option value="UPDATE">업데이트</option>
+                <option value="EVENT">이벤트</option>
+              </select>
+            </div>
+
             <input
               type="text"
               className="search-input"
@@ -356,16 +366,6 @@ const Notice = () => {
                 applyFilter();
               }}
             />
-
-            <div className="filter-group">
-              <select className="filter-select" value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)}>
-                <option value="ALL">전체 카테고리</option>
-                <option value="NOTICE">공지</option>
-                <option value="IMPORTANT">중요</option>
-                <option value="UPDATE">업데이트</option>
-                <option value="EVENT">이벤트</option>
-              </select>
-            </div>
           </div>
 
           <div className="notice-table-container">
@@ -456,28 +456,28 @@ const Notice = () => {
               <button className="modal-close" onClick={() => setShowCreateModal(false)}>✕</button>
             </div>
             <div className="modal-body">
-              <div className="form-group">
-                <label className="form-label">제목</label>
-                <input
-                  type="text"
-                  className="input"
-                  placeholder="공지사항 제목을 입력하세요"
-                  value={newNotice.title}
-                  onChange={(e) => setNewNotice({ ...newNotice, title: e.target.value })}
-                />
-              </div>
-              <div className="form-group">
-                <label className="form-label">카테고리</label>
-                <select
-                  className="select"
-                  value={newNotice.category}
-                  onChange={(e) => setNewNotice({ ...newNotice, category: e.target.value })}
-                >
-                  <option value="NOTICE">공지</option>
-                  <option value="IMPORTANT">중요</option>
-                  <option value="UPDATE">업데이트</option>
-                  <option value="EVENT">이벤트</option>
-                </select>
+              <div className="form-group-row">
+                <div className="form-group category-group">
+                  <select
+                    className="select"
+                    value={newNotice.category}
+                    onChange={(e) => setNewNotice({ ...newNotice, category: e.target.value })}
+                  >
+                    <option value="NOTICE">공지</option>
+                    <option value="IMPORTANT">중요</option>
+                    <option value="UPDATE">업데이트</option>
+                    <option value="EVENT">이벤트</option>
+                  </select>
+                </div>
+                <div className="form-group title-group">
+                  <input
+                    type="text"
+                    className="input"
+                    placeholder="제목을 입력하세요"
+                    value={newNotice.title}
+                    onChange={(e) => setNewNotice({ ...newNotice, title: e.target.value })}
+                  />
+                </div>
               </div>
               <div className="form-group">
                 <label className="form-label">내용</label>
@@ -571,30 +571,31 @@ const Notice = () => {
               /* 수정 모드 */
               <form onSubmit={handleUpdateSubmit}>
                 <div className="modal-body">
-                  <div className="form-group">
-                    <label className="form-label">제목</label>
-                    <input
-                      type="text"
-                      className="input"
-                      name="title"
-                      value={editFormData.title}
-                      onChange={handleEditInputChange}
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label className="form-label">카테고리</label>
-                    <select
-                      className="select"
-                      name="category"
-                      value={editFormData.category}
-                      onChange={handleEditInputChange}
-                    >
-                      <option value="NOTICE">공지</option>
-                      <option value="IMPORTANT">중요</option>
-                      <option value="UPDATE">업데이트</option>
-                      <option value="EVENT">이벤트</option>
-                    </select>
+                  <div className="form-group-row">
+                    <div className="form-group category-group">
+                      <select
+                        className="select"
+                        name="category"
+                        value={editFormData.category}
+                        onChange={handleEditInputChange}
+                      >
+                        <option value="NOTICE">공지</option>
+                        <option value="IMPORTANT">중요</option>
+                        <option value="UPDATE">업데이트</option>
+                        <option value="EVENT">이벤트</option>
+                      </select>
+                    </div>
+                    <div className="form-group title-group">
+                      <input
+                        type="text"
+                        className="input"
+                        name="title"
+                        value={editFormData.title}
+                        onChange={handleEditInputChange}
+                        placeholder="제목을 입력하세요"
+                        required
+                      />
+                    </div>
                   </div>
                   <div className="form-group">
                     <label className="form-label">내용</label>
