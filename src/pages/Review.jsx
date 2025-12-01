@@ -9,6 +9,10 @@ import { checkSession } from "../utils/memberApi";
 const Review = () => {
 const navigate = useNavigate();
 
+// ✅ 전체 리뷰용
+const [globalReviews, setGlobalReviews] = useState([]);
+
+// ✅ 특정 병원 리뷰용
 const [reviews, setReviews] = useState([]);
 const [hospitalName, setHospitalName] = useState("");
 const [avgScore, setAvgScore] = useState(0);
@@ -53,8 +57,29 @@ const renderStars = (score) => {
     );
 };
 
-const loadReviews = async (hospitalId) => {
-    if (!hospitalId) return; // 병원 정해지기 전엔 호출 X
+// ✅ 전체 리뷰 로딩
+const loadGlobalReviews = async () => {
+    try {
+    setLoading(true);
+    setError("");
+
+    const res = await fetch(
+        `/api/reviews/all?sort=${sort}&rating=${ratingFilter}`
+    );
+    if (!res.ok) throw new Error("리뷰 조회 실패");
+
+    const data = await res.json();
+    setGlobalReviews(data.reviewList || []);
+    } catch (e) {
+    setError(e.message || "오류가 발생했습니다.");
+    } finally {
+    setLoading(false);
+    }
+};
+
+// ✅ 특정 병원 리뷰 로딩
+const loadHospitalReviews = async (hospitalId) => {
+    if (!hospitalId) return;
 
     try {
     setLoading(true);
@@ -77,10 +102,14 @@ const loadReviews = async (hospitalId) => {
     }
 };
 
-// 정렬/필터 바뀔 때, 이미 선택된 병원이 있으면 그 병원 리뷰 다시 로딩
+// 🔁 정렬/필터 바뀔 때:
+// - 병원 선택 전이면 전체 리뷰
+// - 병원 선택 후면 해당 병원 리뷰
 useEffect(() => {
     if (selectedHospital?.id) {
-    loadReviews(selectedHospital.id);
+    loadHospitalReviews(selectedHospital.id);
+    } else {
+    loadGlobalReviews();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
 }, [selectedHospital?.id, sort, ratingFilter]);
@@ -92,15 +121,17 @@ const handleWriteClick = () => {
     navigate("/login");
     return;
     }
-    // 아직 OCR로 병원 인증 안 했으면 먼저 OCR 모달 띄우기
+
     if (!selectedHospital) {
+    // 아직 어떤 병원 리뷰를 쓸지 모르는 상태 → OCR 먼저
     setShowOCR(true);
     return;
     }
+
     setShowWriteModal(true);
 };
 
-// ✅ OCR 인증 성공 시, 여기서 병원 정보 세팅
+// ✅ OCR 인증 성공 시, 병원 정보 세팅
 const handleOcrVerified = (info) => {
     // info: { hospitalId, hospitalName, text, image }
     setSelectedHospital({
@@ -109,13 +140,13 @@ const handleOcrVerified = (info) => {
     });
     setShowOCR(false);
     setShowWriteModal(true);
-    loadReviews(info.hospitalId);
+    loadHospitalReviews(info.hospitalId);
 };
 
 const handleWriteSuccess = () => {
     setShowWriteModal(false);
     if (selectedHospital?.id) {
-    loadReviews(selectedHospital.id);
+    loadHospitalReviews(selectedHospital.id);
     }
 };
 
@@ -128,8 +159,10 @@ return (
             <h2 className="rv-hname">
             {selectedHospital
                 ? `${selectedHospital.name} 리뷰`
-                : "병원 리뷰"}
+                : "전체 병원 리뷰"}
             </h2>
+
+            {/* 특정 병원 선택된 경우에만 메타 정보 표시 */}
             {selectedHospital && (
             <div className="rv-hmeta">
                 <span className="rv-avg-score">
@@ -150,60 +183,96 @@ return (
         </button>
         </div>
 
+        {/* 안내 문구 */}
         {!selectedHospital && (
         <div className="rv-info">
-            아직 병원을 선택하지 않았습니다.  
-            상단의 [리뷰 작성] 버튼을 눌러 영수증 OCR 인증을 진행해 주세요.
+            현재 전체 병원 리뷰를 보고 있습니다. <br />
+            특정 병원 영수증으로 인증하면, 그 병원 리뷰만 모아서 볼 수 있어요.
         </div>
         )}
 
-        {/* 필터/정렬 – 병원 정해졌을 때만 의미 있음 */}
-        {selectedHospital && (
+        {/* 필터/정렬 – 둘 다 공통으로 사용 */}
         <div className="rv-filter-row">
-            <div className="rv-rating-filter">
+        <div className="rv-rating-filter">
             <button
-                type="button"
-                className={
+            type="button"
+            className={
                 ratingFilter === "all" ? "rv-chip active" : "rv-chip"
-                }
-                onClick={() => setRatingFilter("all")}
+            }
+            onClick={() => setRatingFilter("all")}
             >
-                전체
+            전체
             </button>
             {[5, 4, 3, 2, 1].map((r) => (
-                <button
+            <button
                 key={r}
                 type="button"
                 className={
-                    ratingFilter === String(r) ? "rv-chip active" : "rv-chip"
+                ratingFilter === String(r)
+                    ? "rv-chip active"
+                    : "rv-chip"
                 }
                 onClick={() => setRatingFilter(String(r))}
-                >
+            >
                 {r}점
-                </button>
+            </button>
             ))}
-            </div>
+        </div>
 
-            <select
+        <select
             className="rv-sort-select"
             value={sort}
             onChange={(e) => setSort(e.target.value)}
-            >
+        >
             <option value="latest">최신순</option>
             <option value="high">평점 높은순</option>
             <option value="low">평점 낮은순</option>
-            </select>
+        </select>
         </div>
-        )}
 
         {/* 리스트 */}
         <div className="rv-list">
-        {selectedHospital && loading && (
-            <div className="rv-state">불러오는 중...</div>
-        )}
-        {selectedHospital && error && !loading && (
+        {loading && <div className="rv-state">불러오는 중...</div>}
+        {error && !loading && (
             <div className="rv-state rv-error">{error}</div>
         )}
+
+        {/* 아직 병원 선택 안 한 경우 → 전체 리뷰 */}
+        {!selectedHospital &&
+            !loading &&
+            !error &&
+            globalReviews.length === 0 && (
+            <div className="rv-state">등록된 리뷰가 없습니다.</div>
+            )}
+
+        {!selectedHospital &&
+            !loading &&
+            !error &&
+            globalReviews.map((r) => (
+            <div key={r.reviewId || r.id} className="rv-card">
+                <div className="rv-card-top">
+                <div className="rv-card-score">
+                    {renderStars(r.score)}
+                    <span className="rv-card-score-text">
+                    {r.score?.toFixed ? r.score.toFixed(1) : r.score}
+                    </span>
+                </div>
+                <span className="rv-card-writer">
+                    {r.writerName || r.userName || "익명"}
+                </span>
+                </div>
+                {/* 전체 리스트에서는 병원 이름도 보여주기 */}
+                <div className="rv-card-hname">
+                {r.hospitalName}
+                </div>
+                <p className="rv-card-content">{r.content}</p>
+                <div className="rv-card-bottom">
+                <span className="rv-card-date">{r.createdAt}</span>
+                </div>
+            </div>
+            ))}
+
+        {/* 병원 선택된 경우 → 그 병원 리뷰 */}
         {selectedHospital &&
             !loading &&
             !error &&

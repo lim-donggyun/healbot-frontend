@@ -90,7 +90,7 @@ const OCR = ({ onVerified }) => {
     }
   };
 
-  // 영수증 텍스트로 병원 정보 인증
+  // 영수증 텍스트로 병원 정보 인증 (hospitalId 안 보냄)
   const handleVerify = async () => {
     if (!extractedText || error) return;
 
@@ -103,7 +103,6 @@ const OCR = ({ onVerified }) => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          // ✅ 이제 hospitalId 안 보냄
           ocrText: extractedText,
         }),
       });
@@ -113,16 +112,15 @@ const OCR = ({ onVerified }) => {
       const data = await res.json();
       console.log("[OCR] verify result:", data);
 
-      if (!data.verified || !data.hospitalId) {
+      if (!data.verified) {
         setVerifyMessage(
           data.message ||
-            "영수증의 병원명/주소가 병원 정보와 일치하는 곳을 찾지 못했습니다."
+            "영수증의 병원명/주소가 병원 정보와 일치하지 않습니다."
         );
         return;
       }
 
       setVerifyMessage("✅ 영수증 인증이 완료되었습니다.");
-
       if (onVerified) {
         onVerified({
           hospitalId: data.hospitalId,
