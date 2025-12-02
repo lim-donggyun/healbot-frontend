@@ -504,9 +504,13 @@
 }
 
 /* 카테고리 select와 제목 input height 맞추기 */
-.form-group-row .select,
+.form-group-row .select {
+  padding: 10px 12px;
+  box-sizing: border-box;
+}
+
 .form-group-row .input {
-  height: 42px;
+  height: 48px;
   padding: 10px 12px;
   box-sizing: border-box;
 }
