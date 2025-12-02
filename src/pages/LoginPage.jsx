@@ -21,6 +21,7 @@ const Login = () => {
     const isProcessingRef = useRef(false);
     const [memberId, setMemberId] = useState('');
     const [password, setPassword] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
 
     const KAKAO_CLIENT_ID = import.meta.env.VITE_KAKAO_CLIENT_ID;
     const NAVER_CLIENT_ID = import.meta.env.VITE_NAVER_CLIENT_ID;
@@ -32,14 +33,28 @@ const Login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setErrorMessage(''); // 에러 메시지 초기화
+
+        // 입력 검증
+        const isIdEmpty = !memberId.trim();
+        const isPasswordEmpty = !password.trim();
+
+        if (isIdEmpty && isPasswordEmpty) {
+            setErrorMessage('아이디 비밀번호를 입력해주세요.');
+            return;
+        } else if (isIdEmpty) {
+            setErrorMessage('아이디를 입력해주세요.');
+            return;
+        } else if (isPasswordEmpty) {
+            setErrorMessage('비밀번호를 입력해주세요.');
+            return;
+        }
 
         try {
             const data = await normalLogin(memberId, password);
 
             if (data.success === 1) {
-                // 로그인 성공
-                alert('로그인 성공!');
-
+                // 로그인 성공 - alert 없이 바로 이동
                 // 세션 확인하여 관리자 여부 체크
                 const sessionData = await checkSession();
                 if (sessionData.loggedIn && sessionData.admin_YN === 'Y') {
@@ -48,12 +63,12 @@ const Login = () => {
                     navigate('/');
                 }
             } else {
-                // 로그인 실패
-                alert('아이디 또는 비밀번호가 일치하지 않습니다.');
+                // 로그인 실패 - 화면에 에러 메시지 표시
+                setErrorMessage('아이디 또는 비밀번호가 틀렸습니다.');
             }
         } catch (error) {
             console.error('로그인 에러:', error);
-            alert('로그인 처리 중 오류가 발생했습니다.');
+            setErrorMessage('아이디 또는 비밀번호가 틀렸습니다.');
         }
     };
 
@@ -209,14 +224,22 @@ const Login = () => {
                 <div className="login-wrapper">
                     {/* 좌측 로그인 폼 */}
                     <div className="login-left">
+                        {errorMessage && (
+                            <div className="login-error-message">
+                                {errorMessage}
+                            </div>
+                        )}
+
                         <form className="login-form" onSubmit={handleSubmit}>
                             <input
                                 type="text"
                                 className="login-input"
                                 placeholder="아이디를 입력해주세요."
                                 value={memberId}
-                                onChange={(e) => setMemberId(e.target.value)}
-                                required
+                                onChange={(e) => {
+                                    setMemberId(e.target.value);
+                                    setErrorMessage('');
+                                }}
                             />
 
                             <div className="password-wrapper">
@@ -225,8 +248,10 @@ const Login = () => {
                                     className="login-input"
                                     placeholder="비밀번호를 입력해주세요."
                                     value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    required
+                                    onChange={(e) => {
+                                        setPassword(e.target.value);
+                                        setErrorMessage('');
+                                    }}
                                 />
                                 <button
                                     type="button"
