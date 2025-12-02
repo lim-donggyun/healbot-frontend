@@ -224,7 +224,7 @@ const handleNextPage = () => {
 };
 
 return (
-    <>
+    <div className="review-page-wrapper">
     <Header />
     <div className="rv-page">
     <div className="rv-container">
@@ -485,7 +485,7 @@ return (
     )}
     </div>
     <Footer />
-    </>
+    </div>
 );
 };
 

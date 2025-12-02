@@ -1,4 +1,62 @@
 /* ============================
+   리뷰 페이지 wrapper
+   ============================ */
+.review-page-wrapper {
+  min-height: 100vh;
+  background: #f5f5f5;
+}
+
+/* 리뷰 페이지에서 헤더 스타일 오버라이드 */
+.review-page-wrapper header {
+  background: white !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+/* 로고 색상 변경 */
+.review-page-wrapper .logo-white {
+  display: none !important;
+}
+
+.review-page-wrapper .logo-black {
+  display: block !important;
+}
+
+/* 네비게이션 및 버튼 색상 */
+.review-page-wrapper .nav-link {
+  color: #333 !important;
+}
+
+.review-page-wrapper .nav-link:hover {
+  color: #3284b1 !important;
+}
+
+.review-page-wrapper .utility-btn:not(.emergency-btn) {
+  color: #333 !important;
+}
+
+.review-page-wrapper .utility-btn:not(.emergency-btn):hover {
+  color: #3284b1 !important;
+}
+
+.review-page-wrapper .utility-divider {
+  background: rgba(0, 0, 0, 0.2) !important;
+}
+
+.review-page-wrapper .header-search-container:after {
+  background: #333 !important;
+}
+
+.review-page-wrapper .header-search-input {
+  color: #333 !important;
+  border-color: #333 !important;
+}
+
+.review-page-wrapper #nav-icon2 span {
+  background: #333 !important;
+}
+
+/* ============================
    전체 레이아웃
    ============================ */
 .rv-page {
