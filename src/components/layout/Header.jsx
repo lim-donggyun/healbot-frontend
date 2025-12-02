@@ -18,9 +18,9 @@ function Header() {
     '/login', '/signup', '/find-id', '/find-pass', '/mypage',
     '/search-result', '/community', '/hospitals',
     '/about', '/faq', '/customer-service', '/inquiry',
-    '/event', '/notice', '/terms', '/privacy', '/partners'
+    '/notice', '/terms', '/privacy', '/partners', '/review'
   ];
-  const isAlwaysScrolled = alwaysScrolledPages.includes(location.pathname) || location.pathname.startsWith('/admin') || location.pathname.startsWith('/mypage');
+  const isAlwaysScrolled = alwaysScrolledPages.includes(location.pathname) || location.pathname.startsWith('/admin') || location.pathname.startsWith('/mypage') || location.pathname.startsWith('/review');
 
   // 세션 확인
   useEffect(() => {
@@ -262,12 +262,6 @@ function Header() {
                   커뮤니티
                 </a>
               </div>
-
-              <div className="nav-item">
-                <a href="/review/:hospitalId" className="nav-link">
-                  리뷰
-                </a>
-              </div>
             </nav>
             <div className="utility-menu">
               <div className="header-search-container">
@@ -359,7 +353,7 @@ function Header() {
             >
               공지사항
             </a>
-            <a href="/event">이벤트</a>
+            <a href="/review/:hospitalId">리뷰</a>
           </div>
           <div className="hamburger-menu-column">
             <div className="hamburger-menu-title">정보</div>

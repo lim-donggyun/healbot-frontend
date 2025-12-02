@@ -1,42 +1,36 @@
-/* Segmented Control for Gender */
-.segmented-control {
+/* Gender Radio Group */
+.gender-radio-group {
   display: flex;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  overflow: hidden;
-  margin-top: 6px;
-  height: 42px; /* Match height of other input fields */
+  gap: 24px;
+  margin-top: 10px;
 }
 
-.segmented-control-button {
-  flex: 1;
-  padding: 8px 12px;
-  background-color: #f9fafb;
-  color: #6b7280;
-  cursor: pointer;
-  text-align: center;
-  font-size: 14px;
-  border: none;
-  border-left: 1px solid #ccc;
-  transition: all 0.2s ease-in-out;
+.gender-radio-label {
   display: flex;
   align-items: center;
-  justify-content: center;
-}
-
-.segmented-control-button:first-child {
-  border-left: none;
-}
-
-.segmented-control-button:hover {
-  background-color: #e5e7eb;
+  gap: 0;
+  cursor: pointer;
+  font-size: 14px;
   color: #374151;
+  font-weight: 400;
+  margin: 0;
 }
 
-.segmented-control-button.active {
-  background-color: #3b82f6;
-  color: #ffffff;
-  border-color: #3b82f6;
+.gender-radio-label input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #3284b1;
+  margin: 0;
+  margin-right: 8px;
+}
+
+.gender-radio-label span {
+  user-select: none;
+}
+
+.gender-radio-label:hover span {
+  color: #3284b1;
 }
 
 /* Address field layout */
@@ -176,7 +170,7 @@ h2 {
 }
 
 .steps span.active {
-  color: #e11d48;
+  color: #3284b1;
   font-weight: 600;
 }
 
@@ -204,13 +198,13 @@ h2 {
 }
 
 .all-agree.active {
-  border: 2px solid #3b82f6;
+  border: 2px solid #3284b1;
   background: #f0f9ff;
   color: #111;
 }
 
 .all-agree.active svg {
-  stroke: #3b82f6;
+  stroke: #3284b1;
 }
 
 /* 약관 박스 */
@@ -298,7 +292,7 @@ h2 {
 }
 
 .verify-form input:focus {
-  border-color: #3b82f6;
+  border-color: #3284b1;
 }
 
 .verify-btn-main {
@@ -336,7 +330,7 @@ h2 {
 }
 
 .input-area input:focus {
-  border-color: #3b82f6;
+  border-color: #3284b1;
 }
 
 .verify-btn {
@@ -441,7 +435,7 @@ h2 {
 
 .form-group input:focus {
   outline: none;
-  border-color: #3b82f6;
+  border-color: #3284b1;
 }
 
 .form-group input.error {
@@ -456,6 +450,8 @@ h2 {
 /* regist4 스타일 - 회원정보 입력 폼 */
 .signup-form {
   width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 .signup-form label {
@@ -492,7 +488,7 @@ h2 {
 }
 
 .signup-form input:focus {
-  border-color: #3b82f6;
+  border-color: #3284b1;
 }
 
 .signup-form small {
@@ -590,7 +586,7 @@ h2 {
 
 .btn-verify {
   padding: 10px 16px;
-  background: #3b82f6;
+  background: #3284b1;
   color: #fff;
   border: none;
   border-radius: 6px;
@@ -602,7 +598,7 @@ h2 {
 }
 
 .btn-verify:hover {
-  background: #2563eb;
+  background: #3fc1ec;
 }
 
 .btn-verify:disabled {
@@ -759,13 +755,13 @@ button {
 }
 
 .btn-next.active {
-  background: linear-gradient(90deg, #6d28d9, #3b82f6);
+  background: #3284b1;
   color: #fff;
   cursor: pointer;
 }
 
 .btn-next.active:hover {
-  background: linear-gradient(90deg, #5b21b6, #2563eb);
+  background: #3fc1ec;
 }
 
 .btn-next:disabled {

@@ -1,27 +1,28 @@
 import React from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import "./Footer.css";
 
 const footerLinks = {
   service: [
-    { label: "증상 검색", href: "#search" },
-    { label: "병원 찾기", href: "/hospitals" },
-    { label: "응급실 찾기", href: "/emergency" },
-    { label: "건강 정보", href: "#info" },
-    { label: "커뮤니티", href: "/community" },
+    { label: "증상 검색", href: "/", type: "link" },
+    { label: "병원 찾기", href: "/hospitals", type: "link" },
+    { label: "응급실 찾기", href: "/hospitals?emergency=true", type: "link" },
+    { label: "건강 정보", href: "/chronic-diseases", type: "link" },
+    { label: "커뮤니티", href: "/community", type: "link" },
   ],
   support: [
-    { label: "자주 묻는 질문", href: "/faq" },
-    { label: "1:1 문의", href: "/inquiry" },
-    { label: "공지사항", href: "/notice" },
-    { label: "이용약관", href: "/terms" },
-    { label: "개인정보처리방침", href: "/privacy" },
+    { label: "자주 묻는 질문", href: "/faq", type: "link" },
+    { label: "1:1 문의", href: "/inquiry", type: "link" },
+    { label: "공지사항", href: "/notice", type: "link" },
+    { label: "이용약관", href: "/terms", type: "link" },
+    { label: "개인정보처리방침", href: "/privacy", type: "link" },
   ],
   partner: [
-    { label: "병원 제휴", href: "/partners/hospital" },
-    { label: "약국 제휴", href: "/partners/pharmacy" },
-    { label: "보험사 제휴", href: "/partners/insurance" },
-    { label: "개발자 API", href: "/api" },
-    { label: "비즈니스 문의", href: "/business" },
+    { label: "병원 제휴", href: "/partners", type: "link" },
+    { label: "약국 제휴", href: "/partners", type: "link" },
+    { label: "보험사 제휴", href: "/partners", type: "link" },
+    { label: "개발자 API", href: "/about", type: "link" },
+    { label: "비즈니스 문의", href: "/inquiry", type: "link" },
   ],
 };
 
@@ -65,6 +66,36 @@ const socialLinks = [
 ];
 
 function Footer() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleSymptomSearchClick = () => {
+    if (location.pathname === "/") {
+      // 메인페이지에서는 섹션2로 스크롤
+      const searchSection = document.getElementById("search");
+      if (searchSection) {
+        searchSection.scrollIntoView({ behavior: "smooth" });
+      }
+    } else {
+      // 다른 페이지에서는 메인페이지로 이동 후 섹션2로 스크롤
+      navigate("/");
+      // 페이지 로드 후 스크롤
+      setTimeout(() => {
+        const searchSection = document.getElementById("search");
+        if (searchSection) {
+          searchSection.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 100);
+    }
+  };
+
+  const handleLinkClick = (e, link) => {
+    if (link.label === "증상 검색") {
+      e.preventDefault();
+      handleSymptomSearchClick();
+    }
+  };
+
   return (
     <footer id="footer" className="section-footer">
       <div className="footer-content">
@@ -97,7 +128,7 @@ function Footer() {
             <ul>
               {footerLinks.service.map((link, index) => (
                 <li key={index}>
-                  <a href={link.href}>{link.label}</a>
+                  <Link to={link.href} onClick={(e) => handleLinkClick(e, link)}>{link.label}</Link>
                 </li>
               ))}
             </ul>
@@ -108,7 +139,7 @@ function Footer() {
             <ul>
               {footerLinks.support.map((link, index) => (
                 <li key={index}>
-                  <a href={link.href}>{link.label}</a>
+                  <Link to={link.href}>{link.label}</Link>
                 </li>
               ))}
             </ul>
@@ -119,7 +150,7 @@ function Footer() {
             <ul>
               {footerLinks.partner.map((link, index) => (
                 <li key={index}>
-                  <a href={link.href}>{link.label}</a>
+                  <Link to={link.href}>{link.label}</Link>
                 </li>
               ))}
             </ul>

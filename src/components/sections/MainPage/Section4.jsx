@@ -85,13 +85,13 @@ function InfoSection({ onHealthInfoClick }) {
           </h2>
           <ul className="notice-list">
             {loading ? (
-              <li className="notice-item">
+              <li key="loading" className="notice-item">
                 <span className="notice-title">로딩 중...</span>
               </li>
             ) : notices.length > 0 ? (
               notices.map((notice) => (
                 <li
-                  key={notice.noticeId}
+                  key={notice.noticeNo}
                   className="notice-item"
                   onClick={() => handleNoticeClick(notice.noticeNo)}
                   style={{ cursor: "pointer" }}>
@@ -100,7 +100,7 @@ function InfoSection({ onHealthInfoClick }) {
                 </li>
               ))
             ) : (
-              <li className="notice-item">
+              <li key="empty" className="notice-item">
                 <span className="notice-title">등록된 공지사항이 없습니다.</span>
               </li>
             )}
