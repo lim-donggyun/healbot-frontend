@@ -200,9 +200,15 @@ function Notice() {
               전체
             </button>
             <button
+              className={`notice-tab ${categoryFilter === 'NOTICE' ? 'active' : ''}`}
+              onClick={() => setCategoryFilter('NOTICE')}
+            >
+              공지
+            </button>
+            <button
               className={`notice-tab ${categoryFilter === 'IMPORTANT' ? 'active' : ''}`}
               onClick={() => setCategoryFilter('IMPORTANT')}
-            >
+            >  
               중요
             </button>
             <button
