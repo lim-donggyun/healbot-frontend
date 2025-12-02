@@ -3,8 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import '../../../pages/MainPage.css';
 import './Report.css';
-// API 기본 URL (Vite 프록시 사용)
-const API_BASE_URL = "/react/api";
+import {
+  getAllReviews,
+  getReviewById,
+  updateReview,
+  deleteReview,
+  searchReviews,
+} from '../../../utils/reviewApi';
 
 const Review = () => {
   const navigate = useNavigate();
@@ -16,6 +21,11 @@ const Review = () => {
   const [scoreFilter, setScoreFilter] = useState('');
   const [selectedReview, setSelectedReview] = useState(null);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editFormData, setEditFormData] = useState({
+    score: '',
+    content: '',
+  });
 
   const rowsPerPage = 10;
 
@@ -26,34 +36,55 @@ const Review = () => {
 
   // 컴포넌트 마운트 시 리뷰 데이터 로드
   useEffect(() => {
-    const fetchReviews = async () => {
-      try {
-        setLoading(true);
-        const params = new URLSearchParams();
-        if (hospitalFilter) params.append('hospitalId', hospitalFilter);
-        if (scoreFilter) params.append('score', scoreFilter);
-
-        const response = await fetch(`${API_BASE_URL}/reviews/reviews/all`, {
-          method: 'GET',
-        });
-
-        if (!response.ok) {
-          throw new Error('리뷰 목록을 불러오는데 실패했습니다.');
-        }
-
-        const data = await response.json();
-        setReviews(data);
-        setFilteredReviews(data);
-      } catch (error) {
-        console.error('리뷰 데이터 로드 실패:', error);
-        alert('리뷰 데이터를 불러오는데 실패했습니다.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchReviews();
-  }, [hospitalFilter, scoreFilter]);
+  }, []);
+
+  // 리뷰 목록 조회
+  const fetchReviews = async () => {
+    try {
+      setLoading(true);
+      const data = await getAllReviews();
+      setReviews(data);
+      applyFilters(data, hospitalFilter, scoreFilter);
+    } catch (error) {
+      console.error('리뷰 데이터 로드 실패:', error);
+      alert('리뷰 데이터를 불러오는데 실패했습니다.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 필터 적용
+  const applyFilters = (data, hospital, score) => {
+    let filtered = data;
+
+    if (hospital.trim() !== '') {
+      filtered = filtered.filter((review) =>
+        review.hospitalId?.toLowerCase().includes(hospital.toLowerCase())
+      );
+    }
+
+    if (score !== '') {
+      filtered = filtered.filter((review) => review.score === parseInt(score));
+    }
+
+    setFilteredReviews(filtered);
+    setCurrentPage(1);
+  };
+
+  // 병원 검색
+  const handleHospitalFilter = (e) => {
+    const value = e.target.value;
+    setHospitalFilter(value);
+    applyFilters(reviews, value, scoreFilter);
+  };
+
+  // 평점 검색
+  const handleScoreFilter = (e) => {
+    const value = e.target.value;
+    setScoreFilter(value);
+    applyFilters(reviews, hospitalFilter, value);
+  };
 
   // 날짜 포맷
   const formatDate = (dateStr) => {
@@ -69,26 +100,58 @@ const Review = () => {
   const handleReset = () => {
     setHospitalFilter('');
     setScoreFilter('');
+    setFilteredReviews(reviews);
     setCurrentPage(1);
   };
 
   // 상세보기 모달 열기
   const handleDetailClick = async (reviewId) => {
     try {
-      const response = await fetch(`/react/api/reviews/${reviewId}`, {
-        method: 'GET',
-      });
-
-      if (!response.ok) {
-        throw new Error('리뷰 상세를 불러오는데 실패했습니다.');
-      }
-
-      const data = await response.json();
+      const data = await getReviewById(reviewId);
       setSelectedReview(data);
       setIsDetailModalOpen(true);
     } catch (error) {
       console.error('리뷰 상세 조회 실패:', error);
       alert('리뷰 상세를 불러오는데 실패했습니다.');
+    }
+  };
+
+  // 수정 모달 열기
+  const handleEditClick = () => {
+    setEditFormData({
+      score: selectedReview.score,
+      content: selectedReview.content || '',
+    });
+    setIsDetailModalOpen(false);
+    setIsEditModalOpen(true);
+  };
+
+  // 수정 폼 입력 처리
+  const handleEditInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  // 리뷰 수정 제출
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!editFormData.content.trim()) {
+      alert('리뷰 내용을 입력해주세요.');
+      return;
+    }
+
+    try {
+      await updateReview(selectedReview.reviewId, editFormData);
+      alert('리뷰가 수정되었습니다.');
+      setIsEditModalOpen(false);
+      fetchReviews();
+    } catch (error) {
+      console.error('리뷰 수정 실패:', error);
+      alert('리뷰 수정 중 오류가 발생했습니다.');
     }
   };
 
@@ -100,28 +163,10 @@ const Review = () => {
     if (!confirmed) return;
 
     try {
-      const response = await fetch(`/react/api/reviews/${selectedReview.reviewId}`, {
-        method: 'DELETE',
-      });
-
-      if (!response.ok) {
-        throw new Error('리뷰 삭제에 실패했습니다.');
-      }
-
+      await deleteReview(selectedReview.reviewId);
       alert('리뷰가 삭제되었습니다.');
-
-      // 목록 새로고침
-      const params = new URLSearchParams();
-      if (hospitalFilter) params.append('hospitalId', hospitalFilter);
-      if (scoreFilter) params.append('score', scoreFilter);
-
-      const listResponse = await fetch(`/react/api/reviews/admin?${params.toString()}`, {
-        method: 'GET',
-      });
-      const data = await listResponse.json();
-      setReviews(data);
-      setFilteredReviews(data);
       setIsDetailModalOpen(false);
+      fetchReviews();
     } catch (error) {
       console.error('리뷰 삭제 실패:', error);
       alert('리뷰 삭제 중 오류가 발생했습니다.');
@@ -183,7 +228,7 @@ const Review = () => {
                 className="input"
                 placeholder="병원ID 검색"
                 value={hospitalFilter}
-                onChange={(e) => setHospitalFilter(e.target.value)}
+                onChange={handleHospitalFilter}
               />
             </div>
 
@@ -192,7 +237,7 @@ const Review = () => {
               <select
                 className="select"
                 value={scoreFilter}
-                onChange={(e) => setScoreFilter(e.target.value)}
+                onChange={handleScoreFilter}
               >
                 <option value="">전체</option>
                 <option value="5">⭐⭐⭐⭐⭐ (5점)</option>
@@ -362,10 +407,101 @@ const Review = () => {
             </div>
 
             <div className="modal-footer">
+              <button className="btn btn-primary" onClick={handleEditClick} style={{ marginRight: '10px' }}>
+                수정
+              </button>
               <button className="btn btn-danger" onClick={handleDeleteReview}>
                 삭제
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* 리뷰 수정 모달 */}
+      {isEditModalOpen && selectedReview && (
+        <div className="modal-overlay" onClick={() => setIsEditModalOpen(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>리뷰 수정</h3>
+              <button
+                className="modal-close"
+                onClick={() => setIsEditModalOpen(false)}
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleEditSubmit}>
+              <div className="modal-body">
+                <div className="detail-section">
+                  <h4>리뷰 정보</h4>
+                  <div className="detail-grid">
+                    <div className="detail-item">
+                      <div className="detail-label">리뷰 ID</div>
+                      <div className="detail-value">{selectedReview.reviewId}</div>
+                    </div>
+                    <div className="detail-item">
+                      <div className="detail-label">병원 ID</div>
+                      <div className="detail-value">{selectedReview.hospitalId}</div>
+                    </div>
+                    <div className="detail-item">
+                      <div className="detail-label">회원 ID</div>
+                      <div className="detail-value">{selectedReview.memberId}</div>
+                    </div>
+                    <div className="detail-item">
+                      <div className="detail-label">작성일</div>
+                      <div className="detail-value">{formatDate(selectedReview.createdAt)}</div>
+                    </div>
+                    <div className="detail-item full-width">
+                      <div className="detail-label">평점 *</div>
+                      <select
+                        name="score"
+                        className="select"
+                        value={editFormData.score}
+                        onChange={handleEditInputChange}
+                        required
+                        style={{ width: '100%', padding: '8px', fontSize: '14px' }}
+                      >
+                        <option value="">평점 선택</option>
+                        <option value="5">⭐⭐⭐⭐⭐ (5점)</option>
+                        <option value="4">⭐⭐⭐⭐ (4점)</option>
+                        <option value="3">⭐⭐⭐ (3점)</option>
+                        <option value="2">⭐⭐ (2점)</option>
+                        <option value="1">⭐ (1점)</option>
+                      </select>
+                    </div>
+                    <div className="detail-item full-width">
+                      <div className="detail-label">내용 *</div>
+                      <textarea
+                        name="content"
+                        className="input"
+                        value={editFormData.content}
+                        onChange={handleEditInputChange}
+                        required
+                        rows="6"
+                        placeholder="리뷰 내용을 입력하세요"
+                        style={{ width: '100%', resize: 'vertical', padding: '8px', fontSize: '14px' }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-outline"
+                  onClick={() => setIsEditModalOpen(false)}
+                  style={{ marginRight: '10px' }}
+                >
+                  취소
+                </button>
+                <button type="submit" className="btn btn-primary">
+                  수정 완료
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
