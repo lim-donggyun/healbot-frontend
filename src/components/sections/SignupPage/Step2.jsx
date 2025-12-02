@@ -15,7 +15,7 @@ const Step2 = ({ formData, updateFormData, nextStep, prevStep, socialId }) => {
   const [phone, setPhone] = useState(formData.phone || "");
   const [verificationCode, setVerificationCode] = useState("");
   const [isCodeSent, setIsCodeSent] = useState(false);
-  const [isPhoneVerified, setIsPhoneVerified] = useState(false);
+  const [isEmailVerified, setIsEmailVerified] = useState(false);
 
   const [idCheckStatus, setIdCheckStatus] = useState("");
   const [idCheckMessage, setIdCheckMessage] = useState("");
@@ -35,10 +35,6 @@ const Step2 = ({ formData, updateFormData, nextStep, prevStep, socialId }) => {
     return /^[A-Za-z0-9]{6,20}$/.test(id);
   };
 
-  // 전화번호 010-0000-0000형식 검사
-  const validatePhoneFormat = (value) => {
-    return /^010-\d{4}-\d{4}$/.test(value);
-  };
 
   const handleCheckId = async () => {
     setIdCheckMessage("");
@@ -124,30 +120,51 @@ const Step2 = ({ formData, updateFormData, nextStep, prevStep, socialId }) => {
     return emailRegex.test(email);
   };
 
-  const handleSendCode = () => {
-    if (!phone) {
-      alert("휴대폰 번호를 입력해주세요.");
+  const handleSendCode = async () => {
+    if (!email || !validateEmail(email)) {
+      alert("올바른 이메일을 입력해주세요.");
       return;
     }
-    // 형식 체크
-    if(!validatePhoneFormat(phone.trim())){
-      alert("전화번호는 010-0000-0000 형식으로 입력해주세요.");
-      return;
+
+    try {
+      const response = await fetch(`http://localhost:8080/api/member/send-email-code?email=${encodeURIComponent(email)}`, {
+        method: 'POST',
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        setIsCodeSent(true);
+        alert("인증번호가 이메일로 발송되었습니다.");
+      } else {
+        alert("인증번호 발송에 실패했습니다. 다시 시도해주세요.");
+      }
+    } catch (error) {
+      console.error("인증번호 발송 오류:", error);
+      alert("인증번호 발송 중 오류가 발생했습니다.");
     }
-    setIsCodeSent(true);
-    alert("인증번호가 발송되었습니다. (테스트: 1234)");
   };
 
-  const handleVerifyCode = () => {
+  const handleVerifyCode = async () => {
     if (!verificationCode) {
       alert("인증번호를 입력해주세요.");
       return;
     }
-    if (verificationCode === "1234") {
-      setIsPhoneVerified(true);
-      alert("인증이 완료되었습니다.");
-    } else {
-      alert("인증번호가 일치하지 않습니다.");
+
+    try {
+      const response = await fetch(`http://localhost:8080/api/member/verify-email-code?email=${encodeURIComponent(email)}&code=${encodeURIComponent(verificationCode)}`, {
+        method: 'POST',
+      });
+      const data = await response.json();
+
+      if (data.verified) {
+        setIsEmailVerified(true);
+        alert("이메일 인증이 완료되었습니다.");
+      } else {
+        alert("인증번호가 일치하지 않거나 만료되었습니다.");
+      }
+    } catch (error) {
+      console.error("인증번호 검증 오류:", error);
+      alert("인증번호 검증 중 오류가 발생했습니다.");
     }
   };
 
@@ -198,8 +215,8 @@ const Step2 = ({ formData, updateFormData, nextStep, prevStep, socialId }) => {
       alert("전화번호를 입력해주세요.");
       return;
     }
-    if (!isPhoneVerified) {
-      alert("휴대폰 인증을 완료해주세요.");
+    if (!isEmailVerified) {
+      alert("이메일 인증을 완료해주세요.");
       return;
     }
 
@@ -332,24 +349,15 @@ const Step2 = ({ formData, updateFormData, nextStep, prevStep, socialId }) => {
         />
 
         <label htmlFor="email">이메일 *</label>
-        <input
-          id="email"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="example@email.com"
-        />
-
-        <label htmlFor="phone">전화번호 *</label>
         <div className="row">
           <div className="col">
             <input
-              id="phone"
-              type="text"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="010-0000-0000"
-              disabled={isPhoneVerified}
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="example@email.com"
+              disabled={isEmailVerified}
             />
           </div>
           <div>
@@ -357,21 +365,21 @@ const Step2 = ({ formData, updateFormData, nextStep, prevStep, socialId }) => {
               type="button"
               className="id-check-btn"
               onClick={handleSendCode}
-              disabled={isCodeSent || isPhoneVerified}>
-              {isPhoneVerified ? "인증완료" : "인증번호 발송"}
+              disabled={isCodeSent || isEmailVerified}>
+              {isEmailVerified ? "인증완료" : "인증번호 발송"}
             </button>
           </div>
         </div>
 
         {/* 인증번호 발송 후 인증번호 입력창 표시 */}
-        {isCodeSent && !isPhoneVerified && (
+        {isCodeSent && !isEmailVerified && (
           <div className="row" style={{ marginTop: "10px" }}>
             <div className="col">
               <input
                 type="text"
                 value={verificationCode}
                 onChange={(e) => setVerificationCode(e.target.value)}
-                placeholder="인증번호 입력 (1234)"
+                placeholder="인증번호 6자리 입력"
                 maxLength="6"
               />
             </div>
@@ -382,7 +390,16 @@ const Step2 = ({ formData, updateFormData, nextStep, prevStep, socialId }) => {
             </div>
           </div>
         )}
-        {isPhoneVerified && <div className="message msg-ok">휴대폰 인증이 완료되었습니다.</div>}
+        {isEmailVerified && <div className="message msg-ok">이메일 인증이 완료되었습니다.</div>}
+
+        <label htmlFor="phone">전화번호 *</label>
+        <input
+          id="phone"
+          type="text"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          placeholder="010-0000-0000"
+        />
         <label htmlFor="birth">생년월일 *</label>
         <div className="row">
           <div className="col">
