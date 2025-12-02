@@ -5,6 +5,10 @@ import "./Review.css";
 import ReviewWriteModal from "../components/sections/Review/ReviewWriteModal";
 import OCR from "./OCR";
 import { checkSession } from "../utils/memberApi";
+import Header from "../components/layout/Header";
+import Footer from "../components/layout/Footer";
+
+const PAGE_SIZE = 5; // 한 페이지에 보여줄 개수
 
 const Review = () => {
 const navigate = useNavigate();
@@ -37,6 +41,9 @@ const [hospitalKeyword, setHospitalKeyword] = useState("");
 const [hospitalSearchResults, setHospitalSearchResults] = useState([]);
 const [hospitalSearchError, setHospitalSearchError] = useState("");
 const [hospitalSearching, setHospitalSearching] = useState(false);
+
+// ✅ 페이징 상태
+const [page, setPage] = useState(1);
 
 // 로그인 여부 확인
 useEffect(() => {
@@ -117,15 +124,15 @@ const handleHospitalSearch = async () => {
     if (!keyword) {
     // 검색어 비우면 전체 리뷰로 초기화
     setSelectedHospital(null);
+    setPage(1);
     await loadGlobalReviews();
     return;
     }
 
     try {
     setHospitalSearching(true);
-    // 👉 실제 검색 API URL은 프로젝트에 맞게 수정
     const res = await fetch(
-        `/api/hospitals/search?keyword=${encodeURIComponent(keyword)}`
+        `/api/reviews/search?keyword=${encodeURIComponent(keyword)}`
     );
     if (!res.ok) throw new Error("병원 검색에 실패했습니다.");
 
@@ -150,6 +157,7 @@ const handleSelectHospitalFromSearch = (hospital) => {
     setHospitalKeyword(hospital.name);
     setHospitalSearchResults([]);
     setHospitalSearchError("");
+    setPage(1); // 새로운 병원 선택 시 1페이지
     loadHospitalReviews(hospital.id);
 };
 
@@ -159,6 +167,7 @@ const handleResetHospital = () => {
     setHospitalKeyword("");
     setHospitalSearchResults([]);
     setHospitalSearchError("");
+    setPage(1); // 초기화 시 1페이지
     loadGlobalReviews();
 };
 
@@ -166,6 +175,7 @@ const handleResetHospital = () => {
 // - 병원 선택 전이면 전체 리뷰
 // - 병원 선택 후면 해당 병원 리뷰
 useEffect(() => {
+    setPage(1); // 정렬/필터 바뀔 때 페이지 초기화
     if (selectedHospital?.id) {
     loadHospitalReviews(selectedHospital.id);
     } else {
@@ -200,6 +210,7 @@ const handleOcrVerified = (info) => {
     });
     setShowOCR(false);
     setShowWriteModal(true);
+    setPage(1);
     loadHospitalReviews(info.hospitalId);
 };
 
@@ -210,7 +221,26 @@ const handleWriteSuccess = () => {
     }
 };
 
+// ✅ 페이징용 계산 (현재 리스트 / 페이지)
+const activeList = selectedHospital ? reviews : globalReviews;
+const totalPages =
+    activeList.length === 0 ? 1 : Math.ceil(activeList.length / PAGE_SIZE);
+const currentPage = Math.min(page, totalPages);
+const startIndex = (currentPage - 1) * PAGE_SIZE;
+const endIndex = startIndex + PAGE_SIZE;
+const visibleList = activeList.slice(startIndex, endIndex);
+
+const handlePrevPage = () => {
+    setPage((prev) => Math.max(1, prev - 1));
+};
+
+const handleNextPage = () => {
+    setPage((prev) => Math.min(totalPages, prev + 1));
+};
+
 return (
+    <>
+    <Header />
     <div className="rv-page">
     <div className="rv-container">
         {/* 상단 요약 */}
@@ -224,7 +254,7 @@ return (
 
             {/* 특정 병원 선택된 경우에만 메타 정보 표시 */}
             {selectedHospital && (
-            <div className="rv-hmeta">
+                <div className="rv-hmeta">
                 <span className="rv-avg-score">
                 {avgScore.toFixed(1)} / 5
                 </span>
@@ -238,7 +268,7 @@ return (
             type="button"
             className="rv-write-btn"
             onClick={handleWriteClick}
-        >
+            >
             리뷰 작성
         </button>
         </div>
@@ -254,7 +284,7 @@ return (
             onChange={(e) => setHospitalKeyword(e.target.value)}
             onKeyDown={(e) => {
                 if (e.key === "Enter") {
-                handleHospitalSearch();
+                    handleHospitalSearch();
                 }
             }}
             />
@@ -281,22 +311,22 @@ return (
 
         {/* 검색 결과 / 에러 */}
         {hospitalSearchError && (
-        <div className="rv-search-msg rv-search-error">
+            <div className="rv-search-msg rv-search-error">
             {hospitalSearchError}
         </div>
         )}
         {hospitalSearchResults.length > 0 && (
-        <div className="rv-search-result-list">
+            <div className="rv-search-result-list">
             {hospitalSearchResults.map((h) => (
-            <button
+                <button
                 key={h.id}
                 type="button"
                 className="rv-search-result-item"
                 onClick={() => handleSelectHospitalFromSearch(h)}
-            >
+                >
                 <span className="rv-search-hname">{h.name}</span>
                 {h.address && (
-                <span className="rv-search-haddr">{h.address}</span>
+                    <span className="rv-search-haddr">{h.address}</span>
                 )}
             </button>
             ))}
@@ -305,7 +335,7 @@ return (
 
         {/* 안내 문구 */}
         {!selectedHospital && (
-        <div className="rv-info">
+            <div className="rv-info">
             현재 전체 병원 리뷰를 보고 있습니다. <br />
             상단에서 병원명을 검색하거나, 영수증 OCR 인증으로 특정 병원
             리뷰만 모아볼 수 있어요.
@@ -325,14 +355,14 @@ return (
             전체
             </button>
             {[5, 4, 3, 2, 1].map((r) => (
-            <button
+                <button
                 key={r}
                 type="button"
                 className={
-                ratingFilter === String(r) ? "rv-chip active" : "rv-chip"
+                    ratingFilter === String(r) ? "rv-chip active" : "rv-chip"
                 }
                 onClick={() => setRatingFilter(String(r))}
-            >
+                >
                 {r}점
             </button>
             ))}
@@ -342,7 +372,7 @@ return (
             className="rv-sort-select"
             value={sort}
             onChange={(e) => setSort(e.target.value)}
-        >
+            >
             <option value="latest">최신순</option>
             <option value="high">평점 높은순</option>
             <option value="low">평점 낮은순</option>
@@ -356,19 +386,17 @@ return (
             <div className="rv-state rv-error">{error}</div>
         )}
 
-        {/* 아직 병원 선택 안 한 경우 → 전체 리뷰 */}
-        {!selectedHospital &&
-            !loading &&
-            !error &&
-            globalReviews.length === 0 && (
+        {/* 공통: 현재 리스트 기준으로 빈 상태 표시 */}
+        {!loading && !error && activeList.length === 0 && (
             <div className="rv-state">등록된 리뷰가 없습니다.</div>
-            )}
+        )}
 
-        {!selectedHospital &&
-            !loading &&
+        {/* 페이징된 리스트 렌더링 */}
+        {!loading &&
             !error &&
-            globalReviews.map((r) => (
-            <div key={r.reviewId || r.id} className="rv-card">
+            activeList.length > 0 &&
+            visibleList.map((r) => (
+                <div key={r.reviewId || r.id} className="rv-card">
                 <div className="rv-card-top">
                 <div className="rv-card-score">
                     {renderStars(r.score)}
@@ -381,38 +409,9 @@ return (
                 </span>
                 </div>
                 {/* 전체 리스트에서는 병원 이름도 보여주기 */}
-                <div className="rv-card-hname">{r.hospitalName}</div>
-                <p className="rv-card-content">{r.content}</p>
-                <div className="rv-card-bottom">
-                <span className="rv-card-date">{r.createdAt}</span>
-                </div>
-            </div>
-            ))}
-
-        {/* 병원 선택된 경우 → 그 병원 리뷰 */}
-        {selectedHospital &&
-            !loading &&
-            !error &&
-            reviews.length === 0 && (
-            <div className="rv-state">등록된 리뷰가 없습니다.</div>
-            )}
-
-        {selectedHospital &&
-            !loading &&
-            !error &&
-            reviews.map((r) => (
-            <div key={r.reviewId || r.id} className="rv-card">
-                <div className="rv-card-top">
-                <div className="rv-card-score">
-                    {renderStars(r.score)}
-                    <span className="rv-card-score-text">
-                    {r.score?.toFixed ? r.score.toFixed(1) : r.score}
-                    </span>
-                </div>
-                <span className="rv-card-writer">
-                    {r.writerName || r.userName || "익명"}
-                </span>
-                </div>
+                {!selectedHospital && (
+                    <div className="rv-card-hname">{r.hospitalName}</div>
+                )}
                 <p className="rv-card-content">{r.content}</p>
                 <div className="rv-card-bottom">
                 <span className="rv-card-date">{r.createdAt}</span>
@@ -420,8 +419,34 @@ return (
             </div>
             ))}
         </div>
+
+        {/* ✅ 페이징 UI */}
+        {!loading && !error && activeList.length > PAGE_SIZE && (
+            <div className="rv-pagination">
+            <button
+            type="button"
+            className="rv-page-btn"
+            onClick={handlePrevPage}
+            disabled={currentPage === 1}
+            >
+            이전
+            </button>
+            <span className="rv-page-info">
+            {currentPage} / {totalPages}
+            </span>
+            <button
+            type="button"
+            className="rv-page-btn"
+            onClick={handleNextPage}
+            disabled={currentPage === totalPages}
+            >
+            다음
+            </button>
+        </div>
+        )}
     </div>
 
+    
     {/* OCR 모달 */}
     {showOCR && (
         <div
@@ -431,14 +456,13 @@ return (
         <div
             className="ocr-modal-content"
             onClick={(e) => e.stopPropagation()}
-        >
+            >
             <button
             className="ocr-modal-close"
             onClick={() => setShowOCR(false)}
             >
             ×
             </button>
-            {/* ✅ 이제 hospitalId 안 넘김 */}
             <OCR onVerified={handleOcrVerified} />
         </div>
         </div>
@@ -453,6 +477,8 @@ return (
         />
     )}
     </div>
+    <Footer />
+    </>
 );
 };
 
