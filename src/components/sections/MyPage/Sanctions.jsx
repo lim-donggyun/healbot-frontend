@@ -34,7 +34,9 @@ const getStatusBadge = (status) => {
     case "WARNING":
       return { text: "경고", className: "status-badge warning" };
     case "PENDING":
-      return { text: "검토중", className: "status-badge pending" };
+      return { text: "검토중..", className: "status-badge pending" };
+    case "RESOLVED":
+      return { text: "처리완료", className: "status-badge resolved" };
     default:
       return { text: status || "기타", className: "status-badge" };
   }
@@ -200,20 +202,23 @@ function Sanctions() {
                         </tr>
                       </thead>
                       <tbody>
-                        {reportedList.map((r) => (
-                          <tr key={r.reportId}>
-                            <td>
-                              <span className="target-pill">{getTargetLabel(r.targetType)}</span>
-                            </td>
-                            <td className="ellipsis-cell">{r.targetSummary || "-"}</td>
-                            <td>{getReasonLabel(r.reasonType)}</td>
-                            <td>
-                              <span className="status-badge done">{r.result || "조치 완료"}</span>
-                            </td>
-                            <td>{r.createdAt || "-"}</td>
-                            <td>{r.processedAt || "-"}</td>
-                          </tr>
-                        ))}
+                        {reportedList.map((r) => {
+                          const badge = getStatusBadge(r.result);
+                          return (
+                            <tr key={r.reportId}>
+                              <td>
+                                <span className="target-pill">{getTargetLabel(r.targetType)}</span>
+                              </td>
+                              <td className="ellipsis-cell">{r.targetSummary || "-"}</td>
+                              <td>{getReasonLabel(r.reasonType)}</td>
+                              <td>
+                                <span className={badge.className}>{badge.text}</span>
+                              </td>
+                              <td>{r.createdAt || "-"}</td>
+                              <td>{r.processedAt || "-"}</td>
+                            </tr>
+                          );
+                        })}
                       </tbody>
                     </table>
                   </div>

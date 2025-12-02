@@ -167,6 +167,10 @@ color: #f97316;
 background: rgba(50, 132, 177, 0.1);
 color: #3284b1;
 }
+.status-badge.resolved {
+background: rgba(50, 132, 177, 0.1);
+color: #16a34a;
+}
 
 /* 반응형 */
 @media (max-width: 768px) {

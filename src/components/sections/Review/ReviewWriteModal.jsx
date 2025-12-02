@@ -1,13 +1,33 @@
 // src/components/review/ReviewWriteModal.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./ReviewWriteModal.css";
 
-const ReviewWriteModal = ({ hospitalId, onClose, onSuccess }) => {
+const ReviewWriteModal = ({ hospitalId, hospitalName, hospitalAddress, onClose, onSuccess }) => {
 const [score, setScore] = useState(0);
 const [content, setContent] = useState("");
 const [images, setImages] = useState([]); // { file, previewUrl }[]
 const [loading, setLoading] = useState(false);
 const [error, setError] = useState("");
+const [hospitalInfo, setHospitalInfo] = useState({ name: hospitalName || "", address: hospitalAddress || "" });
+
+// 병원 정보 가져오기
+useEffect(() => {
+  if (!hospitalName && hospitalId) {
+    // 병원 정보가 없으면 API로 가져오기
+    const fetchHospitalInfo = async () => {
+      try {
+        const res = await fetch(`/api/hospitals/${hospitalId}`);
+        if (res.ok) {
+          const data = await res.json();
+          setHospitalInfo({ name: data.name || "", address: data.address || "" });
+        }
+      } catch (e) {
+        console.error("병원 정보 가져오기 실패:", e);
+      }
+    };
+    fetchHospitalInfo();
+  }
+}, [hospitalId, hospitalName]);
 
 const handleStarClick = (v) => setScore(v);
 
@@ -106,7 +126,10 @@ return (
     <div className="rwm-backdrop" onClick={handleBackdropClick}>
     <div className="rwm-modal" onClick={stop}>
         <div className="rwm-header">
-        <h3 className="rwm-title">리뷰 작성</h3>
+        <div className="rwm-hospital-info">
+            <h3 className="rwm-title">{hospitalInfo.name || "병원 정보 로딩 중..."}</h3>
+            {hospitalInfo.address && <p className="rwm-hospital-address">{hospitalInfo.address}</p>}
+        </div>
         <button
             type="button"
             className="rwm-close"

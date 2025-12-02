@@ -353,7 +353,7 @@ function Header() {
             >
               공지사항
             </a>
-            <a href="/review/:hospitalId">리뷰</a>
+            <a href="/review">리뷰</a>
           </div>
           <div className="hamburger-menu-column">
             <div className="hamburger-menu-title">정보</div>

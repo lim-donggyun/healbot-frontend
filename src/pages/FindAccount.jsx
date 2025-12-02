@@ -106,19 +106,8 @@ const FindAccount = () => {
       return;
     }
 
-    if (newPassword.length < 8) {
-      alert("비밀번호는 최소 8자 이상이어야 합니다.");
-      return;
-    }
-
     if (newPassword !== confirmPassword) {
       alert("비밀번호가 일치하지 않습니다.\n다시 확인해주세요.");
-      return;
-    }
-
-    const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/;
-    if (!passwordRegex.test(newPassword)) {
-      alert("비밀번호는 영문, 숫자, 특수문자를 포함해야 합니다.");
       return;
     }
 
@@ -220,7 +209,7 @@ const FindAccount = () => {
                     <input
                       type={showNewPassword ? "text" : "password"}
                       className="find-input"
-                      placeholder="8자 이상 입력해주세요"
+                      placeholder="새 비밀번호를 입력해주세요"
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
                       required
@@ -234,7 +223,6 @@ const FindAccount = () => {
                       👁
                     </button>
                   </div>
-                  <div className="hint">영문, 숫자, 특수문자를 포함해야 합니다.</div>
 
                   <label className="find-label">비밀번호 확인</label>
                   <div className="password-wrapper">

@@ -213,13 +213,13 @@
 }
 
 .find-account-wrapper .back-btn {
-  width: 100%;
-  padding: 12px;
+  width: auto;
+  padding: 8px 16px;
   background: #555;
   color: white;
   border: none;
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 500;
   cursor: pointer;
   transition: background 0.3s;
 }
