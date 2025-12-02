@@ -3,21 +3,21 @@ const API_BASE_URL = "/react/api";
 // 모든 리뷰 조회
 export const getAllReviews = async () => {
   try {
-    const response = await fetch(`${API_BASE_URL}/reviews/reviews/all`, {
-      method: 'GET',
+    const response = await fetch(`${API_BASE_URL}/reviews/all`, {
+      method: "GET",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
-      credentials: 'include',
+      credentials: "include",
     });
 
     if (!response.ok) {
-      throw new Error('리뷰 목록 조회 실패');
+      throw new Error("리뷰 목록 조회 실패");
     }
 
     return await response.json();
   } catch (error) {
-    console.error('getAllReviews 에러:', error);
+    console.error("getAllReviews 에러:", error);
     throw error;
   }
 };
@@ -26,20 +26,20 @@ export const getAllReviews = async () => {
 export const getReviewById = async (reviewId) => {
   try {
     const response = await fetch(`${API_BASE_URL}/reviews/${reviewId}`, {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
-      credentials: 'include',
+      credentials: "include",
     });
 
     if (!response.ok) {
-      throw new Error('리뷰 상세 조회 실패');
+      throw new Error("리뷰 상세 조회 실패");
     }
 
     return await response.json();
   } catch (error) {
-    console.error('getReviewById 에러:', error);
+    console.error("getReviewById 에러:", error);
     throw error;
   }
 };
@@ -48,21 +48,21 @@ export const getReviewById = async (reviewId) => {
 export const updateReview = async (reviewId, reviewData) => {
   try {
     const response = await fetch(`${API_BASE_URL}/reviews/${reviewId}`, {
-      method: 'PUT',
+      method: "PUT",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
-      credentials: 'include',
+      credentials: "include",
       body: JSON.stringify(reviewData),
     });
 
     if (!response.ok) {
-      throw new Error('리뷰 수정 실패');
+      throw new Error("리뷰 수정 실패");
     }
 
     return await response.json();
   } catch (error) {
-    console.error('updateReview 에러:', error);
+    console.error("updateReview 에러:", error);
     throw error;
   }
 };
@@ -71,17 +71,17 @@ export const updateReview = async (reviewId, reviewData) => {
 export const deleteReview = async (reviewId) => {
   try {
     const response = await fetch(`${API_BASE_URL}/reviews/${reviewId}`, {
-      method: 'DELETE',
-      credentials: 'include',
+      method: "DELETE",
+      credentials: "include",
     });
 
     if (!response.ok) {
-      throw new Error('리뷰 삭제 실패');
+      throw new Error("리뷰 삭제 실패");
     }
 
     return await response.json();
   } catch (error) {
-    console.error('deleteReview 에러:', error);
+    console.error("deleteReview 에러:", error);
     throw error;
   }
 };
@@ -90,20 +90,20 @@ export const deleteReview = async (reviewId) => {
 export const getReviewsByHospital = async (hospitalId) => {
   try {
     const response = await fetch(`${API_BASE_URL}/reviews/hospital/${hospitalId}`, {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
-      credentials: 'include',
+      credentials: "include",
     });
 
     if (!response.ok) {
-      throw new Error('병원별 리뷰 조회 실패');
+      throw new Error("병원별 리뷰 조회 실패");
     }
 
     return await response.json();
   } catch (error) {
-    console.error('getReviewsByHospital 에러:', error);
+    console.error("getReviewsByHospital 에러:", error);
     throw error;
   }
 };
@@ -114,35 +114,33 @@ export const searchReviews = async (searchParams = {}) => {
     const params = new URLSearchParams();
 
     if (searchParams.hospitalId) {
-      params.append('hospitalId', searchParams.hospitalId);
+      params.append("hospitalId", searchParams.hospitalId);
     }
     if (searchParams.score) {
-      params.append('score', searchParams.score);
+      params.append("score", searchParams.score);
     }
     if (searchParams.memberId) {
-      params.append('memberId', searchParams.memberId);
+      params.append("memberId", searchParams.memberId);
     }
 
     const queryString = params.toString();
-    const url = queryString
-      ? `${API_BASE_URL}/reviews/search?${queryString}`
-      : `${API_BASE_URL}/reviews/reviews/all`;
+    const url = queryString ? `${API_BASE_URL}/reviews/search?${queryString}` : `${API_BASE_URL}/reviews/reviews/all`;
 
     const response = await fetch(url, {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
-      credentials: 'include',
+      credentials: "include",
     });
 
     if (!response.ok) {
-      throw new Error('리뷰 검색 실패');
+      throw new Error("리뷰 검색 실패");
     }
 
     return await response.json();
   } catch (error) {
-    console.error('searchReviews 에러:', error);
+    console.error("searchReviews 에러:", error);
     throw error;
   }
 };

@@ -283,14 +283,14 @@ const Community = () => {
       <section className="admin-main">
         {/* 커뮤니티 관리 */}
         <div className="community-management">
-          <div className="community-header">
+          <div className="hospital-header">
             <h2>
-              검색된 커뮤니티 <span className="community-count">{filteredPosts.length}</span>개
+              검색된 커뮤니티 <span className="hospital-count">{filteredPosts.length}</span>개
             </h2>
           </div>
 
-          <div className="community-search-filters">
-            <div className="filter-group">
+          <div className="hospital-search-filters" style={{ display: 'flex', gap: '10px' }}>
+            <div className="filter-group" style={{ width: '180px' }}>
               <select
                 className="filter-select"
                 value={categoryFilter}
@@ -301,10 +301,10 @@ const Community = () => {
                 <option value="review">후기</option>
               </select>
             </div>
-
             <input
               type="text"
               className="search-input"
+              style={{ flexGrow: 1, marginBottom: 0 }}
               placeholder="제목, 내용으로 검색..."
               value={keyword}
               onChange={(e) => {
