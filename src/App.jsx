@@ -25,7 +25,6 @@ import Privacy from "./pages/static/Privacy";
 import Partners from "./pages/static/Partners";
 import About from "./pages/service/About";
 import Notice from "./pages/service/Notice";
-import Event from "./pages/service/Event";
 import FAQ from "./pages/support/FAQ";
 import CustomerService from "./pages/support/CustomerService";
 import Inquiry from "./pages/support/Inquiry";
@@ -94,7 +93,6 @@ function App() {
         <Route path="/partners" element={<Partners />} />
         <Route path="/about" element={<About />} />
         <Route path="/notice" element={<Notice />} />
-        <Route path="/event" element={<Event />} />
         <Route path="/faq" element={<FAQ />} />
         <Route path="/customer-service" element={<CustomerService />} />
         <Route path="/inquiry" element={<Inquiry />} />

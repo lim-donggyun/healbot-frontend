@@ -23,7 +23,7 @@ const Step3 = ({ formData }) => {
 
       <div className="completion-section">
         <div className="completion-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#3284b1" strokeWidth="2">
             <circle cx="12" cy="12" r="10"></circle>
             <polyline points="8 12 11 15 16 9"></polyline>
           </svg>
@@ -52,7 +52,6 @@ const Step3 = ({ formData }) => {
         </div>
 
         <div className="completion-notice">
-          <p>가입하신 이메일로 환영 메일이 발송되었습니다.</p>
           <p>로그인 후 모든 서비스를 이용하실 수 있습니다.</p>
         </div>
       </div>

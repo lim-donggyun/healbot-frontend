@@ -457,21 +457,27 @@ const Step2 = ({ formData, updateFormData, nextStep, prevStep, socialId }) => {
         <div className="birthdate-gender-group">
           <div>
             <label>성별 *</label>
-            <div className="segmented-control">
-              <button
-                type="button"
-                className={`segmented-control-button ${gender === "M" ? "active" : ""}`}
-                onClick={() => setGender("M")}
-              >
-                남자
-              </button>
-              <button
-                type="button"
-                className={`segmented-control-button ${gender === "F" ? "active" : ""}`}
-                onClick={() => setGender("F")}
-              >
-                여자
-              </button>
+            <div className="gender-radio-group">
+              <label className="gender-radio-label">
+                <input
+                  type="radio"
+                  name="gender"
+                  value="M"
+                  checked={gender === "M"}
+                  onChange={() => setGender("M")}
+                />
+                <span>남자</span>
+              </label>
+              <label className="gender-radio-label">
+                <input
+                  type="radio"
+                  name="gender"
+                  value="F"
+                  checked={gender === "F"}
+                  onChange={() => setGender("F")}
+                />
+                <span>여자</span>
+              </label>
             </div>
           </div>
           <div>
