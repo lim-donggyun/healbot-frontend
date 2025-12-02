@@ -330,9 +330,9 @@ const Notice = () => {
       <section className="admin-main">
         {/* 공지사항 관리 */}
         <div className="notice-management">
-          <div className="notice-header">
+          <div className="hospital-header">
             <h2>
-              검색된 공지사항 <span className="notice-count">{filteredNotices.length}</span>개
+              검색된 공지사항 <span className="hospital-count">{filteredNotices.length}</span>개
             </h2>
             <button className="add-notice-btn" onClick={() => setShowCreateModal(true)}>
               공지사항 추가

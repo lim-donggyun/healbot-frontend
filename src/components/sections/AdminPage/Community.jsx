@@ -278,8 +278,6 @@ const Community = () => {
   return (
     <main className="admin-page admin-community-page">
       <Sidebar />
-
-      {/* 메인 */}
       <section className="admin-main">
         {/* 커뮤니티 관리 */}
         <div className="community-management">

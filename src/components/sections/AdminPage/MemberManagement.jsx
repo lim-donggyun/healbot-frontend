@@ -358,9 +358,9 @@ const MemberManagement = () => {
       <section className="admin-main">
         {/* 회원 관리 */}
         <div className="member-management">
-          <div className="member-header">
+          <div className="hospital-header">
             <h2>
-              검색된 회원 <span className="member-count">{filteredMembers.length}</span>명
+              검색된 회원 <span className="hospital-count">{filteredMembers.length}</span>명
             </h2>
           </div>
 

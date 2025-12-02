@@ -1,6 +1,15 @@
 /* ==================== HospitalManagement.css ==================== */
 /* 병원 관리 페이지 전용 스타일 */
 
+.admin-page {
+  max-width: 1200px;
+  margin: 120px auto 32px;
+  padding: 0 16px 40px 0;
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: 20px;
+}
+
 /* 로딩 */
 .hospital-management-page .loading-container {
   display: flex;
@@ -41,18 +50,25 @@
   margin: 0 auto;
 }
 
+.community-management {
+  padding: 20px 20px 20px 0;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
 .hospital-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
   margin-bottom: 20px;
+  height: 50px;
 }
 
 .hospital-header h2 {
   font-size: 24px;
   font-weight: 600;
   color: #333;
-  margin-top: 0;
+  margin: 0;
 }
 
 .hospital-count {

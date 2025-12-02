@@ -157,12 +157,26 @@ transform: translateY(-2px);
 border-left: 4px solid #3284b1;
 }
 
+/* 제목 영역 */
+.community-card-header {
+display: flex;
+align-items: center;
+gap: 10px;
+margin-bottom: 10px;
+justify-content: flex-start;
+}
+
+.community-card-badge-wrap {
+display: flex;
+align-items: center;
+}
+
 /* 제목 */
 .community-card-title {
 font-size: 17px;
 color: #222;
 font-weight: 600;
-margin-bottom: 10px;
+margin-bottom: 0;
 transition: color 0.2s;
 }
 
@@ -251,30 +265,59 @@ font-size: 15px;
 }
 
 /*페이징*/
-.community-pagination {
-display: flex;
-justify-content: center;
-gap: 6px;
-margin-top: 16px;
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  margin-top: 20px;
+  padding-bottom: 20px;
 }
 
 .page-btn {
-min-width: 32px;
-padding: 6px 10px;
-border-radius: 999px;
-border: 1px solid #ddd;
-background: #fff;
-font-size: 13px;
-cursor: pointer;
+  min-width: 40px;
+  height: 40px;
+  width: 40px;
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  color: #495057;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.page-btn.arrow-btn {
+  width: auto;
+  padding: 0 16px;
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0 5px;
+  border-radius: 0;
+}
+
+.page-btn:hover {
+  color: #3284b1;
 }
 
 .page-btn.active {
-background: #2563eb;
-color: #fff;
-border-color: #2563eb;
+  background-color: #3284b1;
+  color: white;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
 }
 
-.page-btn:disabled {
-opacity: 0.5;
-cursor: default;
+.page-btn.disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.page-btn.disabled:hover {
+  color: #495057;
 }

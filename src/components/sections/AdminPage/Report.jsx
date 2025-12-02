@@ -407,9 +407,9 @@ const Report = () => {
       <section className="admin-main">
         {/* 신고 관리 */}
         <div className="report-management">
-          <div className="report-header">
+          <div className="hospital-header">
             <h2>
-              검색된 신고 <span className="report-count">{filteredReports.length}</span>개
+              검색된 신고 <span className="hospital-count">{filteredReports.length}</span>개
             </h2>
           </div>
 
