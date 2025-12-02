@@ -32,6 +32,12 @@ const [isLoggedIn, setIsLoggedIn] = useState(false);
 // ✅ OCR로 찾아낸 병원 정보
 const [selectedHospital, setSelectedHospital] = useState(null); // { id, name }
 
+// ✅ 병원명 검색용 상태
+const [hospitalKeyword, setHospitalKeyword] = useState("");
+const [hospitalSearchResults, setHospitalSearchResults] = useState([]);
+const [hospitalSearchError, setHospitalSearchError] = useState("");
+const [hospitalSearching, setHospitalSearching] = useState(false);
+
 // 로그인 여부 확인
 useEffect(() => {
     const verifySession = async () => {
@@ -100,6 +106,60 @@ const loadHospitalReviews = async (hospitalId) => {
     } finally {
     setLoading(false);
     }
+};
+
+// 🔍 병원명 검색
+const handleHospitalSearch = async () => {
+    const keyword = hospitalKeyword.trim();
+    setHospitalSearchError("");
+    setHospitalSearchResults([]);
+
+    if (!keyword) {
+    // 검색어 비우면 전체 리뷰로 초기화
+    setSelectedHospital(null);
+    await loadGlobalReviews();
+    return;
+    }
+
+    try {
+    setHospitalSearching(true);
+    // 👉 실제 검색 API URL은 프로젝트에 맞게 수정
+    const res = await fetch(
+        `/api/hospitals/search?keyword=${encodeURIComponent(keyword)}`
+    );
+    if (!res.ok) throw new Error("병원 검색에 실패했습니다.");
+
+    const data = await res.json();
+    // data가 [{id, name, address}, ...] 형태라고 가정
+    if (!data || data.length === 0) {
+        setHospitalSearchError("검색 결과가 없습니다.");
+        setHospitalSearchResults([]);
+        return;
+    }
+    setHospitalSearchResults(data);
+    } catch (e) {
+    setHospitalSearchError(e.message || "병원 검색 중 오류가 발생했습니다.");
+    } finally {
+    setHospitalSearching(false);
+    }
+};
+
+// 🔁 검색 결과에서 병원 선택
+const handleSelectHospitalFromSearch = (hospital) => {
+    setSelectedHospital({ id: hospital.id, name: hospital.name });
+    setHospitalKeyword(hospital.name);
+    setHospitalSearchResults([]);
+    setHospitalSearchError("");
+    loadHospitalReviews(hospital.id);
+};
+
+// 🔄 전체 병원 리뷰로 되돌리기
+const handleResetHospital = () => {
+    setSelectedHospital(null);
+    setHospitalKeyword("");
+    setHospitalSearchResults([]);
+    setHospitalSearchError("");
+    loadGlobalReviews();
 };
 
 // 🔁 정렬/필터 바뀔 때:
@@ -183,11 +243,72 @@ return (
         </button>
         </div>
 
+        {/* 🔍 병원명 검색 영역 */}
+        <div className="rv-search-row">
+        <div className="rv-search-main">
+            <input
+            type="text"
+            className="rv-search-input"
+            placeholder="병원명을 입력하세요"
+            value={hospitalKeyword}
+            onChange={(e) => setHospitalKeyword(e.target.value)}
+            onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                handleHospitalSearch();
+                }
+            }}
+            />
+            <button
+            type="button"
+            className="rv-search-btn"
+            onClick={handleHospitalSearch}
+            disabled={hospitalSearching}
+            >
+            {hospitalSearching ? "검색 중..." : "검색"}
+            </button>
+        </div>
+
+        {selectedHospital && (
+            <button
+            type="button"
+            className="rv-reset-btn"
+            onClick={handleResetHospital}
+            >
+            전체 리뷰 보기
+            </button>
+        )}
+        </div>
+
+        {/* 검색 결과 / 에러 */}
+        {hospitalSearchError && (
+        <div className="rv-search-msg rv-search-error">
+            {hospitalSearchError}
+        </div>
+        )}
+        {hospitalSearchResults.length > 0 && (
+        <div className="rv-search-result-list">
+            {hospitalSearchResults.map((h) => (
+            <button
+                key={h.id}
+                type="button"
+                className="rv-search-result-item"
+                onClick={() => handleSelectHospitalFromSearch(h)}
+            >
+                <span className="rv-search-hname">{h.name}</span>
+                {h.address && (
+                <span className="rv-search-haddr">{h.address}</span>
+                )}
+            </button>
+            ))}
+        </div>
+        )}
+
         {/* 안내 문구 */}
         {!selectedHospital && (
         <div className="rv-info">
             현재 전체 병원 리뷰를 보고 있습니다. <br />
-            특정 병원 영수증으로 인증하면, 그 병원 리뷰만 모아서 볼 수 있어요.
+            상단에서 병원명을 검색하거나, 영수증 OCR 인증으로 특정 병원
+            리뷰만 모아볼 수 있어요.
         </div>
         )}
 
@@ -208,9 +329,7 @@ return (
                 key={r}
                 type="button"
                 className={
-                ratingFilter === String(r)
-                    ? "rv-chip active"
-                    : "rv-chip"
+                ratingFilter === String(r) ? "rv-chip active" : "rv-chip"
                 }
                 onClick={() => setRatingFilter(String(r))}
             >
@@ -262,9 +381,7 @@ return (
                 </span>
                 </div>
                 {/* 전체 리스트에서는 병원 이름도 보여주기 */}
-                <div className="rv-card-hname">
-                {r.hospitalName}
-                </div>
+                <div className="rv-card-hname">{r.hospitalName}</div>
                 <p className="rv-card-content">{r.content}</p>
                 <div className="rv-card-bottom">
                 <span className="rv-card-date">{r.createdAt}</span>
