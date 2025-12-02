@@ -240,6 +240,7 @@ const Notice = () => {
       const noticeData = {
         noticeSubject: newNotice.title,
         noticeContent: newNotice.content,
+        noticeWriter: "ADMIN",
         category: newNotice.category
       };
 

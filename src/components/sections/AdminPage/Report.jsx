@@ -115,6 +115,7 @@ const Report = () => {
 
         const response = await fetch(`/react/api/community/reports?${params.toString()}`, {
           method: 'GET',
+          credentials: 'include',
         });
 
         if (!response.ok) {
@@ -157,6 +158,7 @@ const Report = () => {
     try {
       const response = await fetch(`/react/api/community/reports/${reportId}`, {
         method: 'GET',
+        credentials: 'include',
       });
 
       if (!response.ok) {
@@ -194,6 +196,7 @@ const Report = () => {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify({ reply: reply }),
       });
 
@@ -211,6 +214,7 @@ const Report = () => {
 
       const listResponse = await fetch(`/react/api/community/reports?${params.toString()}`, {
         method: 'GET',
+        credentials: 'include',
       });
       const data = await listResponse.json();
       setReports(data);
@@ -233,6 +237,7 @@ const Report = () => {
     try {
       const response = await fetch(`/react/api/community/reports/${selectedReport.reportId}`, {
         method: 'DELETE',
+        credentials: 'include',
       });
 
       if (!response.ok) {
@@ -248,6 +253,7 @@ const Report = () => {
 
       const listResponse = await fetch(`/react/api/community/reports?${params.toString()}`, {
         method: 'GET',
+        credentials: 'include',
       });
       const data = await listResponse.json();
       setReports(data);
@@ -286,6 +292,7 @@ const Report = () => {
     try {
       const response = await fetch(url, {
         method: 'PUT',
+        credentials: 'include',
       });
 
       if (!response.ok) {
@@ -299,6 +306,7 @@ const Report = () => {
           headers: {
             'Content-Type': 'application/json',
           },
+          credentials: 'include',
           body: JSON.stringify({ status: 'RESOLVED' }),
         });
 
@@ -313,6 +321,7 @@ const Report = () => {
           headers: {
             'Content-Type': 'application/json',
           },
+          credentials: 'include',
           body: JSON.stringify({ status: 'PENDING' }),
         });
 
@@ -330,6 +339,7 @@ const Report = () => {
 
       const listResponse = await fetch(`/react/api/community/reports?${params.toString()}`, {
         method: 'GET',
+        credentials: 'include',
       });
       const data = await listResponse.json();
       setReports(data);
@@ -623,16 +633,9 @@ const Report = () => {
             </div>
 
             <div className="modal-footer">
-              {selectedReport.status === 'PENDING' && (
-                <button className="btn" onClick={handleOpenPenaltyModal}>
-                  답변 입력
-                </button>
-              )}
-              {selectedReport.status === 'RESOLVED' && selectedReport.reply && (
-                <button className="btn" onClick={handleOpenPenaltyModal}>
-                  답변 수정
-                </button>
-              )}
+              <button className="btn" onClick={handleOpenPenaltyModal}>
+                {selectedReport.reply ? '답변 수정' : '답변 입력'}
+              </button>
               {(selectedReport.targetType === 'POST' || selectedReport.targetType === 'COMMENT') && (
                 <button
                   className="btn"

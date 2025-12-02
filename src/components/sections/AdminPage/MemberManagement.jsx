@@ -216,7 +216,19 @@ const MemberManagement = () => {
     e.preventDefault();
 
     try {
-      const result = await updateMember(selectedMember.MEMBER_ID, editFormData);
+      // 주소와 상세 주소를 합쳐서 전송
+      const combinedAddress = editFormData.detailAddress
+        ? `${editFormData.address} ${editFormData.detailAddress}`.trim()
+        : editFormData.address;
+
+      const dataToSubmit = {
+        userName: editFormData.userName,
+        email: editFormData.email,
+        phone: editFormData.phone,
+        address: combinedAddress,
+      };
+
+      const result = await updateMember(selectedMember.MEMBER_ID, dataToSubmit);
 
       if (result.success) {
         alert("회원 정보가 수정되었습니다.");
@@ -234,7 +246,8 @@ const MemberManagement = () => {
             BORN_DATE: member.bornDate,
             GENDER: member.gender,
             ADDRESS: member.address,
-            CREATED_AT: member.createdDate,
+            CREATED_AT:
+              member.createdDate || member.createdAt || member.createDate || member.registDate || member.joinDate,
             ADMIN_YN: member.adminYn,
           }));
 
@@ -277,7 +290,8 @@ const MemberManagement = () => {
             BORN_DATE: member.bornDate,
             GENDER: member.gender,
             ADDRESS: member.address,
-            CREATED_AT: member.createdAt,
+            CREATED_AT:
+              member.createdDate || member.createdAt || member.createDate || member.registDate || member.joinDate,
             ADMIN_YN: member.adminYn,
           }));
 
@@ -659,7 +673,7 @@ const MemberManagement = () => {
                         name="detailAddress"
                         value={editFormData.detailAddress}
                         onChange={handleEditInputChange}
-                        placeholder="상세 주소 입력"
+                        placeholder="상세 주소 입력 (예: 101동 101호)"
                       />
                     </div>
                   </div>

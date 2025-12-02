@@ -8,6 +8,7 @@ export const getAllHospitals = async () => {
       headers: {
         'Content-Type': 'application/json',
       },
+      credentials: 'include',
     });
 
     if (!response.ok) {
@@ -38,6 +39,7 @@ export const createHospital = async (hospitalData) => {
     const response = await fetch(`${API_BASE_URL}/admin/hospitals`, {
       method: 'POST',
       headers: headers,
+      credentials: 'include',
       body: body,
     });
 
@@ -69,6 +71,7 @@ export const updateHospital = async (hospitalId, hospitalData) => {
     const response = await fetch(`${API_BASE_URL}/admin/hospitals/${hospitalId}`, {
       method: 'PUT',
       headers: headers,
+      credentials: 'include',
       body: body,
     });
 
@@ -88,6 +91,7 @@ export const deleteHospital = async (hospitalId) => {
   try {
     const response = await fetch(`${API_BASE_URL}/admin/hospitals/${hospitalId}`, {
       method: 'DELETE',
+      credentials: 'include',
     });
 
     if (!response.ok) {
@@ -109,6 +113,7 @@ export const getHospitalDepartments = async (hospitalId) => {
       headers: {
         'Content-Type': 'application/json',
       },
+      credentials: 'include',
     });
 
     if (!response.ok) {

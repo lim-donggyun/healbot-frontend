@@ -215,13 +215,19 @@ export const updateFeaturedDiseasesOrder = async (list) => {
 };
 
 // 질환 추가 (관리자)
-export const addDisease = async (diseaseName, description, imageFile) => {
+export const addDisease = async (diseaseName, description, imageFile, departments, symptoms) => {
   try {
     const formData = new FormData();
     formData.append("diseaseName", diseaseName);
     formData.append("description", description);
     if (imageFile) {
       formData.append("image", imageFile);
+    }
+    if (departments) {
+      formData.append("departments", departments);
+    }
+    if (symptoms) {
+      formData.append("symptoms", symptoms);
     }
 
     const response = await fetch(`${API_BASE_URL}/admin/diseases`, {
@@ -243,13 +249,19 @@ export const addDisease = async (diseaseName, description, imageFile) => {
 };
 
 // 질환 수정 (관리자)
-export const updateDisease = async (diseaseNo, diseaseName, description, imageFile) => {
+export const updateDisease = async (diseaseNo, diseaseName, description, imageFile, departments, symptoms) => {
   try {
     const formData = new FormData();
     formData.append("diseaseName", diseaseName);
     formData.append("description", description);
     if (imageFile) {
       formData.append("image", imageFile);
+    }
+    if (departments) {
+      formData.append("departments", departments);
+    }
+    if (symptoms) {
+      formData.append("symptoms", symptoms);
     }
 
     const response = await fetch(`${API_BASE_URL}/admin/diseases/${diseaseNo}`, {

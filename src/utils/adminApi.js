@@ -32,6 +32,7 @@ export const updateMember = async (memberId, memberData) => {
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include", // 세션 쿠키 포함
       body: JSON.stringify(memberData),
     });
 
@@ -52,6 +53,7 @@ export const deleteMember = async (memberId) => {
   try {
     const response = await fetch(`${API_BASE_URL}/admin/members/${encodeURIComponent(memberId)}`, {
       method: "DELETE",
+      credentials: "include", // 세션 쿠키 포함
     });
 
     if (!response.ok) {

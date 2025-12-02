@@ -32,6 +32,7 @@ const HospitalManagement = () => {
     hospitalId: "",
     hospitalName: "",
     address: "",
+    detailAddress: "",
     hospitalGrade: "",
     hospitalType: "",
     details: "",
@@ -253,12 +254,19 @@ const HospitalManagement = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const dataToSend = new FormData();
-    for (const key in formData) {
-      dataToSend.append(key, formData[key]);
-    }
-
     try {
+      // 주소와 상세 주소를 합쳐서 전송
+      const combinedAddress = formData.detailAddress
+        ? `${formData.address} ${formData.detailAddress}`.trim()
+        : formData.address;
+
+      // detailAddress를 제외하고 나머지 데이터 준비
+      const { detailAddress, ...restData } = formData;
+      const dataToSend = {
+        ...restData,
+        address: combinedAddress,
+      };
+
       if (isEditMode) {
         await updateHospital(selectedHospital.hospitalId, dataToSend);
         alert("병원 정보가 수정되었습니다.");
@@ -327,7 +335,7 @@ const HospitalManagement = () => {
       hospitalId: selectedHospital.hospitalId || "",
       hospitalName: selectedHospital.hospitalName || "",
       address: selectedHospital.address || "",
-      detailAddress: selectedHospital.detailAddress || "", // Set detailAddress
+      detailAddress: "", // 상세 주소는 수정 시 새로 입력
       hospitalGrade: selectedHospital.hospitalGrade || "",
       hospitalType: selectedHospital.hospitalType || "",
       details: selectedHospital.details || "",
