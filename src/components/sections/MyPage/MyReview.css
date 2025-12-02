@@ -286,47 +286,60 @@ background: #dc2626;
 }
 
 /* 페이지네이션 */
-.mr-pagination {
-display: flex;
-justify-content: center;
-align-items: center;
-gap: 8px;
-margin-top: 30px;
-padding-top: 20px;
-border-top: 1px solid #e5e7eb;
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  margin-top: 20px;
 }
 
-.mr-pagination button {
-min-width: 36px;
-height: 36px;
-border: 1px solid #e5e7eb;
-background: #ffffff;
-border-radius: 6px;
-cursor: pointer;
-font-size: 0.9rem;
-font-weight: 500;
-color: #4b5563;
-transition: all 0.2s;
-display: flex;
-align-items: center;
-justify-content: center;
+.page-btn {
+  min-width: 40px;
+  height: 40px;
+  width: 40px;
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  color: #495057;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
 }
 
-.mr-pagination button:hover:not(:disabled) {
-border-color: #3284b1;
-color: #3284b1;
-background: rgba(50, 132, 177, 0.05);
+.page-btn.arrow-btn {
+  width: auto;
+  padding: 0 16px;
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0 5px;
+  border-radius: 0;
 }
 
-.mr-pagination button.active {
-background: #3284b1;
-color: #ffffff;
-border-color: #3284b1;
+.page-btn:hover {
+  color: #3284b1;
 }
 
-.mr-pagination button:disabled {
-cursor: not-allowed;
-opacity: 0.5;
+.page-btn.active {
+  background-color: #3284b1;
+  color: white;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+}
+
+.page-btn.disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.page-btn.disabled:hover {
+  color: #495057;
 }
 
 /* 테이블 */
@@ -438,15 +451,5 @@ background: #dc2626;
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
-}
-
-.mr-pagination {
-    gap: 4px;
-}
-
-.mr-pagination button {
-    min-width: 32px;
-    height: 32px;
-    font-size: 0.85rem;
 }
 }
