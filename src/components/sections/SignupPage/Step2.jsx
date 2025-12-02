@@ -397,8 +397,22 @@ const Step2 = ({ formData, updateFormData, nextStep, prevStep, socialId }) => {
           id="phone"
           type="text"
           value={phone}
-          onChange={(e) => setPhone(e.target.value)}
+          onChange={(e) => {
+            const value = e.target.value.replace(/[^0-9]/g, ""); // 숫자만 추출
+            let formatted = "";
+
+            if (value.length <= 3) {
+              formatted = value;
+            } else if (value.length <= 7) {
+              formatted = `${value.slice(0, 3)}-${value.slice(3)}`;
+            } else if (value.length <= 11) {
+              formatted = `${value.slice(0, 3)}-${value.slice(3, 7)}-${value.slice(7, 11)}`;
+            }
+
+            setPhone(formatted);
+          }}
           placeholder="010-0000-0000"
+          maxLength="13"
         />
         <label htmlFor="birth">생년월일 *</label>
         <div className="row">

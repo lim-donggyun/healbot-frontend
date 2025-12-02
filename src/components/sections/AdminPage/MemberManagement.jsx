@@ -342,20 +342,10 @@ const MemberManagement = () => {
   if (loading) {
     return (
       <main className="admin-page member-management-page">
-        <Sidebar />
-        <section className="admin-main">
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              minHeight: "400px",
-              fontSize: "16px",
-              color: "var(--muted)",
-            }}>
-            데이터를 불러오는 중...
-          </div>
-        </section>
+        <div className="loading-container" style={{ gridColumn: '1 / -1' }}>
+          <div className="loading-spinner"></div>
+          <div className="loading-text">데이터를 불러오는 중...</div>
+        </div>
       </main>
     );
   }
@@ -644,7 +634,22 @@ const MemberManagement = () => {
                         type="tel"
                         name="phone"
                         value={editFormData.phone}
-                        onChange={handleEditInputChange}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/[^0-9]/g, ""); // 숫자만 추출
+                          let formatted = "";
+
+                          if (value.length <= 3) {
+                            formatted = value;
+                          } else if (value.length <= 7) {
+                            formatted = `${value.slice(0, 3)}-${value.slice(3)}`;
+                          } else if (value.length <= 11) {
+                            formatted = `${value.slice(0, 3)}-${value.slice(3, 7)}-${value.slice(7, 11)}`;
+                          }
+
+                          setEditFormData((prev) => ({ ...prev, phone: formatted }));
+                        }}
+                        placeholder="010-0000-0000"
+                        maxLength="13"
                         required
                       />
                     </div>

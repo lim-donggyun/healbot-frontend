@@ -381,17 +381,9 @@ const Report = () => {
   if (loading) {
     return (
       <main className="admin-page admin-report-page">
-        <Sidebar />
-        <div style={{
-          gridColumn: '1 / -1',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          minHeight: '400px',
-          fontSize: '16px',
-          color: 'var(--muted)'
-        }}>
-          데이터를 불러오는 중...
+        <div className="loading-container" style={{ gridColumn: '1 / -1' }}>
+          <div className="loading-spinner"></div>
+          <div className="loading-text">데이터를 불러오는 중...</div>
         </div>
       </main>
     );

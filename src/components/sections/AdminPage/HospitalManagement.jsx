@@ -440,8 +440,8 @@ const HospitalManagement = () => {
 
   if (loading) {
     return (
-      <main className="admin-page">
-        <div className="loading-container" style={{ gridColumn: "1 / -1" }}>
+      <main className="admin-page hospital-management-page">
+        <div className="loading-container" style={{ gridColumn: '1 / -1' }}>
           <div className="loading-spinner"></div>
           <div className="loading-text">데이터를 불러오는 중...</div>
         </div>
@@ -742,8 +742,24 @@ const HospitalManagement = () => {
                         type="text"
                         name="phone"
                         value={formData.phone}
-                        onChange={handleInputChange}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/[^0-9]/g, ""); // 숫자만 추출
+                          let formatted = "";
+
+                          if (value.length <= 2) {
+                            formatted = value;
+                          } else if (value.length <= 6) {
+                            formatted = `${value.slice(0, 2)}-${value.slice(2)}`;
+                          } else if (value.length <= 10) {
+                            formatted = `${value.slice(0, 2)}-${value.slice(2, 6)}-${value.slice(6, 10)}`;
+                          } else if (value.length === 11) {
+                            formatted = `${value.slice(0, 3)}-${value.slice(3, 7)}-${value.slice(7, 11)}`;
+                          }
+
+                          setFormData((prev) => ({ ...prev, phone: formatted }));
+                        }}
                         placeholder="02-1234-5678"
+                        maxLength="13"
                       />
                     </div>
                     <div className="form-row">
@@ -752,8 +768,24 @@ const HospitalManagement = () => {
                         type="text"
                         name="erPhone"
                         value={formData.erPhone}
-                        onChange={handleInputChange}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/[^0-9]/g, ""); // 숫자만 추출
+                          let formatted = "";
+
+                          if (value.length <= 2) {
+                            formatted = value;
+                          } else if (value.length <= 6) {
+                            formatted = `${value.slice(0, 2)}-${value.slice(2)}`;
+                          } else if (value.length <= 10) {
+                            formatted = `${value.slice(0, 2)}-${value.slice(2, 6)}-${value.slice(6, 10)}`;
+                          } else if (value.length === 11) {
+                            formatted = `${value.slice(0, 3)}-${value.slice(3, 7)}-${value.slice(7, 11)}`;
+                          }
+
+                          setFormData((prev) => ({ ...prev, erPhone: formatted }));
+                        }}
                         placeholder="02-1234-5679"
+                        maxLength="13"
                       />
                     </div>
                     <div className="form-row">
