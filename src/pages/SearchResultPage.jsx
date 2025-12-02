@@ -20,7 +20,7 @@ function SearchResultPage() {
     hospitals: 1,
     diseases: 1,
     notices: 1,
-    communities: 1
+    communities: 1,
   });
 
   // 질병 상세 모달 상태
@@ -36,8 +36,8 @@ function SearchResultPage() {
   const ITEMS_PER_PAGE = {
     hospitals: 5,
     diseases: 10,
-    notices: 2,
-    communities: 2
+    notices: 5,
+    communities: 5,
   };
 
   if (!searchData) {
@@ -68,8 +68,8 @@ function SearchResultPage() {
       navigate("/disease-result", {
         state: {
           diseaseData: result,
-          symptoms: matchedSymptoms
-        }
+          symptoms: matchedSymptoms,
+        },
       });
     } catch (error) {
       console.error("증상 검색 실패:", error);
@@ -82,8 +82,8 @@ function SearchResultPage() {
     if (!text || !keyword) return text;
 
     // 띄어쓰기를 제거한 키워드와 텍스트로 매칭
-    const keywordNoSpace = keyword.replace(/\s/g, '');
-    const textNoSpace = text.replace(/\s/g, '');
+    const keywordNoSpace = keyword.replace(/\s/g, "");
+    const textNoSpace = text.replace(/\s/g, "");
 
     // 띄어쓰기 제거한 텍스트에서 키워드 위치 찾기
     const lowerTextNoSpace = textNoSpace.toLowerCase();
@@ -99,7 +99,7 @@ function SearchResultPage() {
     let matchEnd = -1;
 
     for (let i = 0; i < text.length; i++) {
-      if (text[i] !== ' ') {
+      if (text[i] !== " ") {
         if (charCount === startIndex && matchStart === -1) {
           matchStart = i;
         }
@@ -142,9 +142,9 @@ function SearchResultPage() {
   };
 
   const handlePageChange = (category, page) => {
-    setCurrentPage(prev => ({
+    setCurrentPage((prev) => ({
       ...prev,
-      [category]: page
+      [category]: page,
     }));
   };
 
@@ -161,10 +161,7 @@ function SearchResultPage() {
     const startPage = (currentGroup - 1) * maxVisible + 1;
     const endPage = Math.min(currentGroup * maxVisible, totalPages);
 
-    const pageNumbers = Array.from(
-      { length: endPage - startPage + 1 },
-      (_, i) => startPage + i
-    );
+    const pageNumbers = Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
 
     // 이전 그룹으로 이동
     const handlePrevGroup = () => {
@@ -185,31 +182,22 @@ function SearchResultPage() {
     return (
       <div className="pagination">
         {/* 이전 버튼 */}
-        <button
-          className="pagination-nav-btn"
-          onClick={handlePrevGroup}
-          disabled={startPage === 1}
-        >
+        <button className="pagination-nav-btn" onClick={handlePrevGroup} disabled={startPage === 1}>
           이전
         </button>
 
         {/* 페이지 번호 */}
-        {pageNumbers.map(page => (
+        {pageNumbers.map((page) => (
           <button
             key={page}
-            className={`pagination-btn ${current === page ? 'active' : ''}`}
-            onClick={() => handlePageChange(category, page)}
-          >
+            className={`pagination-btn ${current === page ? "active" : ""}`}
+            onClick={() => handlePageChange(category, page)}>
             {page}
           </button>
         ))}
 
         {/* 다음 버튼 */}
-        <button
-          className="pagination-nav-btn"
-          onClick={handleNextGroup}
-          disabled={endPage === totalPages}
-        >
+        <button className="pagination-nav-btn" onClick={handleNextGroup} disabled={endPage === totalPages}>
           다음
         </button>
       </div>
@@ -225,8 +213,7 @@ function SearchResultPage() {
         {/* 페이지 헤더 */}
         <div className="search-result-header">
           <h1>
-            <FaSearch className="search-icon" />
-            "{keyword}" 검색 결과
+            <FaSearch className="search-icon" />"{keyword}" 검색 결과
           </h1>
         </div>
 
@@ -234,32 +221,27 @@ function SearchResultPage() {
         <div className="tab-menu">
           <button
             className={`tab-btn ${activeTab === "integrated" ? "active" : ""}`}
-            onClick={() => setActiveTab("integrated")}
-          >
+            onClick={() => setActiveTab("integrated")}>
             통합검색 ({hospitals.length + diseases.length + notices.length + communities.length})
           </button>
           <button
             className={`tab-btn ${activeTab === "hospitals" ? "active" : ""}`}
-            onClick={() => handleTabClick("hospitals", hospitalSectionRef)}
-          >
+            onClick={() => handleTabClick("hospitals", hospitalSectionRef)}>
             병원 ({hospitals.length})
           </button>
           <button
             className={`tab-btn ${activeTab === "diseases" ? "active" : ""}`}
-            onClick={() => handleTabClick("diseases", diseaseSectionRef)}
-          >
+            onClick={() => handleTabClick("diseases", diseaseSectionRef)}>
             질병 ({diseases.length})
           </button>
           <button
             className={`tab-btn ${activeTab === "notices" ? "active" : ""}`}
-            onClick={() => handleTabClick("notices", noticeSectionRef)}
-          >
+            onClick={() => handleTabClick("notices", noticeSectionRef)}>
             공지사항 ({notices.length})
           </button>
           <button
             className={`tab-btn ${activeTab === "communities" ? "active" : ""}`}
-            onClick={() => handleTabClick("communities", communitySectionRef)}
-          >
+            onClick={() => handleTabClick("communities", communitySectionRef)}>
             커뮤니티 ({communities.length})
           </button>
         </div>
@@ -272,9 +254,9 @@ function SearchResultPage() {
               <h2>증상 정보</h2>
             </div>
             <div className="symptom-info-body">
-              {symptomInfo.split('\n\n').map((symptomText, index) => {
-                const [symptomName, ...descParts] = symptomText.split(': ');
-                const description = descParts.join(': ');
+              {symptomInfo.split("\n\n").map((symptomText, index) => {
+                const [symptomName, ...descParts] = symptomText.split(": ");
+                const description = descParts.join(": ");
                 return (
                   <div key={index} className="symptom-item">
                     <h3>{symptomName}</h3>
@@ -291,8 +273,7 @@ function SearchResultPage() {
                   stroke="currentColor"
                   strokeWidth="2.5"
                   strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
+                  strokeLinejoin="round">
                   <circle cx="11" cy="11" r="8" />
                   <path d="m21 21-4.35-4.35" />
                 </svg>
@@ -314,10 +295,7 @@ function SearchResultPage() {
                     병원 (총 {hospitals.length}건)
                   </h2>
                   {hospitals.length > 5 && (
-                    <button
-                      className="more-btn"
-                      onClick={() => handleTabClick("hospitals", hospitalSectionRef)}
-                    >
+                    <button className="more-btn" onClick={() => handleTabClick("hospitals", hospitalSectionRef)}>
                       더보기 +
                     </button>
                   )}
@@ -344,10 +322,7 @@ function SearchResultPage() {
                     질병 (총 {diseases.length}건)
                   </h2>
                   {diseases.length > 4 && (
-                    <button
-                      className="more-btn"
-                      onClick={() => handleTabClick("diseases", diseaseSectionRef)}
-                    >
+                    <button className="more-btn" onClick={() => handleTabClick("diseases", diseaseSectionRef)}>
                       더보기 +
                     </button>
                   )}
@@ -367,8 +342,7 @@ function SearchResultPage() {
                           onClick={() => {
                             setSelectedDisease(disease);
                             setShowDetailModal(true);
-                          }}
-                        >
+                          }}>
                           {imageUrl && (
                             <div className="disease-image">
                               <img src={imageUrl} alt={diseaseName} />
@@ -397,10 +371,7 @@ function SearchResultPage() {
                     공지사항 (총 {notices.length}건)
                   </h2>
                   {notices.length > 2 && (
-                    <button
-                      className="more-btn"
-                      onClick={() => handleTabClick("notices", noticeSectionRef)}
-                    >
+                    <button className="more-btn" onClick={() => handleTabClick("notices", noticeSectionRef)}>
                       더보기 +
                     </button>
                   )}
@@ -428,10 +399,7 @@ function SearchResultPage() {
                     커뮤니티 (총 {communities.length}건)
                   </h2>
                   {communities.length > 2 && (
-                    <button
-                      className="more-btn"
-                      onClick={() => handleTabClick("communities", communitySectionRef)}
-                    >
+                    <button className="more-btn" onClick={() => handleTabClick("communities", communitySectionRef)}>
                       더보기 +
                     </button>
                   )}
@@ -467,7 +435,7 @@ function SearchResultPage() {
               ) : (
                 <>
                   <div className="hospital-list">
-                    {getPaginatedItems(hospitals, 'hospitals').map((hospital, index) => (
+                    {getPaginatedItems(hospitals, "hospitals").map((hospital, index) => (
                       <div key={index} className="list-item">
                         <h3>{highlightKeyword(hospital.hospitalName, keyword)}</h3>
                         <p className="hospital-address">{highlightKeyword(hospital.address, keyword)}</p>
@@ -496,7 +464,7 @@ function SearchResultPage() {
               ) : (
                 <>
                   <div className="disease-grid-2x2">
-                    {getPaginatedItems(diseases, 'diseases').map((disease, index) => {
+                    {getPaginatedItems(diseases, "diseases").map((disease, index) => {
                       // 대소문자 모두 처리
                       const imageUrl = disease.imageUrl || disease.IMAGEURL || disease.imageurl;
                       const diseaseName = disease.diseaseName || disease.DISEASENAME || disease.diseasename;
@@ -509,8 +477,7 @@ function SearchResultPage() {
                           onClick={() => {
                             setSelectedDisease(disease);
                             setShowDetailModal(true);
-                          }}
-                        >
+                          }}>
                           {imageUrl && (
                             <div className="disease-image">
                               <img src={imageUrl} alt={diseaseName} />
@@ -548,7 +515,7 @@ function SearchResultPage() {
               ) : (
                 <>
                   <div className="hospital-list">
-                    {getPaginatedItems(notices, 'notices').map((notice, index) => (
+                    {getPaginatedItems(notices, "notices").map((notice, index) => (
                       <div key={index} className="list-item">
                         {/* FIX 3: notice.title -> notice.TITLE, notice.content -> notice.CONTENT */}
                         <h3>{highlightKeyword(notice.TITLE, keyword)}</h3>
@@ -578,7 +545,7 @@ function SearchResultPage() {
               ) : (
                 <>
                   <div className="hospital-list">
-                    {getPaginatedItems(communities, 'communities').map((community, index) => (
+                    {getPaginatedItems(communities, "communities").map((community, index) => (
                       <div key={index} className="list-item">
                         {/* FIX 3: community.title -> community.TITLE, community.content -> community.CONTENT */}
                         <h3>{highlightKeyword(community.TITLE, keyword)}</h3>
@@ -597,77 +564,72 @@ function SearchResultPage() {
       <Footer />
 
       {/* 질병 상세 정보 모달 */}
-      {showDetailModal && selectedDisease && (() => {
-        // 대소문자 모두 처리
-        const imageUrl = selectedDisease.imageUrl || selectedDisease.IMAGEURL || selectedDisease.imageurl;
-        const diseaseName = selectedDisease.diseaseName || selectedDisease.DISEASENAME || selectedDisease.diseasename;
-        const description = selectedDisease.description || selectedDisease.DESCRIPTION;
-        const department = selectedDisease.department || selectedDisease.DEPARTMENT;
-        const symptoms = selectedDisease.symptoms || selectedDisease.SYMPTOMS;
+      {showDetailModal &&
+        selectedDisease &&
+        (() => {
+          // 대소문자 모두 처리
+          const imageUrl = selectedDisease.imageUrl || selectedDisease.IMAGEURL || selectedDisease.imageurl;
+          const diseaseName = selectedDisease.diseaseName || selectedDisease.DISEASENAME || selectedDisease.diseasename;
+          const description = selectedDisease.description || selectedDisease.DESCRIPTION;
+          const department = selectedDisease.department || selectedDisease.DEPARTMENT;
+          const symptoms = selectedDisease.symptoms || selectedDisease.SYMPTOMS;
 
-        return (
-          <div className="detail-modal-overlay" onClick={() => setShowDetailModal(false)}>
-            <div className="detail-modal-content" onClick={(e) => e.stopPropagation()}>
-              <button className="modal-close-btn-top" onClick={() => setShowDetailModal(false)}>
-                ✕
-              </button>
-              <div className="detail-modal-body">
-                <div className="detail-content-grid">
-                  {/* 왼쪽: 이미지 */}
-                  <div className="detail-left">
-                    {imageUrl && (
-                      <div className="detail-image-container">
-                        <img
-                          src={imageUrl}
-                          alt={diseaseName}
-                          className="detail-image"
-                        />
-                      </div>
-                    )}
-                    <button className="find-department-btn">
-                      진료과 찾기
-                    </button>
-                  </div>
-
-                  {/* 오른쪽: 정보 */}
-                  <div className="detail-right">
-                    <div className="detail-section">
-                      <h3 className="detail-section-title">질환명</h3>
-                      <p className="detail-text">{diseaseName || "정보 없음"}</p>
-                    </div>
-
-                    <div className="detail-section">
-                      <h3 className="detail-section-title">진료과</h3>
-                      <p className="detail-text">{department || "정보 없음"}</p>
-                    </div>
-
-                    <div className="detail-section">
-                      <h3 className="detail-section-title">설명</h3>
-                      <p className="detail-text">{description || "정보 없음"}</p>
-                    </div>
-
-                    {symptoms && (
-                      <div className="detail-section">
-                        <h3 className="detail-section-title">증상</h3>
-                        <div className="detail-symptoms-list">
-                          {(typeof symptoms === "string"
-                            ? symptoms.split(",").map((s) => s.trim())
-                            : []
-                          ).map((symptom, idx) => (
-                            <span key={idx} className="detail-symptom-badge">
-                              {symptom}
-                            </span>
-                          ))}
+          return (
+            <div className="detail-modal-overlay" onClick={() => setShowDetailModal(false)}>
+              <div className="detail-modal-content" onClick={(e) => e.stopPropagation()}>
+                <button className="modal-close-btn-top" onClick={() => setShowDetailModal(false)}>
+                  ✕
+                </button>
+                <div className="detail-modal-body">
+                  <div className="detail-content-grid">
+                    {/* 왼쪽: 이미지 */}
+                    <div className="detail-left">
+                      {imageUrl && (
+                        <div className="detail-image-container">
+                          <img src={imageUrl} alt={diseaseName} className="detail-image" />
                         </div>
+                      )}
+                      <button className="find-department-btn">진료과 찾기</button>
+                    </div>
+
+                    {/* 오른쪽: 정보 */}
+                    <div className="detail-right">
+                      <div className="detail-section">
+                        <h3 className="detail-section-title">질환명</h3>
+                        <p className="detail-text">{diseaseName || "정보 없음"}</p>
                       </div>
-                    )}
+
+                      <div className="detail-section">
+                        <h3 className="detail-section-title">진료과</h3>
+                        <p className="detail-text">{department || "정보 없음"}</p>
+                      </div>
+
+                      <div className="detail-section">
+                        <h3 className="detail-section-title">설명</h3>
+                        <p className="detail-text">{description || "정보 없음"}</p>
+                      </div>
+
+                      {symptoms && (
+                        <div className="detail-section">
+                          <h3 className="detail-section-title">증상</h3>
+                          <div className="detail-symptoms-list">
+                            {(typeof symptoms === "string" ? symptoms.split(",").map((s) => s.trim()) : []).map(
+                              (symptom, idx) => (
+                                <span key={idx} className="detail-symptom-badge">
+                                  {symptom}
+                                </span>
+                              )
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        );
-      })()}
+          );
+        })()}
     </div>
   );
 }
