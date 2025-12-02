@@ -21,8 +21,12 @@
 }
 
 @keyframes featured-diseases-spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .featured-diseases .loading-text {
@@ -220,7 +224,7 @@
 
 /* 유행 질병 섹션 */
 .featured-diseases-section {
-  margin-top: 40px;
+  margin-top: 0px;
 }
 
 .featured-diseases-section .hospital-header {
@@ -436,8 +440,12 @@
 
 /* 상세 정보 모달 (DiseaseResultPage.css에서 가져옴) */
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 @keyframes popIn {
   from {

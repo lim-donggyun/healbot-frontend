@@ -125,9 +125,8 @@ function SearchResultPage() {
   // 탭 클릭 핸들러
   const handleTabClick = (tab, sectionRef) => {
     setActiveTab(tab);
-    if (sectionRef && sectionRef.current) {
-      sectionRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
+    // 더보기 버튼 클릭 시 맨 위로 즉시 이동
+    window.scrollTo(0, 0);
   };
 
   // 페이지네이션 함수
@@ -146,6 +145,8 @@ function SearchResultPage() {
       ...prev,
       [category]: page,
     }));
+    // 페이지 변경 시 맨 위로 즉시 이동
+    window.scrollTo(0, 0);
   };
 
   // 페이지네이션 컴포넌트
@@ -181,24 +182,45 @@ function SearchResultPage() {
 
     return (
       <div className="pagination">
-        {/* 이전 버튼 */}
-        <button className="pagination-nav-btn" onClick={handlePrevGroup} disabled={startPage === 1}>
-          이전
+        <button
+          onClick={() => handlePageChange(category, 1)}
+          className={`page-btn arrow-btn ${current === 1 ? "disabled" : ""}`}
+          disabled={current === 1}
+          title="첫 페이지">
+          처음 페이지
         </button>
 
-        {/* 페이지 번호 */}
+        <button
+          onClick={handlePrevGroup}
+          className={`page-btn arrow-btn ${currentGroup === 1 ? "disabled" : ""}`}
+          disabled={currentGroup === 1}
+          title="이전 5페이지">
+          «
+        </button>
+
         {pageNumbers.map((page) => (
           <button
             key={page}
-            className={`pagination-btn ${current === page ? "active" : ""}`}
-            onClick={() => handlePageChange(category, page)}>
+            onClick={() => handlePageChange(category, page)}
+            className={`page-btn ${current === page ? "active" : ""}`}>
             {page}
           </button>
         ))}
 
-        {/* 다음 버튼 */}
-        <button className="pagination-nav-btn" onClick={handleNextGroup} disabled={endPage === totalPages}>
-          다음
+        <button
+          onClick={handleNextGroup}
+          className={`page-btn arrow-btn ${endPage >= totalPages ? "disabled" : ""}`}
+          disabled={endPage >= totalPages}
+          title="다음 5페이지">
+          »
+        </button>
+
+        <button
+          onClick={() => handlePageChange(category, totalPages)}
+          className={`page-btn arrow-btn ${current === totalPages ? "disabled" : ""}`}
+          disabled={current === totalPages}
+          title="마지막 페이지">
+          끝 페이지
         </button>
       </div>
     );

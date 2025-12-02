@@ -51,6 +51,27 @@
   font-weight: 700;
 }
 
+.hospital-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 20px;
+  height: 50px;
+}
+
+.hospital-header h2 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.hospital-count {
+  font-size: 24px;
+  font-weight: 600;
+  color: #3284b1;
+}
+
 /* 검색 필터 */
 .report-search-filters {
   display: flex;
@@ -134,8 +155,8 @@
   box-shadow: 0 2px 8px rgba(50, 132, 177, 0.15);
 }
 
-/* 페이지네이션 */
-.report-management .pagination {
+/* 페이징 */
+.pagination {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -143,7 +164,7 @@
   margin-top: 20px;
 }
 
-.report-management .page-btn {
+.page-btn {
   min-width: 40px;
   height: 40px;
   width: 40px;
@@ -160,7 +181,7 @@
   border-radius: 50%;
 }
 
-.report-management .page-btn.arrow-btn {
+.page-btn.arrow-btn {
   width: auto;
   padding: 0 16px;
   font-size: 18px;
@@ -169,21 +190,25 @@
   border-radius: 0;
 }
 
-.report-management .page-btn:hover {
+.page-btn:hover {
   color: #3284b1;
 }
 
-.report-management .page-btn.active {
+.page-btn.active {
   background-color: #3284b1;
   color: white;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
 }
 
-.report-management .page-btn.disabled {
+.page-btn.disabled {
   opacity: 0.3;
   cursor: not-allowed;
 }
 
-.report-management .page-btn.disabled:hover {
+.page-btn.disabled:hover {
   color: #495057;
 }
 
@@ -326,52 +351,6 @@
   overflow: visible;
 }
 
-/* 페이지네이션 */
-.admin-report-page .table-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px;
-  background: #f9fafb;
-  border-top: 1px solid var(--border);
-}
-
-.admin-report-page .pagination {
-  display: flex;
-  gap: 4px;
-}
-
-.admin-report-page .page-btn {
-  min-width: 32px;
-  height: 32px;
-  padding: 0 8px;
-  border: 1px solid var(--border);
-  background: white;
-  color: var(--text);
-  cursor: pointer;
-  border-radius: 6px;
-  font-size: 13px;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.admin-report-page .page-btn:hover {
-  background: #f9fafb;
-  border-color: var(--primary);
-}
-
-.admin-report-page .page-btn.active {
-  background: var(--primary);
-  color: white;
-  border-color: var(--primary);
-}
-
-.admin-report-page .page-btn.disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
 
 /* 모달 */
 .admin-report-page .modal-overlay {

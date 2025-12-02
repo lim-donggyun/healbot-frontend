@@ -143,6 +143,31 @@ useEffect(() => {
     );
 }, [totalPages]);
 
+// 페이지 변경 시 맨 위로 즉시 이동
+useEffect(() => {
+    window.scrollTo(0, 0);
+}, [currentPage]);
+
+// 페이지 번호 5개씩 그룹화
+const pageGroupSize = 5;
+const currentPageGroup = Math.ceil(currentPage / pageGroupSize);
+const startPage = (currentPageGroup - 1) * pageGroupSize + 1;
+const endPage = Math.min(currentPageGroup * pageGroupSize, totalPages);
+const pageNumbers = [];
+for (let i = startPage; i <= endPage; i++) {
+    pageNumbers.push(i);
+}
+
+const goToPrevGroup = () => {
+    const prevGroupLastPage = (currentPageGroup - 2) * pageGroupSize + pageGroupSize;
+    setCurrentPage(prevGroupLastPage);
+};
+
+const goToNextGroup = () => {
+    const nextGroupFirstPage = currentPageGroup * pageGroupSize + 1;
+    setCurrentPage(nextGroupFirstPage);
+};
+
 // ================= 삭제 핸들러 =================
 const handleDelete = async (postId) => {
     if (!window.confirm("정말 이 게시글을 삭제하시겠습니까?")) return;
@@ -302,45 +327,56 @@ return (
 
                 {/* 페이징 */}
                 {totalPages > 1 && (
-                <div className="community-pagination mr-pagination">
+                <div className="pagination">
                     <button
                     type="button"
-                    className="page-btn"
-                    onClick={() =>
-                        setCurrentPage((p) => (p > 1 ? p - 1 : p))
-                    }
+                    onClick={() => setCurrentPage(1)}
+                    className={`page-btn arrow-btn ${currentPage === 1 ? "disabled" : ""}`}
                     disabled={currentPage === 1}
+                    title="첫 페이지"
                     >
-                    이전
+                    처음 페이지
                     </button>
 
-                    {Array.from({ length: totalPages }, (_, idx) => {
-                    const page = idx + 1;
-                    return (
-                        <button
-                        key={page}
+                    <button
+                    type="button"
+                    onClick={goToPrevGroup}
+                    className={`page-btn arrow-btn ${currentPageGroup === 1 ? "disabled" : ""}`}
+                    disabled={currentPageGroup === 1}
+                    title="이전 5페이지"
+                    >
+                    «
+                    </button>
+
+                    {pageNumbers.map((number) => (
+                    <button
+                        key={number}
                         type="button"
-                        className={`page-btn ${
-                            page === currentPage ? "active" : ""
-                        }`}
-                        onClick={() => setCurrentPage(page)}
-                        >
-                        {page}
-                        </button>
-                    );
-                    })}
+                        onClick={() => setCurrentPage(number)}
+                        className={`page-btn ${currentPage === number ? "active" : ""}`}
+                    >
+                        {number}
+                    </button>
+                    ))}
 
                     <button
                     type="button"
-                    className="page-btn"
-                    onClick={() =>
-                        setCurrentPage((p) =>
-                        p < totalPages ? p + 1 : p
-                        )
-                    }
-                    disabled={currentPage === totalPages}
+                    onClick={goToNextGroup}
+                    className={`page-btn arrow-btn ${endPage >= totalPages ? "disabled" : ""}`}
+                    disabled={endPage >= totalPages}
+                    title="다음 5페이지"
                     >
-                    다음
+                    »
+                    </button>
+
+                    <button
+                    type="button"
+                    onClick={() => setCurrentPage(totalPages)}
+                    className={`page-btn arrow-btn ${currentPage === totalPages ? "disabled" : ""}`}
+                    disabled={currentPage === totalPages}
+                    title="마지막 페이지"
+                    >
+                    끝 페이지
                     </button>
                 </div>
                 )}
