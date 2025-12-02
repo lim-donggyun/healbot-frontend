@@ -99,6 +99,8 @@ body:has(.main-page)::-webkit-scrollbar {
   cursor: pointer;
   transition: all 0.3s;
   backdrop-filter: blur(5px);
+  text-decoration: none;
+  display: inline-block;
 }
 
 .slide-btn:hover {
