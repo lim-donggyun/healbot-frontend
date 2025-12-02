@@ -20,6 +20,7 @@ font-size: 3rem;
 font-weight: 700;
 color: #1a1a1a;
 letter-spacing: -0.02em;
+text-align: center;
 }
 
 .sanction-subtitle {
@@ -28,6 +29,7 @@ font-size: 1.2rem;
 color: #6b7280;
 font-weight: 300;
 letter-spacing: -0.01em;
+text-align: center;
 }
 
 .sanction-mock-notice {

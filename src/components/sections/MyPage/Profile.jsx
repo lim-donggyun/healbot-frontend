@@ -210,7 +210,7 @@ return (
     <Header />
     <main className="profile-main">
         <div className="profile-container">
-        <div className="profile-header">
+        <div className="profile-edit-header">
             <h1 className="profile-title">프로필 수정</h1>
             <p className="profile-subtitle">회원님의 기본 정보를 수정할 수 있습니다.</p>
         </div>
@@ -219,7 +219,7 @@ return (
 
     <form className="mp-form" onSubmit={handleSubmit}>
         {/* 이름 */}
-        <div className="mp-form-group mp-form-full">
+        <div className="mp-form-group mp-form-half">
         <label className="mp-label" htmlFor="pf-name">
             이름 *
         </label>
@@ -228,13 +228,13 @@ return (
             type="text"
             className="mp-input"
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            readOnly
             placeholder="이름을 입력해주세요."
         />
         </div>
 
         {/* 이메일 */}
-        <div className="mp-form-group mp-form-full">
+        <div className="mp-form-group mp-form-half">
         <label className="mp-label" htmlFor="pf-email">
             이메일 *
         </label>
@@ -243,7 +243,7 @@ return (
             type="email"
             className="mp-input"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            readOnly
             placeholder="example@email.com"
         />
         </div>
@@ -258,8 +258,22 @@ return (
             type="text"
             className="mp-input"
             value={phone}
-            onChange={(e) => setPhone(e.target.value)}
+            onChange={(e) => {
+            const value = e.target.value.replace(/[^0-9]/g, ""); // 숫자만 추출
+            let formatted = "";
+
+            if (value.length <= 3) {
+                formatted = value;
+            } else if (value.length <= 7) {
+                formatted = `${value.slice(0, 3)}-${value.slice(3)}`;
+            } else if (value.length <= 11) {
+                formatted = `${value.slice(0, 3)}-${value.slice(3, 7)}-${value.slice(7, 11)}`;
+            }
+
+            setPhone(formatted);
+            }}
             placeholder="010-0000-0000"
+            maxLength="13"
         />
         </div>
 
@@ -305,7 +319,7 @@ return (
         </div>
 
         {/* 주소 */}
-        <div className="mp-form-group mp-form-full">
+        <div className="mp-form-group mp-form-half">
         <label className="mp-label" htmlFor="pf-address">
             주소 *
         </label>
@@ -323,7 +337,7 @@ return (
         </div>
 
         {/* 상세주소 */}
-        <div className="mp-form-group mp-form-full">
+        <div className="mp-form-group mp-form-half">
         <label className="mp-label" htmlFor="pf-detail-address">
             상세주소
         </label>

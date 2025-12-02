@@ -174,7 +174,7 @@ return (
 
     <main className="mr-main">
         <div className="mr-container">
-        {/* 상단: 제목 + 검색 */}
+        {/* 상단: 제목 */}
         <section className="mr-header-row">
             <div className="mr-title-wrap">
             <h1 className="mr-page-title">내가 쓴 글</h1>
@@ -183,8 +183,12 @@ return (
                 있습니다.
             </p>
             </div>
+        </section>
 
-            <div className="mr-actions">
+        {/* 리스트 영역 (Community 카드 디자인 재사용) */}
+        <section className="mr-list-section">
+            {/* 검색창 */}
+            <div className="mr-search-wrapper">
             <div className="mr-search">
                 <input
                 type="text"
@@ -214,10 +218,6 @@ return (
                 </button>
             </div>
             </div>
-        </section>
-
-        {/* 리스트 영역 (Community 카드 디자인 재사용) */}
-        <section className="mr-list-section">
             {loading && (
             <div className="mr-empty">
                 <p>게시글을 불러오는 중입니다…</p>
