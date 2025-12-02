@@ -1,38 +1,38 @@
-import React, { useState } from 'react';
-import Header from '../../components/layout/Header';
-import Footer from '../../components/layout/Footer';
-import ScrollToTop from '../../components/common/ScrollToTop';
-import './Partners.css';
+import React, { useState } from "react";
+import Header from "../../components/layout/Header";
+import Footer from "../../components/layout/Footer";
+import ScrollToTop from "../../components/common/ScrollToTop";
+import "./Partners.css";
 
 function Partners() {
   const [formData, setFormData] = useState({
-    company: '',
-    name: '',
-    email: '',
-    phone: '',
-    type: '',
-    content: ''
+    company: "",
+    name: "",
+    email: "",
+    phone: "",
+    type: "",
+    content: "",
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert('제휴 문의가 접수되었습니다. 빠른 시일 내에 답변 드리겠습니다.');
+    alert("제휴 문의가 접수되었습니다. 빠른 시일 내에 답변 드리겠습니다.");
     // 실제로는 API 호출
     setFormData({
-      company: '',
-      name: '',
-      email: '',
-      phone: '',
-      type: '',
-      content: ''
+      company: "",
+      name: "",
+      email: "",
+      phone: "",
+      type: "",
+      content: "",
     });
   };
 
@@ -85,7 +85,9 @@ function Partners() {
             <form className="partners-form" onSubmit={handleSubmit}>
               <div className="form-row">
                 <div className="form-group">
-                  <label>회사명 <span className="required">*</span></label>
+                  <label>
+                    회사명 <span className="required">*</span>
+                  </label>
                   <input
                     type="text"
                     name="company"
@@ -96,7 +98,9 @@ function Partners() {
                   />
                 </div>
                 <div className="form-group">
-                  <label>담당자명 <span className="required">*</span></label>
+                  <label>
+                    담당자명 <span className="required">*</span>
+                  </label>
                   <input
                     type="text"
                     name="name"
@@ -110,7 +114,9 @@ function Partners() {
 
               <div className="form-row">
                 <div className="form-group">
-                  <label>이메일 <span className="required">*</span></label>
+                  <label>
+                    이메일 <span className="required">*</span>
+                  </label>
                   <input
                     type="email"
                     name="email"
@@ -121,7 +127,9 @@ function Partners() {
                   />
                 </div>
                 <div className="form-group">
-                  <label>연락처 <span className="required">*</span></label>
+                  <label>
+                    연락처 <span className="required">*</span>
+                  </label>
                   <input
                     type="tel"
                     name="phone"
@@ -134,13 +142,10 @@ function Partners() {
               </div>
 
               <div className="form-group">
-                <label>제휴 유형 <span className="required">*</span></label>
-                <select
-                  name="type"
-                  value={formData.type}
-                  onChange={handleChange}
-                  required
-                >
+                <label>
+                  제휴 유형 <span className="required">*</span>
+                </label>
+                <select name="type" value={formData.type} onChange={handleChange} required>
                   <option value="">선택해주세요</option>
                   <option value="medical">의료기관 제휴</option>
                   <option value="pharma">제약/헬스케어 제휴</option>
@@ -150,15 +155,16 @@ function Partners() {
               </div>
 
               <div className="form-group">
-                <label>문의 내용 <span className="required">*</span></label>
+                <label>
+                  문의 내용 <span className="required">*</span>
+                </label>
                 <textarea
                   name="content"
                   value={formData.content}
                   onChange={handleChange}
                   placeholder="제휴에 대한 상세한 내용을 입력해주세요"
                   rows="8"
-                  required
-                ></textarea>
+                  required></textarea>
               </div>
 
               <button type="submit" className="partners-submit-btn">
@@ -179,7 +185,7 @@ function Partners() {
                 </div>
                 <div className="contact-info">
                   <strong>이메일</strong>
-                  <p>partners@healbot.com</p>
+                  <p>healbot.official@gmail.com</p>
                 </div>
               </div>
               <div className="contact-method">

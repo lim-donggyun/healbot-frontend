@@ -1,8 +1,8 @@
-import React from 'react';
-import Header from '../../components/layout/Header';
-import Footer from '../../components/layout/Footer';
-import ScrollToTop from '../../components/common/ScrollToTop';
-import './CustomerService.css';
+import React from "react";
+import Header from "../../components/layout/Header";
+import Footer from "../../components/layout/Footer";
+import ScrollToTop from "../../components/common/ScrollToTop";
+import "./CustomerService.css";
 
 function CustomerService() {
   return (
@@ -50,7 +50,14 @@ function CustomerService() {
           <div className="cs-guide-grid">
             <div className="cs-guide-card">
               <h3>
-                <svg className="guide-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <svg
+                  className="guide-icon"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5">
                   <circle cx="11" cy="11" r="8"></circle>
                   <path d="m21 21-4.35-4.35"></path>
                 </svg>
@@ -67,7 +74,14 @@ function CustomerService() {
 
             <div className="cs-guide-card">
               <h3>
-                <svg className="guide-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <svg
+                  className="guide-icon"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5">
                   <path d="M12 2v20M17 7H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
                   <rect x="3" y="3" width="18" height="18" rx="2"></rect>
                 </svg>
@@ -84,7 +98,14 @@ function CustomerService() {
 
             <div className="cs-guide-card">
               <h3>
-                <svg className="guide-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <svg
+                  className="guide-icon"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5">
                   <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
                   <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
                 </svg>
@@ -101,7 +122,14 @@ function CustomerService() {
 
             <div className="cs-guide-card">
               <h3>
-                <svg className="guide-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <svg
+                  className="guide-icon"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5">
                   <circle cx="12" cy="8" r="4" />
                   <path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2" />
                 </svg>
@@ -129,7 +157,11 @@ function CustomerService() {
               </div>
               <h3>전화 상담</h3>
               <p className="cs-contact-value">1588-0000</p>
-              <p className="cs-contact-desc">평일 09:00 - 18:00<br />점심시간 12:00 - 13:00</p>
+              <p className="cs-contact-desc">
+                평일 09:00 - 18:00
+                <br />
+                점심시간 12:00 - 13:00
+              </p>
             </div>
 
             <div className="cs-contact-card">
@@ -140,8 +172,12 @@ function CustomerService() {
                 </svg>
               </div>
               <h3>이메일 문의</h3>
-              <p className="cs-contact-value">support@healbot.com</p>
-              <p className="cs-contact-desc">24시간 접수 가능<br />평일 기준 24시간 내 답변</p>
+              <p className="cs-contact-value">healbot.official@gmail.com</p>
+              <p className="cs-contact-desc">
+                24시간 접수 가능
+                <br />
+                평일 기준 24시간 내 답변
+              </p>
             </div>
 
             <div className="cs-contact-card">
@@ -152,7 +188,10 @@ function CustomerService() {
               </div>
               <h3>채팅 상담</h3>
               <p className="cs-contact-value">준비 중</p>
-              <p className="cs-contact-desc">실시간 채팅 상담 서비스<br />곧 오픈 예정입니다</p>
+              <p className="cs-contact-desc">
+                실시간 채팅 상담 서비스
+                <br />곧 오픈 예정입니다
+              </p>
             </div>
           </div>
         </section>

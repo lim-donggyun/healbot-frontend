@@ -75,7 +75,7 @@ function Footer() {
             </div>
             <p>AI 기반 증상 분석 및 병원 추천 서비스</p>
             <p>대표전화: 1588-1234</p>
-            <p>이메일: support@healbot.com</p>
+            <p>이메일: healbot.official@gmail.com</p>
             <p>운영시간: 평일 09:00 - 18:00 (주말/공휴일 휴무)</p>
             <div className="social-links">
               {socialLinks.map((social, index) => (

@@ -231,7 +231,7 @@ function Privacy() {
             <ul>
               <li>성명: 홍길동</li>
               <li>직책: 개인정보보호팀장</li>
-              <li>연락처: privacy@healbot.com</li>
+              <li>연락처: healbot.official@gmail.com</li>
               <li>전화번호: 1588-0000</li>
             </ul>
           </div>
@@ -247,7 +247,7 @@ function Privacy() {
 
         <div className="privacy-footer">
           <p>개인정보 관련 문의사항이 있으시면 개인정보 보호책임자에게 연락 주시기 바랍니다.</p>
-          <p>이메일: privacy@healbot.com | 전화: 1588-0000</p>
+          <p>이메일: healbot.official@gmail.com | 전화: 1588-0000</p>
         </div>
       </div>
       <Footer />

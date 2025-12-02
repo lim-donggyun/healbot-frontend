@@ -1,8 +1,8 @@
-import React from 'react';
-import Header from '../../components/layout/Header';
-import Footer from '../../components/layout/Footer';
-import ScrollToTop from '../../components/common/ScrollToTop';
-import './About.css';
+import React from "react";
+import Header from "../../components/layout/Header";
+import Footer from "../../components/layout/Footer";
+import ScrollToTop from "../../components/common/ScrollToTop";
+import "./About.css";
 
 function About() {
   return (
@@ -16,12 +16,12 @@ function About() {
           <div className="hero-content">
             <h2>HealBot이란?</h2>
             <p>
-              HealBot은 AI 기반 증상 분석과 의료 정보 제공을 통해 사용자들이 더 빠르고 정확하게
-              자신의 건강 상태를 파악하고 적절한 의료 서비스를 받을 수 있도록 돕는 플랫폼입니다.
+              HealBot은 AI 기반 증상 분석과 의료 정보 제공을 통해 사용자들이 더 빠르고 정확하게 자신의 건강 상태를
+              파악하고 적절한 의료 서비스를 받을 수 있도록 돕는 플랫폼입니다.
             </p>
             <p>
-              복잡한 의료 정보를 쉽게 이해할 수 있도록 하고, 가까운 병원과 응급실 정보를 실시간으로
-              제공하여 응급 상황에서도 신속하게 대처할 수 있도록 지원합니다.
+              복잡한 의료 정보를 쉽게 이해할 수 있도록 하고, 가까운 병원과 응급실 정보를 실시간으로 제공하여 응급
+              상황에서도 신속하게 대처할 수 있도록 지원합니다.
             </p>
           </div>
         </section>
@@ -129,8 +129,8 @@ function About() {
           <h2>우리의 비전</h2>
           <div className="vision-content">
             <p>
-              HealBot은 모든 사람이 건강 정보에 쉽게 접근하고, 자신의 건강을 스스로 관리할 수 있는
-              세상을 만들고자 합니다. 기술과 의료의 융합을 통해 더 건강한 사회를 만드는 것이 우리의 목표입니다.
+              HealBot은 모든 사람이 건강 정보에 쉽게 접근하고, 자신의 건강을 스스로 관리할 수 있는 세상을 만들고자
+              합니다. 기술과 의료의 융합을 통해 더 건강한 사회를 만드는 것이 우리의 목표입니다.
             </p>
             <div className="vision-box">
               <h3>"모두가 건강한 삶을 누릴 수 있는 세상"</h3>
@@ -145,7 +145,7 @@ function About() {
           <div className="contact-info">
             <div className="contact-item">
               <strong>이메일</strong>
-              <p>support@healbot.com</p>
+              <p>healbot.official@gmail.com</p>
             </div>
             <div className="contact-item">
               <strong>전화</strong>
