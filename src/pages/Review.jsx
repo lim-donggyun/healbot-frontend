@@ -184,29 +184,14 @@ useEffect(() => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
 }, [selectedHospital?.id, sort, ratingFilter]);
 
-// 리뷰 작성 버튼
-const handleWriteClick = () => {
-    if (!isLoggedIn) {
-    alert("리뷰 작성은 로그인 후 가능합니다.");
-    navigate("/login");
-    return;
-    }
-
-    if (!selectedHospital) {
-    // 아직 어떤 병원 리뷰를 쓸지 모르는 상태 → OCR 먼저
-    setShowOCR(true);
-    return;
-    }
-
-    setShowWriteModal(true);
-};
 
 // ✅ OCR 인증 성공 시, 병원 정보 세팅
 const handleOcrVerified = (info) => {
-    // info: { hospitalId, hospitalName, text, image }
+    // info: { hospitalId, hospitalName, hospitalAddress, text, image }
     setSelectedHospital({
     id: info.hospitalId,
     name: info.hospitalName,
+    address: info.hospitalAddress,
     });
     setShowOCR(false);
     setShowWriteModal(true);
@@ -264,13 +249,31 @@ return (
             )}
         </div>
 
-        <button
-            type="button"
-            className="rv-write-btn"
-            onClick={handleWriteClick}
+        <div className="rv-header-actions">
+            {selectedHospital && (
+                <button
+                    type="button"
+                    className="rv-reset-btn"
+                    onClick={handleResetHospital}
+                >
+                    전체 리뷰 보기
+                </button>
+            )}
+            <button
+                type="button"
+                className="rv-write-btn"
+                onClick={() => {
+                  if (!isLoggedIn) {
+                    alert("리뷰 작성은 로그인 후 가능합니다.");
+                    navigate("/login");
+                    return;
+                  }
+                  setShowOCR(true);
+                }}
             >
-            리뷰 작성
-        </button>
+                리뷰 작성
+            </button>
+        </div>
         </div>
 
         {/* 🔍 병원명 검색 영역 */}
@@ -297,16 +300,6 @@ return (
             {hospitalSearching ? "검색 중..." : "검색"}
             </button>
         </div>
-
-        {selectedHospital && (
-            <button
-            type="button"
-            className="rv-reset-btn"
-            onClick={handleResetHospital}
-            >
-            전체 리뷰 보기
-            </button>
-        )}
         </div>
 
         {/* 검색 결과 / 에러 */}
@@ -413,6 +406,18 @@ return (
                     <div className="rv-card-hname">{r.hospitalName}</div>
                 )}
                 <p className="rv-card-content">{r.content}</p>
+
+                {/* 리뷰 이미지 */}
+                {r.images && r.images.length > 0 && (
+                    <div className="rv-card-images">
+                    {r.images.map((img, idx) => (
+                        <div key={idx} className="rv-card-image-item">
+                        <img src={img} alt={`review-${idx}`} />
+                        </div>
+                    ))}
+                    </div>
+                )}
+
                 <div className="rv-card-bottom">
                 <span className="rv-card-date">{r.createdAt}</span>
                 </div>
@@ -472,6 +477,8 @@ return (
     {showWriteModal && selectedHospital && (
         <ReviewWriteModal
         hospitalId={selectedHospital.id}
+        hospitalName={selectedHospital.name}
+        hospitalAddress={selectedHospital.address}
         onClose={() => setShowWriteModal(false)}
         onSuccess={handleWriteSuccess}
         />

@@ -106,7 +106,7 @@ function App() {
         <Route path="/community/write" element={<CommunityWrite />} />
         <Route path="/hospitals" element={<HospitalMap />} />
         <Route path="/review/ocr" element={<OCR />} />
-        <Route path="/review/:hospitalId" element={<Review />} />
+        <Route path="/review" element={<Review />} />
         <Route path="/reviews/write" element={<WriteReview />} />
       </Routes>
     </Router>

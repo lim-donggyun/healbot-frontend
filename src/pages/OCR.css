@@ -1,4 +1,4 @@
-/* 전체 페이지용이 아니라 모달 안에서 쓰이도록 최대한 심플하게 */
+/* OCR 모달 내부 스타일 */
 
 .ocr-page {
   padding: 0;
@@ -21,155 +21,197 @@
 
 /* 타이틀 영역 */
 .ocr-title {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 700;
-  margin-bottom: 4px;
-  color: #111827;
+  margin-bottom: 6px;
+  color: #222;
 }
 
 .ocr-sub {
-  font-size: 13px;
-  color: #6b7280;
-  margin-bottom: 16px;
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 20px;
+  line-height: 1.5;
 }
 
 /* 버튼 영역 */
 .ocr-actions {
   display: flex;
-  gap: 8px;
-  margin-bottom: 14px;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
 .ocr-btn {
   border: none;
-  border-radius: 999px;
-  padding: 8px 14px;
-  font-size: 13px;
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 6px;
   white-space: nowrap;
+  transition: all 0.2s;
 }
 
 .ocr-btn-upload {
-  background: #2563eb;
+  background: #3284b1;
   color: #fff;
 }
 
 .ocr-btn-upload:hover {
-  background: #1d4ed8;
+  background: #2c6d8e;
 }
 
 .ocr-btn-reset {
   background: #e5e7eb;
-  color: #374151;
+  color: #555;
+}
+
+.ocr-btn-reset:hover {
+  background: #d1d5db;
 }
 
 .ocr-btn-process {
-  margin-top: 10px;
+  margin-top: 16px;
   background: #10b981;
-  color: #ffffff;
+  color: #fff;
+  width: 100%;
+  padding: 12px;
+}
+
+.ocr-btn-process:hover {
+  background: #059669;
 }
 
 .ocr-btn-process:disabled {
   background: #9ca3af;
-  cursor: default;
-}
-
-.ocr-btn-copy {
-  background: #e5e7eb;
-  color: #111827;
-}
-
-.ocr-btn-confirm {
-  background: #2563eb;
-  color: #ffffff;
-}
-
-.ocr-btn-confirm:disabled {
-  background: #9ca3af;
+  cursor: not-allowed;
 }
 
 /* 안내 박스 */
 .ocr-guide {
-  margin-top: 4px;
-  padding: 14px 12px;
-  border-radius: 10px;
-  border: 1px dashed #d1d5db;
+  margin-top: 8px;
+  padding: 30px 20px;
+  border-radius: 12px;
+  border: 2px dashed #d1d5db;
   background: #f9fafb;
-  font-size: 13px;
-  color: #6b7280;
+  text-align: center;
+}
+
+.ocr-guide p {
+  font-size: 14px;
+  color: #666;
+  margin: 8px 0;
+}
+
+.ocr-guide p:first-child {
+  font-weight: 600;
+  color: #333;
 }
 
 /* 미리보기 영역 */
 .ocr-preview-section {
-  margin-top: 10px;
+  margin-top: 20px;
 }
 
 .ocr-section-title {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
+  color: #333;
 }
 
 .ocr-preview {
   width: 100%;
-  max-height: 260px;
+  min-height: 300px;
+  max-height: 400px;
   border-radius: 12px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid #e0e0e0;
   background: #f9fafb;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 .ocr-preview img {
   max-width: 100%;
-  max-height: 240px;
+  max-height: 380px;
   object-fit: contain;
 }
 
-/* 결과 텍스트 영역 */
-.ocr-result-section {
+/* 에러 & 인증 메시지 */
+.ocr-error {
   margin-top: 16px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  background: #fee2e2;
+  color: #b91c1c;
+  font-size: 14px;
+  border-left: 4px solid #dc2626;
 }
 
-.ocr-result {
-  border-radius: 10px;
-  border: 1px solid #e5e7eb;
-  background: #f9fafb;
-  padding: 10px 12px;
-  max-height: 220px;
-  overflow-y: auto;
-  font-size: 12px;
-  color: #111827;
+.ocr-verify-msg {
+  margin-top: 16px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  background: #d1fae5;
+  color: #065f46;
+  font-size: 14px;
+  border-left: 4px solid #10b981;
+  font-weight: 500;
 }
 
-.ocr-result-line {
-  padding: 2px 0;
-  border-bottom: 1px dashed #e5e7eb;
+/* 스피너 애니메이션 */
+.ocr-spinner {
+  animation: spin 1s linear infinite;
 }
 
-.ocr-result-line:last-child {
-  border-bottom: none;
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
-.ocr-result-actions {
-  margin-top: 10px;
+/* SVG 아이콘 정렬 */
+.ocr-btn svg {
+  flex-shrink: 0;
+}
+
+.ocr-guide svg {
+  color: #999;
+}
+
+.ocr-error svg,
+.ocr-verify-msg svg {
+  flex-shrink: 0;
+}
+
+.ocr-error,
+.ocr-verify-msg {
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
   gap: 8px;
 }
 
-/* 에러 */
-.ocr-error {
-  margin-top: 10px;
-  padding: 10px 12px;
-  border-radius: 10px;
-  background: #fee2e2;
-  color: #b91c1c;
-  font-size: 13px;
+/* 반응형 */
+@media (max-width: 480px) {
+  .ocr-title {
+    font-size: 20px;
+  }
+
+  .ocr-actions {
+    flex-direction: column;
+  }
+
+  .ocr-preview {
+    min-height: 200px;
+  }
 }
