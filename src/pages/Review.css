@@ -242,3 +242,135 @@ color: #6b7280;
 .ocr-modal-close:hover {
 color: #111827;
 }
+
+/* 병원명 검색 영역 */
+.rv-search-row {
+display: flex;
+align-items: center;
+gap: 8px;
+margin-bottom: 10px;
+flex-wrap: wrap;
+}
+
+.rv-search-main {
+display: flex;
+flex: 1;
+gap: 6px;
+}
+
+.rv-search-input {
+flex: 1;
+border-radius: 999px;
+border: 1px solid #d0d4dd;
+padding: 7px 12px;
+font-size: 13px;
+background-color: #fff;
+box-sizing: border-box;
+}
+
+.rv-search-input:focus {
+outline: none;
+border-color: #2f7de1;
+box-shadow: 0 0 0 1px rgba(47, 125, 225, 0.15);
+}
+
+.rv-search-btn {
+border: none;
+border-radius: 999px;
+padding: 7px 14px;
+font-size: 13px;
+font-weight: 600;
+cursor: pointer;
+background-color: #4b5563;
+color: #fff;
+white-space: nowrap;
+}
+
+.rv-search-btn:disabled {
+opacity: 0.7;
+cursor: default;
+}
+
+.rv-search-btn:not(:disabled):hover {
+background-color: #374151;
+}
+
+.rv-reset-btn {
+border: none;
+border-radius: 999px;
+padding: 6px 12px;
+font-size: 12px;
+cursor: pointer;
+background-color: #e5e7eb;
+color: #374151;
+white-space: nowrap;
+}
+
+.rv-reset-btn:hover {
+background-color: #d1d5db;
+}
+
+/* 검색 결과 / 메시지 */
+.rv-search-msg {
+margin-bottom: 8px;
+font-size: 12px;
+}
+
+.rv-search-error {
+color: #c53030;
+}
+
+/* 검색 결과 리스트 */
+.rv-search-result-list {
+margin-bottom: 10px;
+background-color: #fff;
+border-radius: 10px;
+border: 1px solid #e2e4ea;
+max-height: 220px;
+overflow-y: auto;
+}
+
+.rv-search-result-item {
+width: 100%;
+border: none;
+background: transparent;
+text-align: left;
+padding: 8px 12px;
+display: flex;
+flex-direction: column;
+gap: 2px;
+cursor: pointer;
+box-sizing: border-box;
+}
+
+.rv-search-result-item:hover {
+background-color: #f3f4f6;
+}
+
+.rv-search-hname {
+font-size: 13px;
+font-weight: 600;
+color: #111827;
+}
+
+.rv-search-haddr {
+font-size: 11px;
+color: #6b7280;
+}
+
+/* 모바일에서 검색 행 정렬 */
+@media (max-width: 600px) {
+.rv-search-row {
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.rv-search-main {
+    width: 100%;
+}
+
+.rv-reset-btn {
+    align-self: flex-end;
+}
+}
+
