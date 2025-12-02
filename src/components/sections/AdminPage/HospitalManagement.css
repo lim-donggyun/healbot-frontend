@@ -333,6 +333,7 @@
   border-radius: 12px;
   width: 90%;
   max-width: 900px;
+  max-height: 95vh;
   overflow-y: hidden !important;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
 }
@@ -831,8 +832,12 @@
 }
 
 @keyframes hospital-spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .hospital-management-page .loading-text {
