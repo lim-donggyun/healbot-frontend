@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import '../../../pages/MainPage.css';
 import './Report.css';
+// API 기본 URL (Vite 프록시 사용)
+const API_BASE_URL = "/react/api";
 
 const Review = () => {
   const navigate = useNavigate();
@@ -31,7 +33,7 @@ const Review = () => {
         if (hospitalFilter) params.append('hospitalId', hospitalFilter);
         if (scoreFilter) params.append('score', scoreFilter);
 
-        const response = await fetch(`/react/api/reviews/admin?${params.toString()}`, {
+        const response = await fetch(`${API_BASE_URL}/reviews/reviews/all`, {
           method: 'GET',
         });
 
