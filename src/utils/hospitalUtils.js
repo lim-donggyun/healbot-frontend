@@ -2,7 +2,7 @@
  * 병원 데이터 관련 유틸리티 함수 모음
  */
 
-import { calculateDistance } from './mapUtils';
+import { calculateDistance } from "./mapUtils";
 
 /**
  * 병원 목록을 거리순으로 정렬
@@ -13,7 +13,7 @@ import { calculateDistance } from './mapUtils';
  */
 export const sortHospitalsByDistance = (hospitals, centerLat, centerLng) => {
   // 각 병원에 거리 계산
-  hospitals.forEach(hospital => {
+  hospitals.forEach((hospital) => {
     if (hospital.latitude && hospital.longitude) {
       hospital.distance = calculateDistance(
         centerLat,
@@ -41,7 +41,7 @@ export const redistributeHospitalsByLocation = (hospitals) => {
   const firstAtLocation = []; // 같은 좌표 중 첫 번째 병원들
   const duplicateLocations = []; // 같은 좌표의 나머지 병원들
 
-  hospitals.forEach(hospital => {
+  hospitals.forEach((hospital) => {
     const lat = parseFloat(hospital.latitude).toFixed(4);
     const lng = parseFloat(hospital.longitude).toFixed(4);
     const locationKey = `${lat},${lng}`;
@@ -65,12 +65,38 @@ export const redistributeHospitalsByLocation = (hospitals) => {
  */
 export const HOSPITAL_TYPE_KEYWORDS = [
   // 병원 유형
-  '요양병원', '한의원', '병원', '의원', '치과', '약국', '보건소', '클리닉',
+  "한의원",
+  "의원",
+  "치과의원",
+  "한방병원",
+  "요양병원",
+  "병원",
+  "치과병원",
+  "종합병원",
   // 진료과 (긴 것부터)
-  '마취통증의학과', '방사선종양학과', '진단검사의학과', '정신건강의학과', '한방신경정신과', '한방재활의학과',
-  '가정의학과', '비뇨의학과', '소아청소년과', '영상의학과', '예방의학과', '응급의학과', '이비인후과', '재활의학과',
-  '한방내과', '한방부인과', '한방소아과',
-  '내과', '병리과', '산부인과', '성형외과', '신경과', '신경외과', '안과', '외과', '정형외과', '피부과', '핵의학과', '흉부외과'
+  "마취통증의학과",
+  "방사선종양학과",
+  "정신건강의학과",
+  "심장혈관흉부외과",
+  "가정의학과",
+  "비뇨의학과",
+  "소아청소년과",
+  "영상의학과",
+  "응급의학과",
+  "이비인후과",
+  "재활의학과",
+  "내과",
+  "산부인과",
+  "성형외과",
+  "신경과",
+  "신경외과",
+  "안과",
+  "외과",
+  "치과",
+  "정형외과",
+  "피부과",
+  "핵의학과",
+  "한의학과",
 ];
 
 /**
@@ -94,7 +120,7 @@ export const parseSearchKeyword = (keyword) => {
   for (const type of HOSPITAL_TYPE_KEYWORDS) {
     if (keyword.includes(type)) {
       hospitalTypePart = type;
-      locationPart = keyword.replace(type, '').trim();
+      locationPart = keyword.replace(type, "").trim();
       break;
     }
   }

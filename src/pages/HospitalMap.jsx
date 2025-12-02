@@ -70,32 +70,25 @@ function HospitalMap() {
     "내과",
     "마취통증의학과",
     "방사선종양학과",
-    "병리과",
     "비뇨의학과",
     "산부인과",
     "성형외과",
     "소아청소년과",
     "신경과",
     "신경외과",
+    "심장혈관흉부외과",
     "안과",
     "영상의학과",
-    "예방의학과",
     "외과",
     "응급의학과",
     "이비인후과",
     "재활의학과",
-    "정형외과",
     "정신건강의학과",
-    "진단검사의학과",
+    "정형외과",
     "치과",
     "피부과",
+    "한의학과",
     "핵의학과",
-    "흉부외과",
-    "한방내과",
-    "한방부인과",
-    "한방소아과",
-    "한방신경정신과",
-    "한방재활의학과",
   ];
 
   // URL 파라미터로부터 진료과 자동 선택 또는 응급실 필터 적용
@@ -227,12 +220,12 @@ function HospitalMap() {
 
       // 지도 초기화 후 현재 위치 로드
       const locateUser = () => {
-        const cachedLocation = sessionStorage.getItem('userLocation');
-        const cachedTime = sessionStorage.getItem('userLocationTime');
+        const cachedLocation = sessionStorage.getItem("userLocation");
+        const cachedTime = sessionStorage.getItem("userLocationTime");
         const now = Date.now();
 
-        if (cachedLocation && cachedTime && (now - parseInt(cachedTime) < 1200000)) {
-          console.log('✅ 캐시된 위치 사용');
+        if (cachedLocation && cachedTime && now - parseInt(cachedTime) < 1200000) {
+          console.log("✅ 캐시된 위치 사용");
           const { lat, lng } = JSON.parse(cachedLocation);
           currentLocationRef.current = { lat, lng };
           const currentPosition = new window.kakao.maps.LatLng(lat, lng);
@@ -254,8 +247,8 @@ function HospitalMap() {
                 setIsLocationReady(true); // 위치 준비 완료 (기본 위치)
                 return;
               }
-              sessionStorage.setItem('userLocation', JSON.stringify({ lat, lng }));
-              sessionStorage.setItem('userLocationTime', Date.now().toString());
+              sessionStorage.setItem("userLocation", JSON.stringify({ lat, lng }));
+              sessionStorage.setItem("userLocationTime", Date.now().toString());
               currentLocationRef.current = { lat, lng };
               const currentPosition = new window.kakao.maps.LatLng(lat, lng);
               map.setCenter(currentPosition);
@@ -278,7 +271,7 @@ function HospitalMap() {
           setIsLocationReady(true); // Geolocation 미지원 시에도 준비 완료로 처리
         }
       };
-      
+
       setTimeout(locateUser, 100); // 약간의 지연 후 위치 확인 시작
     };
 
@@ -289,7 +282,7 @@ function HospitalMap() {
       script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${
         import.meta.env.VITE_KAKAO_MAP_JS_KEY
       }&libraries=services&autoload=false`;
-      script.async = true; 
+      script.async = true;
       script.onload = () => {
         window.kakao.maps.load(initializeMap);
       };
