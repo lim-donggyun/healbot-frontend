@@ -12,6 +12,7 @@ const Step2 = ({ formData, updateFormData, nextStep, prevStep, socialId }) => {
   const [age, setAge] = useState(formData.age || "");
   const [gender, setGender] = useState(formData.gender || "");
   const [address, setAddress] = useState(formData.address || "");
+  const [detailAddress, setDetailAddress] = useState(formData.detailAddress || "");
   const [phone, setPhone] = useState(formData.phone || "");
   const [verificationCode, setVerificationCode] = useState("");
   const [isCodeSent, setIsCodeSent] = useState(false);
@@ -20,6 +21,44 @@ const Step2 = ({ formData, updateFormData, nextStep, prevStep, socialId }) => {
   const [idCheckStatus, setIdCheckStatus] = useState("");
   const [idCheckMessage, setIdCheckMessage] = useState("");
   const [passwordMessage, setPasswordMessage] = useState("");
+
+  // Daum 주소 검색 스크립트 로드
+  useEffect(() => {
+    const postcodeScriptId = "daum-postcode-script";
+    if (!document.getElementById(postcodeScriptId)) {
+      const script = document.createElement("script");
+      script.src = "//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js";
+      script.id = postcodeScriptId;
+      document.head.appendChild(script);
+    }
+  }, []);
+
+  // 주소 검색
+  const handleAddressSearch = () => {
+    if (!window.daum) {
+      alert("주소 검색 서비스가 로드되지 않았습니다. 잠시 후 다시 시도해주세요.");
+      return;
+    }
+
+    new window.daum.Postcode({
+      oncomplete: function (data) {
+        let fullAddress = data.address;
+        let extraAddress = "";
+
+        if (data.addressType === "R") {
+          if (data.bname !== "") {
+            extraAddress += data.bname;
+          }
+          if (data.buildingName !== "") {
+            extraAddress += extraAddress !== "" ? `, ${data.buildingName}` : data.buildingName;
+          }
+          fullAddress += extraAddress !== "" ? ` (${extraAddress})` : "";
+        }
+
+        setAddress(fullAddress);
+      },
+    }).open();
+  };
 
   // 소셜 로그인인 경우 처리
   const isSocialSignup = !!socialId;
@@ -232,7 +271,7 @@ const Step2 = ({ formData, updateFormData, nextStep, prevStep, socialId }) => {
         phone: phone,
         bornDate: birthdate,
         gender: gender,
-        address: address
+        address: detailAddress.trim() ? `${address} ${detailAddress}` : address
       };
 
       const result = await signup(signupData);
@@ -249,6 +288,7 @@ const Step2 = ({ formData, updateFormData, nextStep, prevStep, socialId }) => {
           age,
           gender,
           address,
+          detailAddress,
           phone,
           verificationCode,
         });
@@ -263,7 +303,7 @@ const Step2 = ({ formData, updateFormData, nextStep, prevStep, socialId }) => {
   };
 
   const handlePrev = () => {
-    updateFormData({ userId, name, email, password, passwordConfirm, birthdate, age, gender, address, phone });
+    updateFormData({ userId, name, email, password, passwordConfirm, birthdate, age, gender, address, detailAddress, phone });
     prevStep();
   };
 
@@ -414,49 +454,66 @@ const Step2 = ({ formData, updateFormData, nextStep, prevStep, socialId }) => {
           placeholder="010-0000-0000"
           maxLength="13"
         />
-        <label htmlFor="birth">생년월일 *</label>
-        <div className="row">
-          <div className="col">
-            <input id="birth" type="date" value={birthdate} onChange={handleBirthdateChange} max={getTodayString()} />{" "}
+        <div className="birthdate-gender-group">
+          <div>
+            <label>성별 *</label>
+            <div className="segmented-control">
+              <button
+                type="button"
+                className={`segmented-control-button ${gender === "M" ? "active" : ""}`}
+                onClick={() => setGender("M")}
+              >
+                남자
+              </button>
+              <button
+                type="button"
+                className={`segmented-control-button ${gender === "F" ? "active" : ""}`}
+                onClick={() => setGender("F")}
+              >
+                여자
+              </button>
+            </div>
           </div>
-          <div style={{ width: "140px" }}>
-            <input id="age" type="text" className="readonly" value={age} placeholder="만 나이" readOnly />
+          <div>
+            <label htmlFor="birth">생년월일 *</label>
+            <div className="row">
+              <div className="col">
+                <input id="birth" type="date" value={birthdate} onChange={handleBirthdateChange} max={getTodayString()} />{" "}
+              </div>
+              <div style={{ width: "140px" }}>
+                <input id="age" type="text" className="readonly" value={age} placeholder="만 나이" readOnly />
+              </div>
+            </div>
+            <div className="message">생년월일 입력 시 만 나이가 자동 계산됩니다.</div>
           </div>
         </div>
-        <div className="message">생년월일 입력 시 만 나이가 자동 계산됩니다.</div>
 
-        <label>성별 *</label>
-        <div className="gender">
-          <label>
+        <div className="address-group">
+          <div>
+            <label htmlFor="address">주소 *</label>
             <input
-              type="radio"
-              name="gender"
-              value="M"
-              checked={gender === "M"}
-              onChange={(e) => setGender(e.target.value)}
-            />{" "}
-            남자
-          </label>
-          <label>
+              id="address"
+              type="text"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              placeholder="클릭하여 주소 검색"
+              readOnly
+              style={{ cursor: "pointer" }}
+              onClick={handleAddressSearch}
+            />
+          </div>
+
+          <div>
+            <label htmlFor="detailAddress">상세주소</label>
             <input
-              type="radio"
-              name="gender"
-              value="F"
-              checked={gender === "F"}
-              onChange={(e) => setGender(e.target.value)}
-            />{" "}
-            여자
-          </label>
+              id="detailAddress"
+              type="text"
+              value={detailAddress}
+              onChange={(e) => setDetailAddress(e.target.value)}
+              placeholder="상세 주소를 입력해주세요."
+            />
+          </div>
         </div>
-
-        <label htmlFor="address">주소 *</label>
-        <input
-          id="address"
-          type="text"
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
-          placeholder="기본 주소"
-        />
       </form>
 
       <div className="btn-group">

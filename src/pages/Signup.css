@@ -1,3 +1,72 @@
+/* Segmented Control for Gender */
+.segmented-control {
+  display: flex;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 6px;
+  height: 42px; /* Match height of other input fields */
+}
+
+.segmented-control-button {
+  flex: 1;
+  padding: 8px 12px;
+  background-color: #f9fafb;
+  color: #6b7280;
+  cursor: pointer;
+  text-align: center;
+  font-size: 14px;
+  border: none;
+  border-left: 1px solid #ccc;
+  transition: all 0.2s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.segmented-control-button:first-child {
+  border-left: none;
+}
+
+.segmented-control-button:hover {
+  background-color: #e5e7eb;
+  color: #374151;
+}
+
+.segmented-control-button.active {
+  background-color: #3b82f6;
+  color: #ffffff;
+  border-color: #3b82f6;
+}
+
+/* Address field layout */
+.address-group {
+  display: flex;
+  gap: 30px;
+  width: 100%;
+}
+
+.address-group > div {
+  flex: 1;
+}
+
+/* Gender/Birthdate Group - Specific styling for birthdate-gender-group children */
+.birthdate-gender-group {
+  display: flex;
+  gap: 30px;
+  width: 100%;
+}
+
+.birthdate-gender-group > div:first-child { /* Gender */
+  flex: 0 0 auto;
+  min-width: 150px; /* Ensure it has enough space for radio buttons */
+}
+
+.birthdate-gender-group > div:last-child { /* Birthdate */
+  flex: 1;
+}
+
+
 body {
   font-family: "Noto Sans KR", sans-serif;
   background: #fafafa;
