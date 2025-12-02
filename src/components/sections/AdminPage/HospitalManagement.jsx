@@ -195,6 +195,8 @@ const HospitalManagement = () => {
   };
 
   const handleDepartmentsChange = (value) => {
+    console.log("=== 진료과 선택 ===");
+    console.log("선택된 진료과:", value);
     setFormData((prev) => ({
       ...prev,
       departments: value,
@@ -266,6 +268,12 @@ const HospitalManagement = () => {
         ...restData,
         address: combinedAddress,
       };
+
+      console.log("=== 병원 저장 데이터 ===");
+      console.log("isEditMode:", isEditMode);
+      console.log("formData.departments:", formData.departments);
+      console.log("dataToSend:", dataToSend);
+      console.log("dataToSend.departments:", dataToSend.departments);
 
       if (isEditMode) {
         await updateHospital(selectedHospital.hospitalId, dataToSend);
