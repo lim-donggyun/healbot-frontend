@@ -13,12 +13,12 @@ export default defineConfig(({ mode }) => {
       port: 80,
       proxy: {
         "/react": {
-          target: env.VITE_BACKEND_URL || "http://localhost:8080",
+          target: env.VITE_BACKEND_URL,
           changeOrigin: true, // CORS 문제 해결
           rewrite: (path) => path.replace(/^\/react/, ""),
         },
         "/api": {
-          target: env.VITE_BACKEND_URL || "http://localhost:8080",
+          target: env.VITE_BACKEND_URL,
           changeOrigin: true, // CORS 문제 해결
         },
       },

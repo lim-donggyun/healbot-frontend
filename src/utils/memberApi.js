@@ -193,3 +193,52 @@ export const getProfile = async () => {
     throw error;
   }
 };
+
+// 이메일 인증번호 발송
+export const sendEmailCode = async (email) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/member/send-email-code?email=${encodeURIComponent(email)}`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("인증번호 발송 실패");
+    }
+
+    const data = await response.json();
+    return data; // { success: true/false }
+  } catch (error) {
+    console.error("인증번호 발송 에러:", error);
+    throw error;
+  }
+};
+
+// 이메일 인증번호 확인
+export const verifyEmailCode = async (email, code) => {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/member/verify-email-code?email=${encodeURIComponent(email)}&code=${encodeURIComponent(code)}`,
+      {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("인증번호 확인 실패");
+    }
+
+    const data = await response.json();
+    return data; // { verified: true/false }
+  } catch (error) {
+    console.error("인증번호 확인 에러:", error);
+    throw error;
+  }
+};

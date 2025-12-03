@@ -109,7 +109,7 @@ function Sanctions() {
   }, []);
 
   return (
-    <>
+    <div className="review-page-wrapper">
       <Header />
 
       <main className="sanction-main">
@@ -230,7 +230,7 @@ function Sanctions() {
       </main>
 
       <Footer />
-    </>
+    </div>
   );
 }
 

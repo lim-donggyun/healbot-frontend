@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../../../pages/Signup.css";
-import { signup, checkIdAvailability } from "../../../utils/memberApi";
+import { signup, checkIdAvailability, sendEmailCode, verifyEmailCode } from "../../../utils/memberApi";
 
 const Step2 = ({ formData, updateFormData, nextStep, prevStep, socialId }) => {
   const [userId, setUserId] = useState(formData.userId || "");
@@ -166,10 +166,7 @@ const Step2 = ({ formData, updateFormData, nextStep, prevStep, socialId }) => {
     }
 
     try {
-      const response = await fetch(`http://localhost:8080/api/member/send-email-code?email=${encodeURIComponent(email)}`, {
-        method: 'POST',
-      });
-      const data = await response.json();
+      const data = await sendEmailCode(email);
 
       if (data.success) {
         setIsCodeSent(true);
@@ -190,10 +187,7 @@ const Step2 = ({ formData, updateFormData, nextStep, prevStep, socialId }) => {
     }
 
     try {
-      const response = await fetch(`http://localhost:8080/api/member/verify-email-code?email=${encodeURIComponent(email)}&code=${encodeURIComponent(verificationCode)}`, {
-        method: 'POST',
-      });
-      const data = await response.json();
+      const data = await verifyEmailCode(email, verificationCode);
 
       if (data.verified) {
         setIsEmailVerified(true);
