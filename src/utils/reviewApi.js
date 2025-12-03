@@ -86,6 +86,25 @@ export const deleteReview = async (reviewId) => {
   }
 };
 
+// 리뷰 삭제 (관리자용)
+export const deleteReviewByAdmin = async (reviewId) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/reviews/admin/${reviewId}`, {
+      method: "DELETE",
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      throw new Error("리뷰 삭제 실패");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("deleteReviewByAdmin 에러:", error);
+    throw error;
+  }
+};
+
 // 병원별 리뷰 조회
 export const getReviewsByHospital = async (hospitalId) => {
   try {

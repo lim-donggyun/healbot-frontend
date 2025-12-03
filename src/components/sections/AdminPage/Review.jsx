@@ -5,7 +5,7 @@ import './Review.css';
 import {
   getAllReviews,
   updateReview,
-  deleteReview,
+  deleteReviewByAdmin,
 } from '../../../utils/reviewApi';
 
 const Review = () => {
@@ -149,7 +149,7 @@ const Review = () => {
     if (!confirmed) return;
 
     try {
-      await deleteReview(selectedReview.reviewId);
+      await deleteReviewByAdmin(selectedReview.reviewId);
       alert('리뷰가 삭제되었습니다.');
       setIsDetailModalOpen(false);
       fetchReviews();
