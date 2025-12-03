@@ -128,7 +128,7 @@ nav {
 .nav-link {
   text-decoration: none;
   color: white;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 16px;
   transition: color 0.3s;
   cursor: pointer;
@@ -316,7 +316,7 @@ header.scrolled .utility-divider {
   color: white;
   border: none;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.3s;
 }
