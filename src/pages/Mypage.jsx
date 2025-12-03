@@ -1,6 +1,6 @@
 // src/pages/MyPage.jsx
 import React, { useState, useEffect } from "react";
-import "./MyPage.css";
+import "./Mypage.css";
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
 import { useNavigate } from "react-router-dom";
