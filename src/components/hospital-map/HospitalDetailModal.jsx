@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function HospitalDetailModal({
   isOpen,
@@ -6,6 +7,7 @@ function HospitalDetailModal({
   modalDepartments,
   onClose
 }) {
+  const navigate = useNavigate();
   // 상세 모달이 열릴 때 작은 지도 렌더링
   useEffect(() => {
     if (isOpen && selectedHospital && selectedHospital.latitude && selectedHospital.longitude) {
@@ -126,20 +128,33 @@ function HospitalDetailModal({
                     <span className="map-detail-label">주소:</span>
                     <span className="map-detail-value">{selectedHospital.address || '-'}</span>
                   </div>
-                  <button
-                    className="kakao-map-navigate-btn"
-                    onClick={() => {
-                      const lat = selectedHospital.latitude;
-                      const lng = selectedHospital.longitude;
-                      const name = selectedHospital.hospitalName;
-                      window.open(`https://map.kakao.com/link/to/${encodeURIComponent(name)},${lat},${lng}`, '_blank');
-                    }}
-                  >
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" style={{ marginRight: '6px' }}>
-                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-                    </svg>
-                    카카오맵에서 길찾기
-                  </button>
+                  <div className="map-action-buttons">
+                    <button
+                      className="kakao-map-navigate-btn"
+                      onClick={() => {
+                        const lat = selectedHospital.latitude;
+                        const lng = selectedHospital.longitude;
+                        const name = selectedHospital.hospitalName;
+                        window.open(`https://map.kakao.com/link/to/${encodeURIComponent(name)},${lat},${lng}`, '_blank');
+                      }}
+                    >
+                      <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" style={{ marginRight: '6px' }}>
+                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                      </svg>
+                      카카오맵에서 길찾기
+                    </button>
+                    <button
+                      className="hospital-review-btn"
+                      onClick={() => {
+                        navigate(`/review?hospitalId=${selectedHospital.hospitalId}&hospitalName=${encodeURIComponent(selectedHospital.hospitalName)}`);
+                      }}
+                    >
+                      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginRight: '6px' }}>
+                        <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path>
+                      </svg>
+                      리뷰 보기
+                    </button>
+                  </div>
                 </div>
               )}
             </div>

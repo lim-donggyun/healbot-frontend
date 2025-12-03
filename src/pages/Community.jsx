@@ -269,7 +269,7 @@ function Community() {
 
                       <div className="community-card-footer">
                         <div className="community-meta-left">
-                          <span className="community-author">{post.memberId}</span>
+                          <span className="community-author">{post.userName}</span>
                           <span className="community-dot">·</span>
                           <span className="community-date">
                             {(post.createdAt || "").substring(0, 10).replace(/-/g, ".")}

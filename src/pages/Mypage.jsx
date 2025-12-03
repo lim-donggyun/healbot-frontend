@@ -22,9 +22,10 @@ const MyPage = () => {
     const fetchProfileAndCounts = async () => {
       try {
         // 모든 API를 병렬로 호출
-        const [profileRes, postCountRes, sanctionCountRes] = await Promise.all([
+        const [profileRes, postCountRes, reviewCountRes, sanctionCountRes] = await Promise.all([
           fetch("/react/api/member/profile", { method: "GET" }),
           fetch("/react/api/community/my-post-count", { method: "GET" }),
+          fetch("/api/reviews/my-count", { method: "GET" }),
           fetch("/react/api/community/my-sanction-count", { method: "GET" }),
         ]);
 
@@ -44,18 +45,34 @@ const MyPage = () => {
         const profileData = await profileRes.json();
         setProfile(profileData);
 
-        // 2) 내가 쓴 글 개수 처리
+        // 2) 내가 쓴 글 개수 처리 (커뮤니티 + 리뷰)
+        let totalCount = 0;
+
         if (postCountRes.ok) {
           try {
             const data = await postCountRes.json();
             const count = typeof data.count === "number" ? data.count : 0;
-            setPostCount(count);
+            totalCount += count;
           } catch (e) {
-            console.error("내 글 개수 파싱 오류:", e);
+            console.error("커뮤니티 글 개수 파싱 오류:", e);
           }
         } else {
-          console.error("내 글 개수 조회 실패:", postCountRes.status);
+          console.error("커뮤니티 글 개수 조회 실패:", postCountRes.status);
         }
+
+        if (reviewCountRes.ok) {
+          try {
+            const data = await reviewCountRes.json();
+            const count = typeof data.count === "number" ? data.count : 0;
+            totalCount += count;
+          } catch (e) {
+            console.error("리뷰 개수 파싱 오류:", e);
+          }
+        } else {
+          console.error("리뷰 개수 조회 실패:", reviewCountRes.status);
+        }
+
+        setPostCount(totalCount);
 
         // 3) 제재 내역 개수 처리
         if (sanctionCountRes.ok) {

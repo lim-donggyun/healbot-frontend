@@ -99,6 +99,36 @@ transition: color 0.2s;
 color: #3284b1;
 }
 
+/* 탭 영역 */
+.mr-tabs {
+display: flex;
+gap: 8px;
+margin-bottom: 24px;
+border-bottom: 2px solid #e5e7eb;
+}
+
+.mr-tab-btn {
+padding: 12px 24px;
+background: transparent;
+border: none;
+border-bottom: 3px solid transparent;
+margin-bottom: -2px;
+font-size: 1rem;
+font-weight: 600;
+color: #6b7280;
+cursor: pointer;
+transition: all 0.2s;
+}
+
+.mr-tab-btn:hover {
+color: #3284b1;
+}
+
+.mr-tab-btn.active {
+color: #3284b1;
+border-bottom-color: #3284b1;
+}
+
 /* 리스트 섹션 */
 .mr-list-section {
 background: #ffffff;
@@ -160,6 +190,94 @@ margin: 0;
 display: flex;
 flex-direction: column;
 gap: 16px;
+}
+
+/* 리뷰 카드 스타일 */
+.rv-card {
+background: #ffffff;
+border: 1px solid #e5e7eb;
+border-radius: 8px;
+padding: 20px;
+margin-bottom: 16px;
+}
+
+.mr-review-card {
+margin-bottom: 0;
+}
+
+.rv-card-top {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 12px;
+}
+
+.rv-card-score {
+display: flex;
+align-items: center;
+gap: 8px;
+color: #f59e0b;
+font-size: 1.1rem;
+}
+
+.rv-card-score-text {
+color: #1a1a1a;
+font-weight: 600;
+font-size: 0.95rem;
+}
+
+.rv-card-writer {
+font-size: 0.85rem;
+color: #6b7280;
+}
+
+.rv-card-hname {
+font-size: 1rem;
+font-weight: 600;
+color: #3284b1;
+margin-bottom: 12px;
+}
+
+.rv-card-content {
+font-size: 0.95rem;
+color: #4b5563;
+line-height: 1.6;
+margin-bottom: 16px;
+}
+
+.rv-card-images {
+display: flex;
+gap: 12px;
+margin-bottom: 16px;
+flex-wrap: wrap;
+}
+
+.rv-card-image-item {
+width: 120px;
+height: 120px;
+border-radius: 8px;
+overflow: hidden;
+}
+
+.rv-card-image-item img {
+width: 100%;
+height: 100%;
+object-fit: cover;
+}
+
+.rv-card-bottom {
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding-top: 12px;
+border-top: 1px solid #f3f4f6;
+gap: 16px;
+}
+
+.rv-card-date {
+font-size: 0.85rem;
+color: #6b7280;
+flex: 1;
 }
 
 /* 커뮤니티 카드 스타일 (MyReview에서 사용) */

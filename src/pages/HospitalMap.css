@@ -1310,25 +1310,62 @@
   }
 }
 
+/* 액션 버튼 컨테이너 */
+.map-action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 12px;
+}
+
 /* 카카오맵 길찾기 버튼 */
 .kakao-map-navigate-btn {
   width: 100%;
-  margin-top: 12px;
-  padding: 12px 16px;
-  background: linear-gradient(135deg, #fee500 0%, #ffeb3b 100%);
+  padding: 14px 20px;
+  background: #fee500;
   color: #3c1e1e;
   border: none;
-  border-radius: 8px;
-  font-size: 15px;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.kakao-map-navigate-btn:hover {
+  background: #ffeb3b;
+  transform: translateY(-1px);
+}
+
+.kakao-map-navigate-btn:active {
+  transform: translateY(0);
+}
+
+/* 병원 리뷰 보기 버튼 */
+.hospital-review-btn {
+  width: 100%;
+  padding: 10px 16px;
+  background: white;
+  color: #3284b1;
+  border: 2px solid #3284b1;
+  border-radius: 6px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 8px rgba(254, 229, 0, 0.3);
+  transition: all 0.2s;
 }
 
-.kakao-map-navigate-btn:active {
-  transform: translateY(1px);
-  box-shadow: 0 1px 4px rgba(254, 229, 0, 0.3);
+.hospital-review-btn:hover {
+  background: #3284b1;
+  color: white;
+}
+
+.hospital-review-btn:active {
+  transform: scale(0.98);
 }

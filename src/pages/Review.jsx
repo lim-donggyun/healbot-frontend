@@ -1,6 +1,6 @@
 // src/components/review/Review.jsx
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import "./Review.css";
 import ReviewWriteModal from "../components/sections/Review/ReviewWriteModal";
 import OCR from "./OCR";
@@ -12,6 +12,7 @@ const PAGE_SIZE = 5; // 한 페이지에 보여줄 개수
 
 const Review = () => {
 const navigate = useNavigate();
+const [searchParams] = useSearchParams();
 
 // ✅ 전체 리뷰용
 const [globalReviews, setGlobalReviews] = useState([]);
@@ -57,6 +58,22 @@ useEffect(() => {
     };
     verifySession();
 }, []);
+
+// URL 파라미터로 병원 정보가 전달된 경우 자동으로 선택
+useEffect(() => {
+    const hospitalId = searchParams.get('hospitalId');
+    const hospitalName = searchParams.get('hospitalName');
+
+    if (hospitalId && hospitalName) {
+        setSelectedHospital({
+            id: hospitalId,
+            name: decodeURIComponent(hospitalName)
+        });
+        setHospitalKeyword(decodeURIComponent(hospitalName));
+        setPage(1);
+        loadHospitalReviews(hospitalId);
+    }
+}, [searchParams]);
 
 const renderStars = (score) => {
     const s = Math.round(score || 0);
