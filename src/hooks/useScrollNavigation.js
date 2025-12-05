@@ -59,6 +59,16 @@ export const useScrollNavigation = () => {
       }
     };
 
+    // 키보드 스크롤 완전 차단
+    const handleKeyDown = (e) => {
+      // 스크롤 관련 키보드 입력 차단
+      const scrollKeys = ['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' '];
+      if (scrollKeys.includes(e.key)) {
+        e.preventDefault();
+        return false;
+      }
+    };
+
     // 맨 위로 버튼 클릭
     const handleScrollToTop = () => {
       scrollToSectionSmooth(0);
@@ -112,10 +122,12 @@ export const useScrollNavigation = () => {
 
     window.addEventListener("wheel", handleWheel, { passive: false });
     window.addEventListener("scroll", handleScroll);
+    window.addEventListener("keydown", handleKeyDown, { passive: false });
 
     return () => {
       window.removeEventListener("wheel", handleWheel);
       window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("keydown", handleKeyDown);
       if (scrollToTopBtn)
         scrollToTopBtn.removeEventListener("click", handleScrollToTop);
     };
