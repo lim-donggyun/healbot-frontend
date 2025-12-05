@@ -59,54 +59,6 @@ export const useScrollNavigation = () => {
       }
     };
 
-    // 키보드로 섹션 이동
-    const handleKeydown = (e) => {
-      // 모달이 열려있으면 키보드 네비게이션 막기
-      if (document.body.classList.contains('modal-open')) {
-        return;
-      }
-
-      // input, textarea, select에 포커스가 있으면 키보드 네비게이션 비활성화
-      const activeElement = document.activeElement;
-      if (
-        activeElement &&
-        (activeElement.tagName === "INPUT" ||
-          activeElement.tagName === "TEXTAREA" ||
-          activeElement.tagName === "SELECT" ||
-          activeElement.isContentEditable)
-      ) {
-        return;
-      }
-
-      const keys = [32, 33, 34, 35, 36, 37, 38, 39, 40];
-      if (!keys.includes(e.keyCode)) return;
-
-      e.preventDefault();
-
-      // ↓ / PageDown
-      if (
-        (e.keyCode === 40 || e.keyCode === 34) &&
-        currentSection < allScrollSections.length - 1
-      ) {
-        scrollToSectionSmooth(currentSection + 1);
-      }
-      // ↑ / PageUp
-      else if (
-        (e.keyCode === 38 || e.keyCode === 33) &&
-        currentSection > 0
-      ) {
-        scrollToSectionSmooth(currentSection - 1);
-      }
-      // Home
-      else if (e.keyCode === 36) {
-        scrollToSectionSmooth(0);
-      }
-      // End
-      else if (e.keyCode === 35) {
-        scrollToSectionSmooth(allScrollSections.length - 1);
-      }
-    };
-
     // 맨 위로 버튼 클릭
     const handleScrollToTop = () => {
       scrollToSectionSmooth(0);
@@ -159,12 +111,10 @@ export const useScrollNavigation = () => {
     };
 
     window.addEventListener("wheel", handleWheel, { passive: false });
-    window.addEventListener("keydown", handleKeydown, false);
     window.addEventListener("scroll", handleScroll);
 
     return () => {
       window.removeEventListener("wheel", handleWheel);
-      window.removeEventListener("keydown", handleKeydown);
       window.removeEventListener("scroll", handleScroll);
       if (scrollToTopBtn)
         scrollToTopBtn.removeEventListener("click", handleScrollToTop);
