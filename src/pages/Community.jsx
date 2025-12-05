@@ -32,6 +32,12 @@ function Community() {
   // 🔹 로그인한 회원 아이디 (내 글인지 판별용)
   const [loginMemberId, setLoginMemberId] = useState(null);
 
+  useEffect(() => {
+    // 드래그 방지
+    document.body.style.setProperty('user-select', 'none', 'important');
+    document.body.style.setProperty('-webkit-user-select', 'none', 'important');
+  }, []);
+
   // ================= 세션 확인 (로그인한 회원 아이디 가져오기) =================
   useEffect(() => {
     const fetchSession = async () => {
@@ -269,7 +275,9 @@ function Community() {
 
                       <div className="community-card-footer">
                         <div className="community-meta-left">
-                          <span className="community-author">{post.userName}</span>
+                          <span className="community-author">
+                            {post.userName ? `${post.memberId} (${post.userName})` : post.memberId}
+                          </span>
                           <span className="community-dot">·</span>
                           <span className="community-date">
                             {(post.createdAt || "").substring(0, 10).replace(/-/g, ".")}
@@ -277,6 +285,8 @@ function Community() {
                         </div>
                         <div className="community-meta-right">
                           <span className="community-views">조회 {post.views}</span>
+                          <span className="community-dot">·</span>
+                          <span className="community-comments">댓글 {post.commentCount || 0}</span>
                         </div>
                       </div>
                     </li>

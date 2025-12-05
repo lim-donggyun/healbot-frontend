@@ -1,10 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Header from "../../components/layout/Header";
 import Footer from "../../components/layout/Footer";
 import ScrollToTop from "../../components/common/ScrollToTop";
 import "./About.css";
 
 function About() {
+  useEffect(() => {
+    // 드래그 방지
+    document.body.style.setProperty('user-select', 'none', 'important');
+    document.body.style.setProperty('-webkit-user-select', 'none', 'important');
+  }, []);
+
   return (
     <div className="about-page-wrapper">
       <Header />

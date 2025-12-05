@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
@@ -8,6 +8,12 @@ import "./FindAccount.css";
 
 const FindAccount = () => {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // 드래그 방지
+    document.body.style.setProperty('user-select', 'none', 'important');
+    document.body.style.setProperty('-webkit-user-select', 'none', 'important');
+  }, []);
 
   // 아이디 찾기 상태
   const [findIdName, setFindIdName] = useState("");

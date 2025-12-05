@@ -27,6 +27,12 @@ const Login = () => {
     const NAVER_CLIENT_ID = import.meta.env.VITE_NAVER_CLIENT_ID;
     const REDIRECT_URI = `${import.meta.env.VITE_FRONTEND_URL}${import.meta.env.VITE_OAUTH_REDIRECT_PATH}`;
 
+    useEffect(() => {
+        // 드래그 방지
+        document.body.style.setProperty('user-select', 'none', 'important');
+        document.body.style.setProperty('-webkit-user-select', 'none', 'important');
+    }, []);
+
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     };

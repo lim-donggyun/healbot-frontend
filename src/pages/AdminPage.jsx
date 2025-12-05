@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import Header from '../components/layout/Header';
 import Dashboard from '../components/sections/AdminPage/Dashboard';
@@ -14,6 +14,12 @@ import './AdminPage.css';
 
 const AdminPage = () => {
   const location = useLocation();
+
+  useEffect(() => {
+    // 드래그 방지
+    document.body.style.setProperty('user-select', 'none', 'important');
+    document.body.style.setProperty('-webkit-user-select', 'none', 'important');
+  }, []);
 
   // 현재 경로에 따라 컴포넌트 결정
   const renderContent = () => {

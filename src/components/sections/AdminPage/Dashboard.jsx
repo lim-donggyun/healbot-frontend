@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { getAllMembers } from '../../../utils/adminApi';
@@ -10,8 +9,6 @@ import '../../../pages/MainPage.css';
 import './Dashboard.css';
 
 const Dashboard = () => {
-  const navigate = useNavigate();
-
   // 통계 데이터 상태
   const [stats, setStats] = useState({
     totalMembers: 0,
@@ -29,6 +26,11 @@ const Dashboard = () => {
 
   // 컴포넌트 마운트 시 통계 데이터 가져오기
   useEffect(() => {
+
+    // 드래그 방지
+    document.body.style.setProperty('user-select', 'none', 'important');
+    document.body.style.setProperty('-webkit-user-select', 'none', 'important');
+    
     const fetchStats = async () => {
       try {
         setLoading(true);
@@ -118,7 +120,12 @@ const Dashboard = () => {
           <div style={{ marginTop: '24px', width: '100%', height: '300px', minHeight: '300px' }}>
             <ResponsiveContainer width="100%" height={300} minHeight={300}>
               <LineChart data={loginTrendData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                <CartesianGrid
+                  strokeDasharray="5 5"
+                  stroke="#e0e0e0"
+                  horizontal={true}
+                  vertical={false}
+                />
                 <XAxis
                   dataKey="date"
                   stroke="#888"
@@ -140,7 +147,7 @@ const Dashboard = () => {
                   wrapperStyle={{ fontSize: '14px' }}
                 />
                 <Line
-                  type="monotone"
+                  type="natural"
                   dataKey="count"
                   stroke="#3284b1"
                   strokeWidth={3}
@@ -187,10 +194,10 @@ const Dashboard = () => {
                     </div>
                   </div>
                   <div className="top-notice-views">
-                    <div className="top-notice-views-icon">👁️</div>
                     <div className="top-notice-views-count">
                       {(notice.viewCount || 0).toLocaleString()}
                     </div>
+                    회
                   </div>
                 </div>
               ))

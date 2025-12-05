@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { getAllMembers, updateMember, deleteMember } from "../../../utils/adminApi";
 import Sidebar from "./Sidebar";
 import "../../../pages/MainPage.css";
 import "./MemberManagement.css";
 
 const MemberManagement = () => {
-  const navigate = useNavigate();
   const [members, setMembers] = useState([]);
   const [filteredMembers, setFilteredMembers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -29,6 +27,10 @@ const MemberManagement = () => {
 
   // 컴포넌트 마운트 시 회원 데이터 로드 및 스크립트 로드
   useEffect(() => {
+    // 드래그 방지
+    document.body.style.setProperty('user-select', 'none', 'important');
+    document.body.style.setProperty('-webkit-user-select', 'none', 'important');
+
     const fetchMembers = async () => {
       try {
         setLoading(true);
@@ -570,7 +572,7 @@ const MemberManagement = () => {
                 <div className="form-two-column">
                   <div className="form-column">
                     <div className="form-row">
-                      <label>회원 ID *</label>
+                      <label>회원 ID</label>
                       <input type="text" value={selectedMember.MEMBER_ID} disabled />
                     </div>
 
@@ -607,29 +609,31 @@ const MemberManagement = () => {
 
                   <div className="form-column">
                     <div className="form-row">
-                      <label>이름 *</label>
+                      <label>이름</label>
                       <input
                         type="text"
                         name="userName"
                         value={editFormData.userName}
                         onChange={handleEditInputChange}
                         required
+                        disabled
                       />
                     </div>
 
                     <div className="form-row">
-                      <label>이메일 *</label>
+                      <label >이메일</label>
                       <input
                         type="email"
                         name="email"
                         value={editFormData.email}
                         onChange={handleEditInputChange}
                         required
+                        disabled
                       />
                     </div>
 
                     <div className="form-row">
-                      <label>연락처 *</label>
+                      <label>연락처</label>
                       <input
                         type="tel"
                         name="phone"
@@ -655,7 +659,7 @@ const MemberManagement = () => {
                     </div>
 
                     <div className="form-row">
-                      <label>주소 *</label>
+                      <label>주소</label>
                       <div className="address-input-group">
                         <input
                           type="text"
@@ -663,10 +667,14 @@ const MemberManagement = () => {
                           value={editFormData.address}
                           onChange={handleEditInputChange}
                           required
-                          readOnly
                           placeholder="클릭하여 주소 검색"
                           onClick={handleAddressSearch}
-                          style={{ cursor: "pointer" }}
+                          readOnly
+                          style={{
+                            cursor: "pointer",
+                            backgroundColor: '#f9fafb',
+                            color: '#6b7280'
+                          }}
                         />
                       </div>
                     </div>

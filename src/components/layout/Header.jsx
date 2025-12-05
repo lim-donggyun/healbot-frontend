@@ -22,6 +22,12 @@ function Header() {
   ];
   const isAlwaysScrolled = alwaysScrolledPages.includes(location.pathname) || location.pathname.startsWith('/admin') || location.pathname.startsWith('/mypage') || location.pathname.startsWith('/review');
 
+  // 드래그 방지
+  useEffect(() => {
+    document.body.style.setProperty('user-select', 'none', 'important');
+    document.body.style.setProperty('-webkit-user-select', 'none', 'important');
+  }, []);
+
   // 세션 확인
   useEffect(() => {
     const verifySession = async () => {

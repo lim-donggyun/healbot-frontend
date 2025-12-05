@@ -52,6 +52,10 @@ const HospitalManagement = () => {
   useEffect(() => {
     fetchHospitals();
 
+    // 드래그 방지
+    document.body.style.setProperty('user-select', 'none', 'important');
+    document.body.style.setProperty('-webkit-user-select', 'none', 'important');
+
     // Load Daum Postcode script
     const postcodeScriptId = "daum-postcode-script";
     if (!document.getElementById(postcodeScriptId)) {
@@ -608,7 +612,7 @@ const HospitalManagement = () => {
                   <div className="form-column">
                     {/* 왼쪽 열 (Left Column) - 7개 */}
                     <div className="form-row">
-                      <label>병원 ID *</label>
+                      <label>병원 ID</label>
                       <input
                         type="text"
                         name="hospitalId"
@@ -619,7 +623,7 @@ const HospitalManagement = () => {
                       />
                     </div>
                     <div className="form-row">
-                      <label>병원명 *</label>
+                      <label>병원명</label>
                       <input
                         type="text"
                         name="hospitalName"
@@ -629,7 +633,7 @@ const HospitalManagement = () => {
                       />
                     </div>
                     <div className="form-row">
-                      <label>주소 *</label>
+                      <label>주소</label>
                       <div className="address-input-group">
                         <input
                           type="text"
@@ -640,6 +644,11 @@ const HospitalManagement = () => {
                           readOnly
                           placeholder="주소"
                           onClick={handleAddressSearch}
+                          style={{
+                            cursor: 'pointer',
+                            backgroundColor: '#f9fafb',
+                            color: '#6b7280'
+                          }}
                         />
                       </div>
                     </div>
@@ -677,7 +686,7 @@ const HospitalManagement = () => {
                       </div>
                     </div>
                     <div className="form-row">
-                      <label>간의 약도</label>
+                      <label>간이 약도</label>
                       <input
                         type="text"
                         name="simpleMap"
@@ -720,7 +729,11 @@ const HospitalManagement = () => {
                         value={formData.departments}
                         readOnly
                         placeholder="클릭하여 진료과 선택"
-                        style={{ cursor: 'pointer' }}
+                        style={{
+                          cursor: 'pointer',
+                          backgroundColor: '#f9fafb',
+                          color: '#6b7280'
+                        }}
                       />
                     </div>
                     <div className="form-row" onClick={() => setIsOperatingHoursModalOpen(true)} style={{ cursor: 'pointer' }}>

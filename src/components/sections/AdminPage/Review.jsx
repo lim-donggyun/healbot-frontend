@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import './Review.css';
 import {
@@ -9,7 +8,6 @@ import {
 } from '../../../utils/reviewApi';
 
 const Review = () => {
-  const navigate = useNavigate();
   const [reviews, setReviews] = useState([]);
   const [filteredReviews, setFilteredReviews] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -33,6 +31,10 @@ const Review = () => {
 
   // 컴포넌트 마운트 시 리뷰 데이터 로드
   useEffect(() => {
+    // 드래그 방지
+    document.body.style.setProperty('user-select', 'none', 'important');
+    document.body.style.setProperty('-webkit-user-select', 'none', 'important');
+
     fetchReviews();
   }, []);
 
@@ -92,7 +94,10 @@ const Review = () => {
     const y = date.getFullYear();
     const m = String(date.getMonth() + 1).padStart(2, '0');
     const d = String(date.getDate()).padStart(2, '0');
-    return `${y}.${m}.${d}`;
+    const h = String(date.getHours()).padStart(2, '0');
+    const min = String(date.getMinutes()).padStart(2, '0');
+    const s = String(date.getSeconds()).padStart(2, '0');
+    return `${y}.${m}.${d} ${h}:${min}:${s}`;
   };
 
   // 상세보기 모달 열기

@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import "../../../pages/MainPage.css";
 import "./Report.css";
 
 const Report = () => {
-  const navigate = useNavigate();
   const [reports, setReports] = useState([]);
   const [filteredReports, setFilteredReports] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -116,6 +114,10 @@ const Report = () => {
 
   // 컴포넌트 마운트 시 신고 데이터 로드
   useEffect(() => {
+    // 드래그 방지
+    document.body.style.setProperty('user-select', 'none', 'important');
+    document.body.style.setProperty('-webkit-user-select', 'none', 'important');
+
     const fetchReports = async () => {
       try {
         setLoading(true);
@@ -598,8 +600,12 @@ const Report = () => {
                         <div className="detail-value">{selectedReport.postId}</div>
                       </div>
                       <div className="detail-item">
-                        <div className="detail-label">작성자</div>
+                        <div className="detail-label">작성자 ID</div>
                         <div className="detail-value">{selectedReport.targetAuthorId}</div>
+                      </div>
+                      <div className="detail-item">
+                        <div className="detail-label">작성자 이름</div>
+                        <div className="detail-value">{selectedReport.targetAuthorName || "-"}</div>
                       </div>
                       <div className="detail-item full-width">
                         <div className="detail-label">게시글 제목</div>
@@ -614,8 +620,12 @@ const Report = () => {
                         <div className="detail-value">{selectedReport.commentId}</div>
                       </div>
                       <div className="detail-item">
-                        <div className="detail-label">작성자</div>
+                        <div className="detail-label">작성자 ID</div>
                         <div className="detail-value">{selectedReport.targetAuthorId}</div>
+                      </div>
+                      <div className="detail-item">
+                        <div className="detail-label">작성자 이름</div>
+                        <div className="detail-value">{selectedReport.targetAuthorName || "-"}</div>
                       </div>
                       <div className="detail-item full-width">
                         <div className="detail-label">댓글 내용</div>

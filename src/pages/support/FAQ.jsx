@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Header from "../../components/layout/Header";
 import Footer from "../../components/layout/Footer";
 import ScrollToTop from "../../components/common/ScrollToTop";
@@ -7,6 +7,12 @@ import "./FAQ.css";
 function FAQ() {
   const [activeIndex, setActiveIndex] = useState(null);
   const [activeCategory, setActiveCategory] = useState("all");
+
+  useEffect(() => {
+    // 드래그 방지
+    document.body.style.setProperty('user-select', 'none', 'important');
+    document.body.style.setProperty('-webkit-user-select', 'none', 'important');
+  }, []);
 
   const faqData = [
     {

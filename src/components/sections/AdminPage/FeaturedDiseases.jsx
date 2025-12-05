@@ -47,6 +47,10 @@ const FeaturedDiseases = () => {
   const itemsPerPage = 5;
 
   useEffect(() => {
+    // 드래그 방지
+    document.body.style.setProperty('user-select', 'none', 'important');
+    document.body.style.setProperty('-webkit-user-select', 'none', 'important');
+
     fetchData();
   }, []);
 
@@ -779,7 +783,7 @@ const FeaturedDiseases = () => {
                   {/* 좌측: 질환명, 진료과, 설명 */}
                   <div className="form-column">
                     <div className="form-row">
-                      <label>질환명 *</label>
+                      <label>질환명</label>
                       <input
                         type="text"
                         name="질환명"
@@ -790,7 +794,7 @@ const FeaturedDiseases = () => {
                       />
                     </div>
                     <div className="form-row">
-                      <label>진료과 *</label>
+                      <label>진료과</label>
                       <input
                         type="text"
                         name="진료과"
@@ -799,7 +803,11 @@ const FeaturedDiseases = () => {
                         placeholder="진료과 선택"
                         readOnly
                         required
-                        style={{ cursor: 'pointer' }}
+                        style={{
+                          cursor: 'pointer',
+                          backgroundColor: '#f9fafb',
+                          color: '#6b7280'
+                        }}
                       />
                     </div>
                     <div className="form-row">
@@ -825,7 +833,11 @@ const FeaturedDiseases = () => {
                         onClick={() => setIsSymptomsModalOpen(true)}
                         placeholder="증상 선택"
                         readOnly
-                        style={{ cursor: 'pointer' }}
+                        style={{
+                          cursor: 'pointer',
+                          backgroundColor: '#f9fafb',
+                          color: '#6b7280'
+                        }}
                       />
                     </div>
                     <div className="form-row">
@@ -905,7 +917,11 @@ const FeaturedDiseases = () => {
                         placeholder="진료과 선택"
                         readOnly
                         required
-                        style={{ cursor: 'pointer' }}
+                        style={{
+                          cursor: 'pointer',
+                          backgroundColor: '#f9fafb',
+                          color: '#6b7280'
+                        }}
                       />
                     </div>
                     <div className="form-row">
@@ -931,7 +947,11 @@ const FeaturedDiseases = () => {
                         onClick={() => setIsSymptomsModalOpen(true)}
                         placeholder="증상 선택"
                         readOnly
-                        style={{ cursor: 'pointer' }}
+                        style={{
+                          cursor: 'pointer',
+                          backgroundColor: '#f9fafb',
+                          color: '#6b7280'
+                        }}
                       />
                     </div>
                     <div className="form-row">

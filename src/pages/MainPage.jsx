@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./MainPage.css";
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
@@ -12,6 +12,12 @@ import DiseaseResultModal from "../components/common/DiseaseResultModal";
 
 function MainPage() {
   useScrollNavigation();
+
+  useEffect(() => {
+    // 드래그 방지
+    document.body.style.setProperty('user-select', 'none', 'important');
+    document.body.style.setProperty('-webkit-user-select', 'none', 'important');
+  }, []);
 
   const [selectedHealthInfo, setSelectedHealthInfo] = useState(null);
   const [isHealthModalOpen, setIsHealthModalOpen] = useState(false);

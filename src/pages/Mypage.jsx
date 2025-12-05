@@ -17,6 +17,12 @@ const MyPage = () => {
 
   const navigate = useNavigate();
 
+  useEffect(() => {
+    // 드래그 방지
+    document.body.style.setProperty('user-select', 'none', 'important');
+    document.body.style.setProperty('-webkit-user-select', 'none', 'important');
+  }, []);
+
   // 🔹 프로필 조회 + 내가 쓴 글 개수 + 제재 내역 개수 조회 (병렬 처리)
   useEffect(() => {
     const fetchProfileAndCounts = async () => {

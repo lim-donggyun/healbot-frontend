@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
@@ -11,6 +11,12 @@ function SearchResultPage() {
   const location = useLocation();
   const navigate = useNavigate();
   const searchData = location.state?.searchData;
+
+  useEffect(() => {
+    // 드래그 방지
+    document.body.style.setProperty('user-select', 'none', 'important');
+    document.body.style.setProperty('-webkit-user-select', 'none', 'important');
+  }, []);
 
   // 탭 상태
   const [activeTab, setActiveTab] = useState("integrated");

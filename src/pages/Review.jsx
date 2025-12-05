@@ -46,6 +46,12 @@ const [hospitalSearching, setHospitalSearching] = useState(false);
 // ✅ 페이징 상태
 const [page, setPage] = useState(1);
 
+useEffect(() => {
+    // 드래그 방지
+    document.body.style.setProperty('user-select', 'none', 'important');
+    document.body.style.setProperty('-webkit-user-select', 'none', 'important');
+}, []);
+
 // 로그인 여부 확인
 useEffect(() => {
     const verifySession = async () => {
@@ -85,6 +91,19 @@ const renderStars = (score) => {
         {"☆".repeat(empty)}
     </span>
     );
+};
+
+const formatDate = (dateString) => {
+    if (!dateString) return "";
+    // "2024-01-15T14:30:45" 형식을 "2024.01.15 14:30:45" 형식으로 변환
+    const date = new Date(dateString);
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    const h = String(date.getHours()).padStart(2, '0');
+    const min = String(date.getMinutes()).padStart(2, '0');
+    const s = String(date.getSeconds()).padStart(2, '0');
+    return `${y}.${m}.${d} ${h}:${min}:${s}`;
 };
 
 // ✅ 전체 리뷰 로딩
@@ -408,20 +427,22 @@ return (
             visibleList.map((r) => (
                 <div key={r.reviewId || r.id} className="rv-card">
                 <div className="rv-card-top">
-                <div className="rv-card-score">
-                    {renderStars(r.score)}
-                    <span className="rv-card-score-text">
-                    {r.score?.toFixed ? r.score.toFixed(1) : r.score}
-                    </span>
-                </div>
-                <span className="rv-card-writer">
+                  <div className="rv-card-name-and-score">
+                    {/* 전체 리스트에서는 병원 이름도 보여주기 */}
+                    {!selectedHospital && (
+                      <div className="rv-card-hname">{r.hospitalName}</div>
+                    )}
+                    <div className="rv-card-score">
+                      {renderStars(r.score)}
+                      <span className="rv-card-score-text">
+                        {r.score?.toFixed ? r.score.toFixed(1) : r.score}
+                      </span>
+                    </div>
+                  </div>
+                  <span className="rv-card-writer">
                     {r.writerName || r.userName || "익명"}
-                </span>
+                  </span>
                 </div>
-                {/* 전체 리스트에서는 병원 이름도 보여주기 */}
-                {!selectedHospital && (
-                    <div className="rv-card-hname">{r.hospitalName}</div>
-                )}
                 <p className="rv-card-content">{r.content}</p>
 
                 {/* 리뷰 이미지 */}
@@ -436,7 +457,7 @@ return (
                 )}
 
                 <div className="rv-card-bottom">
-                <span className="rv-card-date">{r.createdAt}</span>
+                <span className="rv-card-date">{formatDate(r.createdAt)}</span>
                 </div>
             </div>
             ))}

@@ -220,7 +220,7 @@ const Profile = () => {
               {/* 이름 */}
               <div className="mp-form-group mp-form-half">
                 <label className="mp-label" htmlFor="pf-name">
-                  이름 *
+                  이름
                 </label>
                 <input
                   id="pf-name"
@@ -235,7 +235,7 @@ const Profile = () => {
               {/* 이메일 */}
               <div className="mp-form-group mp-form-half">
                 <label className="mp-label" htmlFor="pf-email">
-                  이메일 *
+                  이메일
                 </label>
                 <input
                   id="pf-email"
@@ -250,7 +250,7 @@ const Profile = () => {
               {/* 전화번호 */}
               <div className="mp-form-group mp-form-full">
                 <label className="mp-label" htmlFor="pf-phone">
-                  전화번호 * <span className="mp-label-hint">(010-0000-0000)</span>
+                  전화번호<span className="mp-label-hint">(010-0000-0000)</span>
                 </label>
                 <input
                   id="pf-phone"
@@ -279,7 +279,7 @@ const Profile = () => {
               {/* 생년월일 */}
               <div className="mp-form-group mp-form-half">
                 <label className="mp-label" htmlFor="pf-birth">
-                  생년월일 *
+                  생년월일
                 </label>
                 <input
                   id="pf-birth"
@@ -292,7 +292,7 @@ const Profile = () => {
 
               {/* 성별 */}
               <div className="mp-form-group mp-form-half">
-                <label className="mp-label">성별 *</label>
+                <label className="mp-label">성별</label>
                 <div className="mp-gender-row">
                   <label className="mp-radio-label">
                     <input
@@ -301,6 +301,7 @@ const Profile = () => {
                       value="M"
                       checked={gender === "M"}
                       onChange={(e) => setGender(e.target.value)}
+                      disabled
                     />
                     <span>남자</span>
                   </label>
@@ -311,6 +312,7 @@ const Profile = () => {
                       value="F"
                       checked={gender === "F"}
                       onChange={(e) => setGender(e.target.value)}
+                      disabled
                     />
                     <span>여자</span>
                   </label>
@@ -320,7 +322,7 @@ const Profile = () => {
               {/* 주소 */}
               <div className="mp-form-group mp-form-half">
                 <label className="mp-label" htmlFor="pf-address">
-                  주소 *
+                  주소
                 </label>
                 <input
                   id="pf-address"
@@ -330,6 +332,7 @@ const Profile = () => {
                   onChange={(e) => setAddress(e.target.value)}
                   placeholder="클릭하여 주소 검색"
                   onClick={handleAddressSearch}
+                  required
                   readOnly
                   style={{ cursor: "pointer" }}
                 />

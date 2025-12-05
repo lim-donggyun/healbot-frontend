@@ -22,6 +22,12 @@ function Notice() {
   const [isAdmin, setIsAdmin] = useState(false);
   const itemsPerPage = 10;
 
+  useEffect(() => {
+    // 드래그 방지
+    document.body.style.setProperty('user-select', 'none', 'important');
+    document.body.style.setProperty('-webkit-user-select', 'none', 'important');
+  }, []);
+
   // 컴포넌트 마운트 시 로그인 체크 및 공지사항 데이터 가져오기
   useEffect(() => {
     const checkLoginAndFetchNotices = async () => {

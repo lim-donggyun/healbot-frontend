@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import "../../../pages/MainPage.css";
 import "./Community.css";
 
 const Community = () => {
-  const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -71,6 +69,10 @@ const Community = () => {
 
   // 컴포넌트 마운트 시 게시글 데이터 로드
   useEffect(() => {
+    // 드래그 방지
+    document.body.style.setProperty('user-select', 'none', 'important');
+    document.body.style.setProperty('-webkit-user-select', 'none', 'important');
+
     const fetchPosts = async () => {
       try {
         setLoading(true);

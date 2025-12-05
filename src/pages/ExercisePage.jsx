@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./ExercisePage.css";
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
@@ -119,6 +119,12 @@ const exerciseList = [
 ];
 
 function ExercisePage() {
+  useEffect(() => {
+    // 드래그 방지
+    document.body.style.setProperty('user-select', 'none', 'important');
+    document.body.style.setProperty('-webkit-user-select', 'none', 'important');
+  }, []);
+
   return (
     <div className="exercise-page-wrapper">
       <Header />

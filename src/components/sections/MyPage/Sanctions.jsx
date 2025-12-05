@@ -29,12 +29,8 @@ const getReasonLabel = (reason) => {
 
 const getStatusBadge = (status) => {
   switch (status) {
-    case "COMPLETED":
-      return { text: "조치 완료", className: "status-badge done" };
-    case "WARNING":
-      return { text: "경고", className: "status-badge warning" };
     case "PENDING":
-      return { text: "검토중..", className: "status-badge pending" };
+      return { text: "대기중", className: "status-badge pending" };
     case "RESOLVED":
       return { text: "처리완료", className: "status-badge resolved" };
     default:
@@ -82,7 +78,7 @@ function Sanctions() {
             reasonType: r.reasonType,
             status: r.status,
             createdAt: r.createdAt,
-            action: r.penaltyReason, // PENALTY_REASON → 조치 내용
+            action: r.reply, // PENALTY_REASON → 조치 내용
           }))
         );
 
@@ -93,8 +89,8 @@ function Sanctions() {
             targetSummary: r.targetSummary,
             reasonType: r.reasonType,
             createdAt: r.createdAt,
-            processedAt: r.createdAt, // 별도 처리일 컬럼 없으면 일단 신고일과 동일
-            result: r.penaltyReason || r.status, // 결과 표시
+            status: r.status, // 상태값 (PENDING, RESOLVED)
+            reply: r.reply, // 처리 결과 내용
           }))
         );
       } catch (e) {
@@ -152,7 +148,7 @@ function Sanctions() {
                       <thead>
                         <tr>
                           <th style={{ width: "12%" }}>구분</th>
-                          <th style={{ width: "28%" }}>대상 요약</th>
+                          <th style={{ width: "28%" }}>제목 / 내용</th>
                           <th style={{ width: "18%" }}>사유</th>
                           <th style={{ width: "14%" }}>상태</th>
                           <th style={{ width: "14%" }}>발생 일시</th>
@@ -173,7 +169,9 @@ function Sanctions() {
                                 <span className={badge.className}>{badge.text}</span>
                               </td>
                               <td>{s.createdAt || "-"}</td>
-                              <td>{s.action || "-"}</td>
+                              <td className="ellipsis-cell" title={s.action || "-"}>
+                                {s.action || "-"}
+                              </td>
                             </tr>
                           );
                         })}
@@ -193,17 +191,17 @@ function Sanctions() {
                     <table className="sanction-table">
                       <thead>
                         <tr>
-                          <th style={{ width: "12%" }}>구분</th>
-                          <th style={{ width: "30%" }}>신고 대상 요약</th>
-                          <th style={{ width: "18%" }}>신고 사유</th>
-                          <th style={{ width: "16%" }}>처리 결과</th>
+                          <th style={{ width: "10%" }}>구분</th>
+                          <th style={{ width: "25%" }}>신고 대상 요약</th>
+                          <th style={{ width: "15%" }}>신고 사유</th>
+                          <th style={{ width: "12%" }}>처리 상태</th>
                           <th style={{ width: "12%" }}>신고일</th>
-                          <th style={{ width: "12%" }}>처리일</th>
+                          <th style={{ width: "26%" }}>처리 결과</th>
                         </tr>
                       </thead>
                       <tbody>
                         {reportedList.map((r) => {
-                          const badge = getStatusBadge(r.result);
+                          const badge = getStatusBadge(r.status);
                           return (
                             <tr key={r.reportId}>
                               <td>
@@ -215,7 +213,9 @@ function Sanctions() {
                                 <span className={badge.className}>{badge.text}</span>
                               </td>
                               <td>{r.createdAt || "-"}</td>
-                              <td>{r.processedAt || "-"}</td>
+                              <td className="ellipsis-cell" title={r.reply || "-"}>
+                                {r.reply || "-"}
+                              </td>
                             </tr>
                           );
                         })}

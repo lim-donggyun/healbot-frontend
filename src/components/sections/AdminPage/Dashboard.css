@@ -688,10 +688,6 @@ tbody tr:hover {
   flex-shrink: 0;
 }
 
-.top-notice-views-icon {
-  font-size: 16px;
-}
-
 .top-notice-views-count {
   font-size: 14px;
   font-weight: 700;

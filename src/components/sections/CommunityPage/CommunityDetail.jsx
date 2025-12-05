@@ -21,6 +21,14 @@ const getCategoryLabel = (category) => {
   }
 };
 
+const formatDate = (dateString) => {
+  if (!dateString) return "";
+  // "2024-01-15T14:30:45" 형식을 "2024.01.15 14:30" 형식으로 변환
+  const date = dateString.split("T")[0].replace(/-/g, ".");
+  const time = dateString.split("T")[1]?.substring(0, 5) || "";
+  return time ? `${date} ${time}` : date;
+};
+
 function CommunityDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -44,6 +52,19 @@ function CommunityDetail() {
 
   // React StrictMode 방지용
   const fetchedPostRef = useRef(false);
+
+  // ===== 드래그 활성화 =====
+  useEffect(() => {
+    // CommunityDetail 페이지에서는 드래그 가능하도록 설정
+    document.body.style.setProperty('user-select', 'auto', 'important');
+    document.body.style.setProperty('-webkit-user-select', 'auto', 'important');
+
+    return () => {
+      // 페이지 벗어날 때 다시 드래그 방지로 복원
+      document.body.style.setProperty('user-select', 'none', 'important');
+      document.body.style.setProperty('-webkit-user-select', 'none', 'important');
+    };
+  }, []);
 
   // ===== 게시글 상세 조회 =====
   useEffect(() => {
@@ -187,13 +208,16 @@ function CommunityDetail() {
 
       if (res.status === 401) {
         alert("로그인이 필요한 기능입니다.");
+        setIsReportOpen(false);
         return;
       }
 
       const data = await res.json().catch(() => ({}));
 
       if (!res.ok || data.success === false) {
-        throw new Error(data.message || "신고 처리에 실패했습니다.");
+        alert(data.message || "신고 처리에 실패했습니다.");
+        setIsReportOpen(false);
+        return;
       }
 
       alert("신고가 접수되었습니다. 감사합니다.");
@@ -201,6 +225,7 @@ function CommunityDetail() {
     } catch (e) {
       console.error("신고 오류:", e);
       alert(e.message || "신고 중 오류가 발생했습니다.");
+      setIsReportOpen(false);
     }
   };
 
@@ -258,9 +283,11 @@ function CommunityDetail() {
               <div className="cd-meta-top">
                 <span className={`cd-badge cd-badge-${post.category}`}>{getCategoryLabel(post.category)}</span>
                 <span className="cd-meta-dot">·</span>
-                <span className="cd-meta-author">{post.memberId}</span>
+                <span className="cd-meta-author">
+                  {post.userName ? `${post.memberId} (${post.userName})` : post.memberId}
+                </span>
                 <span className="cd-meta-dot">·</span>
-                <span className="cd-meta-date">{(post.createdAt || "").replace(/-/g, ".")}</span>
+                <span className="cd-meta-date">{formatDate(post.createdAt)}</span>
                 <span className="cd-meta-dot">·</span>
                 <span className="cd-meta-views">조회 {post.views}</span>
               </div>
@@ -288,7 +315,6 @@ function CommunityDetail() {
                   placeholder="내용을 입력해 주세요."
                 />
                 <div className="cd-comment-form-bottom">
-                  <span className="cd-comment-hint">로그인한 계정으로 등록됩니다.</span>
                   <button
                     type="submit"
                     className="cd-btn cd-btn-primary"
@@ -314,9 +340,11 @@ function CommunityDetail() {
                 {comments.map((c) => (
                   <li key={c.commentId} className="cd-comment-item">
                     <div className="cd-comment-meta">
-                      <span className="cd-comment-author">{c.memberId}</span>
+                      <span className="cd-comment-author">
+                        {c.author ? `${c.memberId} (${c.author})` : c.memberId}
+                      </span>
                       <span className="cd-meta-dot">·</span>
-                      <span className="cd-comment-date">{(c.createdAt || "").replace(/-/g, ".")}</span>
+                      <span className="cd-comment-date">{formatDate(c.createdAt)}</span>
 
                       {/* 🔥 댓글 신고 버튼 */}
                       <button

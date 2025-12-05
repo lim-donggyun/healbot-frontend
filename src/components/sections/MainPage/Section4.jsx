@@ -11,6 +11,12 @@ function InfoSection({ onHealthInfoClick }) {
   const [featuredDiseases, setFeaturedDiseases] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // 드래그 방지
+  useEffect(() => {
+    document.body.style.setProperty('user-select', 'none', 'important');
+    document.body.style.setProperty('-webkit-user-select', 'none', 'important');
+  }, []);
+
   // Fetch notices and featured diseases
   useEffect(() => {
     const fetchData = async () => {

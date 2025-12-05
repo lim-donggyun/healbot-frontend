@@ -14,6 +14,12 @@ const Signup = () => {
   const location = useLocation();
 
   useEffect(() => {
+    // 드래그 방지
+    document.body.style.setProperty('user-select', 'none', 'important');
+    document.body.style.setProperty('-webkit-user-select', 'none', 'important');
+  }, []);
+
+  useEffect(() => {
     // URL 파라미터에서 socialId 추출
     const params = new URLSearchParams(location.search);
     const socialIdParam = params.get("socialId");

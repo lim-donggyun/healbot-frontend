@@ -391,9 +391,17 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 12px;
   margin-bottom: 12px;
   padding-bottom: 10px;
   border-bottom: 1px solid #f0f0f0;
+  flex-wrap: wrap;
+}
+
+.rv-card-name-and-score {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .rv-card-score {
@@ -414,6 +422,7 @@
 }
 
 .rv-card-writer {
+  margin: 0;
   font-size: 13px;
   color: #888;
   font-weight: 500;
@@ -421,10 +430,10 @@
 
 /* 병원 이름 (전체 리스트에서만) */
 .rv-card-hname {
-  font-size: 14px;
+  margin: 0;
+  font-size: 15px;
   font-weight: 600;
   color: #3284b1;
-  margin-bottom: 8px;
   padding: 6px 10px;
   background: #e8f4f8;
   border-radius: 4px;

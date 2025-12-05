@@ -62,6 +62,12 @@ function Section3() {
     setActiveModal(null);
   };
 
+  // 드래그 방지
+  useEffect(() => {
+    document.body.style.setProperty('user-select', 'none', 'important');
+    document.body.style.setProperty('-webkit-user-select', 'none', 'important');
+  }, []);
+
   // 모달 열릴 때 스크롤 막기
   useEffect(() => {
     if (activeModal) {

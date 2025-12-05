@@ -91,6 +91,12 @@ function HospitalMap() {
     "핵의학과",
   ];
 
+  useEffect(() => {
+    // 드래그 방지
+    document.body.style.setProperty('user-select', 'none', 'important');
+    document.body.style.setProperty('-webkit-user-select', 'none', 'important');
+  }, []);
+
   // URL 파라미터로부터 진료과 자동 선택 또는 응급실 필터 적용
   useEffect(() => {
     const deptParam = searchParams.get("dept");

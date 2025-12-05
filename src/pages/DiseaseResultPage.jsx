@@ -64,6 +64,12 @@ function DiseaseResultPage() {
   // 데이터가 없으면 빈 배열로 초기화 (초기 페이지 표시)
   const diseaseList = diseaseData?.data || [];
 
+  useEffect(() => {
+    // 드래그 방지
+    document.body.style.setProperty('user-select', 'none', 'important');
+    document.body.style.setProperty('-webkit-user-select', 'none', 'important');
+  }, []);
+
   // 초기 로딩 시 인기 질환 가져오기
   useEffect(() => {
     const fetchPopularDiseases = async () => {

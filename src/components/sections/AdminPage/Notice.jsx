@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { getAllNotices, createNotice, updateNotice, deleteNotice } from '../../../utils/noticeApi';
 import Sidebar from './Sidebar';
 import '../../../pages/MainPage.css';
 import './Notice.css';
 
 const Notice = () => {
-  const navigate = useNavigate();
   const [notices, setNotices] = useState([]);
   const [filteredNotices, setFilteredNotices] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -32,6 +30,10 @@ const Notice = () => {
 
   // 컴포넌트 마운트 시 공지사항 데이터 로드
   useEffect(() => {
+    // 드래그 방지
+    document.body.style.setProperty('user-select', 'none', 'important');
+    document.body.style.setProperty('-webkit-user-select', 'none', 'important');
+
     const fetchNotices = async () => {
       try {
         setLoading(true);

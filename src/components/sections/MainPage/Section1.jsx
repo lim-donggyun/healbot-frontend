@@ -13,6 +13,12 @@ function MainSlider() {
   };
 
   useEffect(() => {
+    // 드래그 방지
+    document.body.style.setProperty('user-select', 'none', 'important');
+    document.body.style.setProperty('-webkit-user-select', 'none', 'important');
+  }, []);
+
+  useEffect(() => {
     if (!isAutoPlay) return;
 
     const slideInterval = setInterval(() => {
