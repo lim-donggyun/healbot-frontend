@@ -51,14 +51,14 @@ function InfoSection({ onHealthInfoClick }) {
     try {
       const sessionData = await checkSession();
       if (!sessionData.loggedIn) {
-        alert("로그인되어 있지 않을 경우 로그인 해야 이용 가능합니다.");
+        alert("로그인 후 이용 가능합니다.");
         navigate("/login");
         return;
       }
       navigate("/notice");
     } catch (error) {
       console.error("세션 확인 실패:", error);
-      alert("로그인되어 있지 않을 경우 로그인 해야 이용 가능합니다.");
+      alert("로그인 후 이용 가능합니다.");
       navigate("/login");
     }
   };
@@ -67,14 +67,14 @@ function InfoSection({ onHealthInfoClick }) {
     try {
       const sessionData = await checkSession();
       if (!sessionData.loggedIn) {
-        alert("로그인되어 있지 않을 경우 로그인 해야 이용 가능합니다.");
+        alert("로그인 후 이용 가능합니다.");
         navigate("/login");
         return;
       }
       navigate("/notice", { state: { openModalForId: noticeId } });
     } catch (error) {
       console.error("세션 확인 실패:", error);
-      alert("로그인되어 있지 않을 경우 로그인 해야 이용 가능합니다.");
+      alert("로그인 후 이용 가능합니다.");
       navigate("/login");
     }
   };
