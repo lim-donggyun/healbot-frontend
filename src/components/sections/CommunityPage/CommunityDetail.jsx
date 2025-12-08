@@ -157,7 +157,7 @@ function CommunityDetail() {
       });
 
       if (res.status === 401) {
-        alert("로그인이 필요한 기능입니다.");
+        alert("로그인 후 이용 가능합니다.");
         return;
       }
 
@@ -207,8 +207,9 @@ function CommunityDetail() {
       });
 
       if (res.status === 401) {
-        alert("로그인이 필요한 기능입니다.");
+        alert("로그인 후 이용 가능합니다.");
         setIsReportOpen(false);
+        navigate("/login");
         return;
       }
 

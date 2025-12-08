@@ -14,6 +14,14 @@ const CATEGORY_TABS = [
 // 한 페이지에 몇 개씩 보여줄지
 const PAGE_SIZE = 5;
 
+// 이름 익명화 함수 (예: "홍길동" → "홍*동", "황지양" → "황*양")
+const anonymizeName = (name) => {
+  if (!name || name.length === 0) return "익명";
+  if (name.length === 1) return name;
+  if (name.length === 2) return `${name[0]}*`;
+  return `${name[0]}*${name[name.length - 1]}`;
+};
+
 function Community() {
   const navigate = useNavigate();
   const [activeCategory, setActiveCategory] = useState("all");
@@ -238,7 +246,7 @@ function Community() {
           <section className="community-list-section">
             {loading && (
               <div className="community-empty">
-                <p>게시글을 불러오는 중입니다…</p>
+                <p>게시글을 불러오는 중입니다...</p>
               </div>
             )}
 
@@ -251,7 +259,6 @@ function Community() {
             {!loading && !error && paginatedPosts.length === 0 && (
               <div className="community-empty">
                 <p>아직 등록된 게시글이 없습니다.</p>
-                <p>첫 번째 글의 주인공이 되어 보세요.</p>
               </div>
             )}
 
@@ -276,7 +283,7 @@ function Community() {
                       <div className="community-card-footer">
                         <div className="community-meta-left">
                           <span className="community-author">
-                            {post.userName ? `${post.memberId} (${post.userName})` : post.memberId}
+                            {post.userName ? `${post.memberId} (${anonymizeName(post.userName)})` : post.memberId}
                           </span>
                           <span className="community-dot">·</span>
                           <span className="community-date">

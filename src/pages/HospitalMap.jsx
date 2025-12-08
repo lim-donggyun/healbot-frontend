@@ -1414,10 +1414,12 @@ function HospitalMap() {
         "></div>
         <button class="info-close-btn" style="
           position: absolute;
-          top: 8px;
-          right: 8px;
+          top: 14px;
+          right: 16px;
           width: 24px;
           height: 24px;
+          min-width: 24px;
+          min-height: 24px;
           border: none;
           background: #f3f4f6;
           color: #6b7280;
@@ -1430,6 +1432,7 @@ function HospitalMap() {
           line-height: 1;
           transition: all 0.2s;
           z-index: 10;
+          padding: 0;
         " onmouseover="this.style.background='#e5e7eb'; this.style.color='#374151'" onmouseout="this.style.background='#f3f4f6'; this.style.color='#6b7280'">×</button>
         <div style="
           margin-bottom: 12px;

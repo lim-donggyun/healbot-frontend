@@ -75,8 +75,9 @@ body:has(.main-page)::-webkit-scrollbar {
   margin-bottom: 24px;
   font-weight: 700;
   color: #ffffff;
-  font-family: "SeoulHangang", "Malgun Gothic", sans-serif;
+  font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
   letter-spacing: -1px;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
 }
 
 .slide p {
@@ -84,8 +85,9 @@ body:has(.main-page)::-webkit-scrollbar {
   margin-bottom: 40px;
   opacity: 0.95;
   line-height: 1.6;
-  font-family: "SeoulHangang", "Malgun Gothic", sans-serif;
+  font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
   letter-spacing: -0.5px;
+  text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.4);
 }
 
 .slide-btn {
@@ -101,6 +103,8 @@ body:has(.main-page)::-webkit-scrollbar {
   backdrop-filter: blur(5px);
   text-decoration: none;
   display: inline-block;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
 }
 
 .slide-btn:hover {
@@ -136,8 +140,10 @@ body:has(.main-page)::-webkit-scrollbar {
 }
 
 .slider-control-btn {
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  min-height: 40px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.2);
   border: 2px solid rgba(255, 255, 255, 0.6);
@@ -150,6 +156,7 @@ body:has(.main-page)::-webkit-scrollbar {
   font-size: 14px;
   margin-left: 15px;
   backdrop-filter: blur(5px);
+  padding: 0;
 }
 
 .slider-control-btn:hover {
