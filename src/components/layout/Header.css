@@ -134,6 +134,7 @@ nav {
   cursor: pointer;
   display: block;
   padding: 42px 25px;
+  white-space: nowrap;   /* ✅ 이 줄 추가 */
 }
 
 .nav-link:hover {
@@ -790,5 +791,66 @@ header.scrolled #nav-icon2 span {
     gap: 10px;
     flex-wrap: wrap;
     justify-content: center;
+  }
+}
+@media (max-width: 1100px) {
+  .nav-link {
+    padding: 30px 18px;
+    font-size: 14px;
+  }
+
+  .header-right {
+    gap: 30px;
+    margin-left: 50px;
+  }
+}
+
+
+/* 폭이 줄어들 때: 메뉴/아이콘을 전부 한 줄에 들어가게 슬림하게 조정 */
+@media (max-width: 1200px) {
+  header {
+    padding: 15px 24px;       /* 좌우 여백 축소 */
+    height: 80px;             /* 헤더 높이 약간 줄이기 */
+  }
+
+  .header-wrapper {
+    max-width: 100%;
+  }
+
+  .logo img {
+    height: 200%;             /* 로고 살짝만 줄임 (기존 250%) */
+  }
+
+  .header-right {
+    margin-left: 40px;        /* 로고와 간격 감소 */
+    gap: 24px;                /* nav와 유틸 사이 간격 축소 */
+  }
+
+  nav {
+    gap: 10px;                /* 메뉴 사이 간격 축소 */
+  }
+
+  .nav-link {
+    padding: 26px 14px;       /* 좌우 패딩 줄이기 (기존 42px 25px) */
+    font-size: 14px;
+  }
+
+  .utility-menu {
+    gap: 12px;                /* 아이콘 간 간격 축소 */
+  }
+
+  .utility-divider {
+    height: 12px;
+  }
+
+  .user-icon-btn svg,
+  .logout-icon-btn svg {
+    width: 26px;
+    height: 26px;
+  }
+
+  #nav-icon2 {
+    width: 26px;
+    height: 22px;
   }
 }
