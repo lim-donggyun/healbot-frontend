@@ -81,6 +81,14 @@ useEffect(() => {
     }
 }, [searchParams]);
 
+// 이름 익명화 함수 (예: "홍길동" → "홍*동", "황지양" → "황*양")
+const anonymizeName = (name) => {
+    if (!name || name.length === 0) return "익명";
+    if (name.length === 1) return name;
+    if (name.length === 2) return `${name[0]}*`;
+    return `${name[0]}*${name[name.length - 1]}`;
+};
+
 const renderStars = (score) => {
     const s = Math.round(score || 0);
     const full = Math.min(Math.max(s, 0), 5);
@@ -440,7 +448,9 @@ return (
                     </div>
                   </div>
                   <span className="rv-card-writer">
-                    {r.writerName || r.userName || "익명"}
+                    {(r.writerName || r.userName)
+                      ? `${r.writerId || r.memberId || "익명"} (${anonymizeName(r.writerName || r.userName)})`
+                      : (r.writerId || r.memberId || "익명")}
                   </span>
                 </div>
                 <p className="rv-card-content">{r.content}</p>

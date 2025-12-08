@@ -1445,8 +1445,11 @@ function HospitalMap() {
             color: #111827;
             word-break: break-word;
             overflow-wrap: break-word;
+            white-space: normal;
             padding-right: 32px;
             margin-bottom: 6px;
+            line-height: 1.4;
+            max-width: 100%;
           ">${hospital.hospitalName}</h3>
           ${
             hospital.emergencyYn === "Y"
@@ -1471,7 +1474,7 @@ function HospitalMap() {
             <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" style="min-width: 14px; max-width: 14px; margin-right: 6px; margin-top: 2px;">
               <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
             </svg>
-            <span style="flex: 1; word-break: break-word; overflow-wrap: break-word; min-width: 0;">${
+            <span style="flex: 1; word-break: break-word; overflow-wrap: break-word; white-space: normal; min-width: 0; line-height: 1.5;">${
               hospital.address || "주소 정보 없음"
             }</span>
           </div>

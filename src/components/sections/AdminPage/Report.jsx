@@ -219,7 +219,7 @@ const Report = () => {
       const isUpdate = selectedReport?.reply ? true : false;
       alert(isUpdate ? "답변이 수정되었습니다." : "답변이 등록되었습니다.");
 
-      // 목록 새로고침
+      // 목록 새로고침 (필터 유지)
       const params = new URLSearchParams();
       if (statusFilter) params.append("status", statusFilter);
       if (targetTypeFilter) params.append("targetType", targetTypeFilter);
@@ -258,7 +258,7 @@ const Report = () => {
 
       alert("신고가 삭제되었습니다.");
 
-      // 목록 새로고침
+      // 목록 새로고침 (필터 유지)
       const params = new URLSearchParams();
       if (statusFilter) params.append("status", statusFilter);
       if (targetTypeFilter) params.append("targetType", targetTypeFilter);
@@ -344,7 +344,7 @@ const Report = () => {
 
       alert(`${targetName}이 ${action} 처리되었습니다.`);
 
-      // 목록 새로고침
+      // 목록 새로고침 (필터 유지)
       const params = new URLSearchParams();
       if (statusFilter) params.append("status", statusFilter);
       if (targetTypeFilter) params.append("targetType", targetTypeFilter);
@@ -417,7 +417,13 @@ const Report = () => {
 
           <div className="report-search-filters">
             <div className="filter-group">
-              <select className="filter-select" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+              <select
+                className="filter-select"
+                value={statusFilter}
+                onChange={(e) => {
+                  setStatusFilter(e.target.value);
+                  setCurrentPage(1);
+                }}>
                 <option value="">전체 상태</option>
                 <option value="PENDING">대기중</option>
                 <option value="RESOLVED">처리완료</option>
@@ -428,7 +434,10 @@ const Report = () => {
               <select
                 className="filter-select"
                 value={targetTypeFilter}
-                onChange={(e) => setTargetTypeFilter(e.target.value)}>
+                onChange={(e) => {
+                  setTargetTypeFilter(e.target.value);
+                  setCurrentPage(1);
+                }}>
                 <option value="">전체 유형</option>
                 <option value="POST">게시글</option>
                 <option value="COMMENT">댓글</option>

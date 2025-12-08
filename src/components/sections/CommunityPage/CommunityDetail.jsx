@@ -29,6 +29,14 @@ const formatDate = (dateString) => {
   return time ? `${date} ${time}` : date;
 };
 
+// 이름 익명화 함수 (예: "홍길동" → "홍*동", "황지양" → "황*양")
+const anonymizeName = (name) => {
+  if (!name || name.length === 0) return "익명";
+  if (name.length === 1) return name;
+  if (name.length === 2) return `${name[0]}*`;
+  return `${name[0]}*${name[name.length - 1]}`;
+};
+
 function CommunityDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -285,7 +293,7 @@ function CommunityDetail() {
                 <span className={`cd-badge cd-badge-${post.category}`}>{getCategoryLabel(post.category)}</span>
                 <span className="cd-meta-dot">·</span>
                 <span className="cd-meta-author">
-                  {post.userName ? `${post.memberId} (${post.userName})` : post.memberId}
+                  {post.userName ? `${post.memberId} (${anonymizeName(post.userName)})` : post.memberId}
                 </span>
                 <span className="cd-meta-dot">·</span>
                 <span className="cd-meta-date">{formatDate(post.createdAt)}</span>
@@ -342,7 +350,7 @@ function CommunityDetail() {
                   <li key={c.commentId} className="cd-comment-item">
                     <div className="cd-comment-meta">
                       <span className="cd-comment-author">
-                        {c.author ? `${c.memberId} (${c.author})` : c.memberId}
+                        {c.author ? `${c.memberId} (${anonymizeName(c.author)})` : c.memberId}
                       </span>
                       <span className="cd-meta-dot">·</span>
                       <span className="cd-comment-date">{formatDate(c.createdAt)}</span>
