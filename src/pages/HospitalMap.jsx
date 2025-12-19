@@ -1297,7 +1297,6 @@ function HospitalMap() {
     if (!kakaoMapRef.current) return;
 
     if (!navigator.geolocation) {
-      alert("이 브라우저는 위치 서비스를 지원하지 않습니다.");
       return;
     }
 
@@ -1319,7 +1318,6 @@ function HospitalMap() {
 
         // accuracy가 너무 낮으면 (10km 이상) IP 기반 위치로 판단하고 무시
         if (accuracy > 10000) {
-          alert("위치 정확도가 낮습니다.\n브라우저 설정에서 위치 권한을 허용해주세요.");
           return;
         }
 
@@ -1340,7 +1338,6 @@ function HospitalMap() {
       },
       (error) => {
         if (error.code === 1) {
-          alert("위치 권한이 거부되었습니다.\n브라우저 설정에서 위치 권한을 허용해주세요.");
         }
       },
       {
